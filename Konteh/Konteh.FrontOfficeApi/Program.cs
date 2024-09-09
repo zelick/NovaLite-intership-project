@@ -1,4 +1,6 @@
+using Konteh.Domain;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<KontehDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 
 var app = builder.Build();
 
