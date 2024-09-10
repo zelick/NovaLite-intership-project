@@ -1,0 +1,50 @@
+/* General container styling */
+.question-form-container, .answer-form-container {
+    width: 470px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Question form specific styling */
+.question-form-container {
+    position: relative;
+    padding-top: 20px;
+    margin-top: 50px;
+}
+
+/* Answer form specific styling */
+.answer-form-container {
+    margin-top: 20px; /* Space between the question form and the answer form */
+}
+
+/* Submit button styling */
+button[mat-raised-button] {
+    width: 200px;
+    margin-top: 15px;
+}
+
+/* Form field styling */
+mat-form-field {
+    width: 100%;
+}
+
+/* Button to add answer styling */
+.button-answer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+/* Optional: Centering the forms on the page */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+

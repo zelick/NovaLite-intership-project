@@ -1,0 +1,68 @@
+<form>
+    <div class="question-form-container">
+
+      <h5>CREATE QUESTION</h5>
+
+      <mat-form-field>
+        <mat-label>TYPE</mat-label>
+        <mat-select>
+          <mat-option value="RADIO">RADIO BUTTONS</mat-option>
+          <mat-option value="CHECKBOX">CHECKBOX</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+
+      <mat-form-field>
+        <mat-label>CATEGORY</mat-label>
+        <mat-select>
+          <mat-option value="oop">OOP</mat-option>
+          <mat-option value="csharp">C#</mat-option>
+          <mat-option value="http">HTTP</mat-option>
+          <mat-option value="http">SQL</mat-option>
+          <mat-option value="http">GIT</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>QUESTION</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
+  
+      <div class="button-answer">
+        <button mat-icon-button type="button" (click)="addAnswer()">
+            <mat-icon>add</mat-icon>
+        </button>
+        <mat-label>NEW ANSWER</mat-label>
+      </div>
+
+       <!-- Display list of answers -->
+    <!-- <div class="answers-list" *ngIf="answers.length > 0">
+        <h6>LIST OF ANSWERS:</h6>
+        <ul>
+          <li *ngFor="let answer of answers">
+            <mat-checkbox [checked]="answer.isCorrect" disabled>{{ answer.text }}</mat-checkbox>
+          </li>
+        </ul>
+    </div>
+     -->
+      <button mat-raised-button type="submit">CREATE</button>
+
+    </div>
+</form>
+
+<form>
+    <div class="answer-form-container" *ngIf="isAnswerFormVisible">
+        <h5>CREATE ANSWER</h5>
+        <mat-checkbox>IS CORRECT</mat-checkbox>
+        <mat-form-field>
+          <mat-label>ANSWER</mat-label>
+          <textarea matInput></textarea>
+        </mat-form-field>
+        <button mat-raised-button (click)="createAnswer()" type="submit">CREATE</button>
+    </div>
+</form>
+
+
+
+
+  
