@@ -1,6 +1,19 @@
-/* General container styling */
+form {
+    flex-direction: column;
+    align-items: center;
+    text-decoration-color: white;
+}
+
+h6 {
+    font-size: 20px; 
+    font-weight: bold; 
+    text-align: center; 
+    margin-bottom: 10px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+}
+
 .question-form-container, .answer-form-container {
-    width: 470px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -11,40 +24,41 @@
     gap: 16px;
 }
 
-/* Question form specific styling */
 .question-form-container {
+    width: 470px; 
     position: relative;
-    padding-top: 20px;
+    padding-top: 15px;
     margin-top: 50px;
 }
 
-/* Answer form specific styling */
 .answer-form-container {
-    margin-top: 20px; /* Space between the question form and the answer form */
+    width: 450px;
+    margin-top: 10px;
+    padding: 15px;
 }
 
-/* Submit button styling */
 button[mat-raised-button] {
-    width: 200px;
-    margin-top: 15px;
+    width: 150px;
+    margin-top: 5px;
+    text-decoration-color: white;
 }
 
-/* Form field styling */
+
 mat-form-field {
     width: 100%;
 }
 
-/* Button to add answer styling */
 .button-answer {
     display: flex;
     align-items: center;
     flex-direction: row;
 }
 
-/* Optional: Centering the forms on the page */
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.answer-card {
+    margin-top: 2px;
 }
 
+mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}

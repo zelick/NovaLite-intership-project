@@ -1,66 +1,73 @@
-<form>
+<form [formGroup]="questionForm" (ngSubmit)="onCreateQuestion()">
     <div class="question-form-container">
 
-      <h5>CREATE QUESTION</h5>
+      <h6>CREATE QUESTION</h6>
 
-      <mat-form-field>
+      <mat-form-field >
         <mat-label>TYPE</mat-label>
-        <mat-select>
-          <mat-option value="RADIO">RADIO BUTTONS</mat-option>
-          <mat-option value="CHECKBOX">CHECKBOX</mat-option>
+        <mat-select formControlName="type">
+          <mat-option value="RadioButton">RADIO BUTTONS</mat-option>
+          <mat-option value="Checkbox">CHECKBOX</mat-option>
         </mat-select>
       </mat-form-field>
   
 
-      <mat-form-field>
+      <mat-form-field >
         <mat-label>CATEGORY</mat-label>
-        <mat-select>
-          <mat-option value="oop">OOP</mat-option>
-          <mat-option value="csharp">C#</mat-option>
-          <mat-option value="http">HTTP</mat-option>
-          <mat-option value="http">SQL</mat-option>
-          <mat-option value="http">GIT</mat-option>
+        <mat-select formControlName="category">
+          <mat-option value="Oop">OOP</mat-option>
+          <mat-option value="CSharp">C#</mat-option>
+          <mat-option value="Http">HTTP</mat-option>
+          <mat-option value="Sql">SQL</mat-option>
+          <mat-option value="Git">GIT</mat-option>
         </mat-select>
       </mat-form-field>
   
-      <mat-form-field>
+      <mat-form-field >
         <mat-label>QUESTION</mat-label>
-        <textarea matInput></textarea>
+        <textarea matInput formControlName="text"></textarea>
       </mat-form-field>
-  
-      <div class="button-answer">
-        <button mat-icon-button type="button" (click)="addAnswer()">
-            <mat-icon>add</mat-icon>
-        </button>
-        <mat-label>NEW ANSWER</mat-label>
+
+
+    <div class="answer-form-container">
+      
+      <h6>ADD ANSWER</h6>
+
+      <mat-checkbox formControlName="isCorrect">IS CORRECT</mat-checkbox>
+
+      <mat-form-field>
+        <mat-label>ANSWER</mat-label>
+        <textarea matInput formControlName="answerText"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button (click)="createAnswer()" type="button">ADD</button>
+    </div>
+
+    <!-- answers as cards -->
+    <div formArrayName="answers">
+      <div *ngFor="let answer of answersArray.controls; let i = index" class="answer-card" [formGroupName]="i">
+        <mat-card>
+          <mat-card-content>
+            <p>{{ answer.get('text')?.value }}</p>
+            <p>Is Correct: {{ answer.get('isCorrect')?.value ? 'Yes' : 'No' }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-icon-button color="warn" (click)="deleteAnswer(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
       </div>
-
-       <!-- Display list of answers -->
-    <!-- <div class="answers-list" *ngIf="answers.length > 0">
-        <h6>LIST OF ANSWERS:</h6>
-        <ul>
-          <li *ngFor="let answer of answers">
-            <mat-checkbox [checked]="answer.isCorrect" disabled>{{ answer.text }}</mat-checkbox>
-          </li>
-        </ul>
     </div>
-     -->
-      <button mat-raised-button type="submit">CREATE</button>
+    
+
+    <button mat-raised-button type="submit">CREATE</button>
 
     </div>
 </form>
 
-<form>
-    <div class="answer-form-container" *ngIf="isAnswerFormVisible">
-        <h5>CREATE ANSWER</h5>
-        <mat-checkbox>IS CORRECT</mat-checkbox>
-        <mat-form-field>
-          <mat-label>ANSWER</mat-label>
-          <textarea matInput></textarea>
-        </mat-form-field>
-        <button mat-raised-button (click)="createAnswer()" type="submit">CREATE</button>
-    </div>
-</form>
+
+
 
 
 
