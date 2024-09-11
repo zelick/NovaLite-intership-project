@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
-import { AuthSuccessfulComponent } from './auth/auth-successful/auth-successful.component';
+import { GuardTestComponent } from './guard-test/guard-test.component';
+import { authGuard } from './auth.guard';
 
 const routes: Routes = [
   {
@@ -10,8 +11,9 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path:'authorized',
-    component: AuthSuccessfulComponent
+    path: 'guard',
+    component: GuardTestComponent,
+    canActivate: [authGuard]
   }
 ];
 

@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
+[Authorize]
 [ApiController]
 [Route("api/questions")]
 public class QuestionController : Controller

@@ -414,3 +414,5 @@ Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-QUCOIB3W.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-QUCOIB3W.js.map
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-XRU42I36.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-XRU42I36.js.map
+*.js
+*.map
