@@ -17,7 +17,6 @@ import {
 import { NavbarComponent } from './navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
-import { GuardTestComponent } from './guard-test/guard-test.component';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -25,7 +24,6 @@ import { environment } from '../environments/environment';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    GuardTestComponent,
   ],
   imports: [
     BrowserModule,

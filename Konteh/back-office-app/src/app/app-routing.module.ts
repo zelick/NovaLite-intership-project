@@ -2,19 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
-import { GuardTestComponent } from './guard-test/guard-test.component';
 import { authGuard } from './auth.guard';
 
 const routes: Routes = [
   {
     path:'',
     component: HomeComponent
-  },
-  {
-    path: 'guard',
-    component: GuardTestComponent,
-    canActivate: [authGuard]
   }
+  
 ];
 
 const isIframe = window !== window.parent && !window.opener;

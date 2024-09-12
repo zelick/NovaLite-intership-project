@@ -25,7 +25,9 @@ export class NavbarComponent implements OnInit{
       next: result => {
         this.setLoginDisplay();
       },
-      error: (error) => console.log(error)
+      error: (error) => {
+        
+      }
     });
   }
 
@@ -48,15 +50,4 @@ export class NavbarComponent implements OnInit{
     }
   }
 
-  apiCall() {
-    this.questionClient.getAll().subscribe(
-      (data: GetAllQuestionsResponse[]) => {
-        console.log("Success")
-      },
-      (error: any) => {
-        console.error('Error fetching questions:', error);
-        this.errorMessage = 'An error occurred while fetching questions.';
-      }
-    );
-  }
 }

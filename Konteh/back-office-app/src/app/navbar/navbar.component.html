@@ -3,6 +3,5 @@
     <div class="spacer"></div>
     <p *ngIf="username">{{username}}</p> 
     <a mat-button (click)="login()" *ngIf="!username">Login</a>
-    <a mat-button  (click)="apiCall()">API</a>
     <button mat-raised-button *ngIf="username" (click)="logout()">Logout</button>
 </mat-toolbar>
