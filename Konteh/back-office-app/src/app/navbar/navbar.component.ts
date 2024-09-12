@@ -39,7 +39,7 @@ export class NavbarComponent implements OnInit{
 
   setLoginDisplay() {
     const accounts = this.authService.instance.getAllAccounts();
-    if(accounts){
+    if(accounts && accounts[0]){
       this.authService.instance.setActiveAccount(accounts[0]);
       this.username = accounts[0].name;
     }else{
@@ -51,7 +51,6 @@ export class NavbarComponent implements OnInit{
   apiCall() {
     this.questionClient.getAll().subscribe(
       (data: GetAllQuestionsResponse[]) => {
-        //this.questions = data;
         console.log("Success")
       },
       (error: any) => {

@@ -14,19 +14,9 @@ using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}";
-        options.Audience = builder.Configuration["AzureAd:ClientId"];
-    });
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ApiPolicy", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-    });
-});
+
 
 builder.Services.AddControllers();
 
@@ -57,7 +47,7 @@ app.UseCors("AllowSpecificOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers().RequireAuthorization("ApiPolicy");
+app.MapControllers();
 
 
 app.UseOpenApi();

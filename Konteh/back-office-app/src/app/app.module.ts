@@ -51,7 +51,7 @@ import { environment } from '../environments/environment';
         protectedResourceMap: new Map([
           
           ["https://localhost:7221/", ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read',
-    'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write']]
+            'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write']],
         ]),
       }
     ),
