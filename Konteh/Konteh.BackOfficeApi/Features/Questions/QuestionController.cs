@@ -20,4 +20,21 @@ public class QuestionController : Controller
         var response = await _mediator.Send(new GetAllQuestions.Query());
         return Ok(response);
     }
+
+    [HttpDelete]
+    [Route("{id:int}")]
+    public async Task<ActionResult> Delete(int id) 
+    {
+        try
+        {
+            await _mediator.Send(new DeleteQuestion.Command { Id = id });
+            return Ok();
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        
+        
+    }
 }

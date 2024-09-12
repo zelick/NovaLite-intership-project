@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { QuestionsTableDataSource, Question } from './questions-table-datasource';
 import { GetAllQuestionsResponse, IGetAllQuestionsResponse, QuestionCategory, QuestionClient, QuestionType } from '../api/api-reference';
 
 @Component({
@@ -25,16 +24,21 @@ export class QuestionsTableComponent  {
   dataSource: any;
   questionList !: GetAllQuestionsResponse[];
   constructor(private client:QuestionClient){
-    this.client.getAll().subscribe(res =>{
-      this.questionList = res;
-      this.dataSource = new MatTableDataSource<IGetAllQuestionsResponse>(this.questionList);
-      this.dataSource.paginator = this.paginator;
-    })
+    this.loadQuestions();
   }
-  deleteQuestion(id:number){
-    this.questionList = this.questionList.filter(d => d.id != id);
+
+  loadQuestions(){
+    this.client.getAll().subscribe(res =>{
+    this.questionList = res;
     this.dataSource = new MatTableDataSource<IGetAllQuestionsResponse>(this.questionList);
     this.dataSource.paginator = this.paginator;
+    })
+  }
+
+  deleteQuestion(id:number){
+    this.client.delete(id).subscribe(res => {
+      this.loadQuestions();
+    })
   }
   editQuestion(name: string){
     alert(name)
