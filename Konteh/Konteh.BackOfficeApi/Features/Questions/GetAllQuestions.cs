@@ -14,6 +14,7 @@ public static class GetAllQuestions
         public int Id { get; set; }
         public string Text { get; set; }
         public QuestionCategory Category { get; set; }
+        public QuestionType Type { get; set; }
 
     }
 
@@ -32,7 +33,8 @@ public static class GetAllQuestions
             {
                 Id = q.Id,
                 Text = q.Text,
-                Category = q.Category
+                Category = q.Category,
+                Type = q.Type
             });
         }
     }

@@ -1,0 +1,24 @@
+.full-width-table {
+  width: 60%;
+  margin: 20px auto;
+}
+
+.questions-table{
+  width: 60%;
+  margin: 20px auto;
+  color: aqua;
+
+}
+.questions-table tr{
+  color: black;
+  background-color: white;
+}
+
+.text-column {
+  width: 700px;
+  word-break: break-all;
+}
+
+.type-column{
+  width: 130px;
+}

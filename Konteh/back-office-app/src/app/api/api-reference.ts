@@ -92,6 +92,7 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
     id?: number;
     text?: string;
     category?: QuestionCategory;
+    type?: QuestionType;
 
     constructor(data?: IGetAllQuestionsResponse) {
         if (data) {
@@ -107,6 +108,7 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
             this.id = _data["id"];
             this.text = _data["text"];
             this.category = _data["category"];
+            this.type = _data["type"];
         }
     }
 
@@ -122,6 +124,7 @@ export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
         data["id"] = this.id;
         data["text"] = this.text;
         data["category"] = this.category;
+        data["type"] = this.type;
         return data;
     }
 }
@@ -130,6 +133,7 @@ export interface IGetAllQuestionsResponse {
     id?: number;
     text?: string;
     category?: QuestionCategory;
+    type?: QuestionType;
 }
 
 export enum QuestionCategory {
@@ -138,6 +142,11 @@ export enum QuestionCategory {
     Oop = 3,
     Sql = 4,
     CSharp = 5,
+}
+
+export enum QuestionType {
+    RadioButton = 1,
+    Checkbox = 2,
 }
 
 export class ApiException extends Error {
