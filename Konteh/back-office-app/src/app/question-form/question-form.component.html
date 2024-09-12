@@ -1,13 +1,14 @@
 <form [formGroup]="questionForm" (ngSubmit)="onCreateQuestion()">
     <div class="question-form-container">
 
-      <h6>CREATE QUESTION</h6>
+      <h6 *ngIf="!isEditing">CREATE QUESTION</h6>
+      <h6 *ngIf="isEditing">EDIT QUESTION</h6>
 
       <mat-form-field >
         <mat-label>TYPE</mat-label>
         <mat-select formControlName="type">
-          <mat-option value="RadioButton">RADIO BUTTONS</mat-option>
-          <mat-option value="Checkbox">CHECKBOX</mat-option>
+          <mat-option [value]="questionType.RadioButton">RADIO BUTTONS</mat-option>
+          <mat-option [value]="questionType.Checkbox">CHECKBOX</mat-option>
         </mat-select>
       </mat-form-field>
   
@@ -15,11 +16,11 @@
       <mat-form-field >
         <mat-label>CATEGORY</mat-label>
         <mat-select formControlName="category">
-          <mat-option value="Oop">OOP</mat-option>
-          <mat-option value="CSharp">C#</mat-option>
-          <mat-option value="Http">HTTP</mat-option>
-          <mat-option value="Sql">SQL</mat-option>
-          <mat-option value="Git">GIT</mat-option>
+          <mat-option [value]="questionCategory.Oop">OOP</mat-option>
+          <mat-option [value]="questionCategory.CSharp">C#</mat-option>
+          <mat-option [value]="questionCategory.Http">HTTP</mat-option>
+          <mat-option [value]="questionCategory.Sql">SQL</mat-option>
+          <mat-option [value]="questionCategory.Git">GIT</mat-option>
         </mat-select>
       </mat-form-field>
   
@@ -31,7 +32,8 @@
 
     <div class="answer-form-container">
       
-      <h6>ADD ANSWER</h6>
+      <h6 *ngIf="!isEditing">ADD ANSWER</h6>
+      <h6 *ngIf="isEditing">EDIT ANSWER</h6>
 
       <mat-checkbox formControlName="isCorrect">IS CORRECT</mat-checkbox>
 
@@ -40,7 +42,8 @@
         <textarea matInput formControlName="answerText"></textarea>
       </mat-form-field>
 
-      <button mat-raised-button (click)="createAnswer()" type="button">ADD</button>
+      <button mat-raised-button (click)="createAnswer()" type="button" *ngIf="!isEditing">ADD</button>
+      <button mat-raised-button (click)="onEditAnswerFormClick()" type="button" *ngIf="isEditing">EDIT</button>
     </div>
 
     <!-- answers as cards -->
@@ -52,8 +55,11 @@
             <p>Is Correct: {{ answer.get('isCorrect')?.value ? 'Yes' : 'No' }}</p>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-icon-button color="warn" (click)="deleteAnswer(i)">
+            <button mat-icon-button (click)="deleteAnswer(i)">
               <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button type="button" (click)="onEditAnswerCardClick(i)">
+              <mat-icon>edit</mat-icon>
             </button>
           </mat-card-actions>
         </mat-card>
@@ -61,7 +67,8 @@
     </div>
     
 
-    <button mat-raised-button type="submit">CREATE</button>
+    <button mat-raised-button type="submit" *ngIf="!isEditing">CREATE</button>
+    <button mat-raised-button type="submit" *ngIf="isEditing">EDIT</button>
 
     </div>
 </form>

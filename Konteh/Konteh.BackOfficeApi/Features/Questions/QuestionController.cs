@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Konteh.Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
@@ -22,9 +23,25 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create([FromBody] CreateQuestion.Command command)
+    public async Task<ActionResult<int>> Create(CreateQuestion.Command command)
     {
         var response = await _mediator.Send(command);
         return Ok(response);
     }
+
+    [HttpPut]
+    public async Task<ActionResult<int>> Update(UpdateQuestion.Command command)
+    {
+        var response = await _mediator.Send(command);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("{id:int}")]
+    public async Task<ActionResult<Question>> GetQuestionById(int id)
+    {
+        var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
+        return Ok(response);
+    }
+
 }
