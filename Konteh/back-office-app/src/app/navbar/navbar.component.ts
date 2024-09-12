@@ -10,7 +10,6 @@ import { GetAllQuestionsResponse, QuestionClient } from '../api/api-reference';
 export class NavbarComponent implements OnInit{
 
   username: string | undefined;
-  errorMessage: string | undefined;
 
   constructor(private authService: MsalService, private questionClient: QuestionClient){}
 

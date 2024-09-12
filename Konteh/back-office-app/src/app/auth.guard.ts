@@ -10,8 +10,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   const accounts = msalService.instance.getAllAccounts();
 
   if (accounts.length > 0) {
-    return of(true);
+    return true;
   } else {
-    return of(false);
+    return false;
   }
 };
