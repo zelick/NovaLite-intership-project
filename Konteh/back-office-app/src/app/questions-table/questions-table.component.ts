@@ -12,12 +12,8 @@ import { GetAllQuestionsResponse, IGetAllQuestionsResponse, QuestionCategory, Qu
 export class QuestionsTableComponent  {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  // @ViewChild(MatTable) table!: MatTable<IGetAllQuestionsResponse>;
-  // dataSource = new QuestionsTableDataSource();
 
   value = '';
-  filterCategory = '';
-  questionTypes = '';
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['category', 'type', 'text',  'edit'];
 
@@ -64,7 +60,6 @@ export class QuestionsTableComponent  {
     else
       return "Checkbox"
   }
-
   search(data: Event){
     const value = (data.target as HTMLInputElement).value;
     this.dataSource.filter = value;

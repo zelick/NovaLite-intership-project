@@ -18,7 +18,7 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class
 
     public async Task<List<T>> GetAll() => await _dbSet.ToListAsync();
 
-    public T? GetById(int id) => _dbSet.Find(id);
+    public virtual async Task<T?> GetById(int id) => await _dbSet.FindAsync(id);
 
     public async Task SaveChanges() => await _context.SaveChangesAsync();
 

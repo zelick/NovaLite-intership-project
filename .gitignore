@@ -372,3 +372,4 @@ modules/.vscode
 # End of https://www.gitignore.io/api/visualstudio,visualstudiocode
 *.js
 *.map
+*.tsbuildinfo
