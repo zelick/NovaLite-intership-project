@@ -30,7 +30,7 @@ public class QuestionController : Controller
     }
 
     [HttpPut]
-    public async Task<ActionResult<int>> Update(UpdateQuestion.Command command)
+    public async Task<ActionResult<Question>> Update(UpdateQuestion.Command command)
     {
         var response = await _mediator.Send(command);
         return Ok(response);

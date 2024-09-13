@@ -6,7 +6,7 @@ namespace Konteh.BackOfficeApi.Features.Questions;
 
 public class UpdateQuestion
 {
-    public class Command : IRequest<int>
+    public class Command : IRequest<Question>
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
@@ -17,23 +17,27 @@ public class UpdateQuestion
 
     public class AnswerRequest
     {
+        public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
         public bool IsCorrect { get; set; }
     }
 
-    public class RequestHandler : IRequestHandler<Command, int>
+    public class RequestHandler : IRequestHandler<Command, Question>
     {
         private readonly IRepository<Question> _questionRepository;
+        private readonly IRepository<Answer> _answerRepository;
 
-        public RequestHandler(IRepository<Question> questionRepository)
+        public RequestHandler(IRepository<Question> questionRepository, IRepository<Answer> answerRepository)
         {
             _questionRepository = questionRepository;
+            _answerRepository = answerRepository;
         }
 
-        public async Task<int> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Question> Handle(Command request, CancellationToken cancellationToken)
         {
 
-            var existingQuestion = await _questionRepository.GetById(request.Id); //imas id od answers !!!!!!!!
+            var existingQuestion = await _questionRepository.GetById(request.Id);
+
             if (existingQuestion == null)
             {
                 throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
@@ -43,21 +47,30 @@ public class UpdateQuestion
             existingQuestion.Type = request.Type;
             existingQuestion.Category = request.Category;
 
-            existingQuestion.Answers = Enumerable.Empty<Answer>();
             List<Answer> answersList = existingQuestion.Answers.ToList();
 
-            //svaki answer get by id pa onda save changes 
-            answersList.AddRange(request.Answers.Select(a => new Answer
+            foreach (var requestAnswer in request.Answers)
             {
-                Text = a.Text,
-                IsCorrect = a.IsCorrect
-            }).ToList());
+                var existingAnswer = answersList.FirstOrDefault(a => a.Id == requestAnswer.Id);
+
+                if (existingAnswer != null)
+                {
+                    existingAnswer.Text = requestAnswer.Text;
+                    existingAnswer.IsCorrect = requestAnswer.IsCorrect;
+                    answersList.RemoveAll(a => a.Id == existingAnswer.Id);
+                    answersList.Add(existingAnswer);
+                }
+            }
+
+            //// Remove any answers from the list that are not in the request
+            //var requestAnswerIds = request.Answers.Select(a => a.Id).ToList();
+            //answersList.RemoveAll(a => !requestAnswerIds.Contains(a.Id));
 
             existingQuestion.Answers = answersList;
 
             await _questionRepository.SaveChanges();
 
-            return existingQuestion.Id;
+            return existingQuestion;
         }
     }
 }

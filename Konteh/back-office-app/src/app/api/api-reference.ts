@@ -18,7 +18,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IQuestionClient {
     getAll(): Observable<GetAllQuestionsResponse[]>;
     create(command: CreateQuestionCommand): Observable<number>;
-    update(command: UpdateQuestionCommand): Observable<number>;
+    update(command: UpdateQuestionCommand): Observable<Question>;
     getQuestionById(id: number): Observable<Question>;
 }
 
@@ -143,7 +143,7 @@ export class QuestionClient implements IQuestionClient {
         return _observableOf(null as any);
     }
 
-    update(command: UpdateQuestionCommand): Observable<number> {
+    update(command: UpdateQuestionCommand): Observable<Question> {
         let url_ = this.baseUrl + "/api/questions";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -166,14 +166,14 @@ export class QuestionClient implements IQuestionClient {
                 try {
                     return this.processUpdate(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<number>;
+                    return _observableThrow(e) as any as Observable<Question>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<number>;
+                return _observableThrow(response_) as any as Observable<Question>;
         }));
     }
 
-    protected processUpdate(response: HttpResponseBase): Observable<number> {
+    protected processUpdate(response: HttpResponseBase): Observable<Question> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -184,8 +184,7 @@ export class QuestionClient implements IQuestionClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = Question.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -401,106 +400,6 @@ export interface ICreateQuestionAnswerRequest {
     isCorrect?: boolean;
 }
 
-export class UpdateQuestionCommand implements IUpdateQuestionCommand {
-    id?: number;
-    text?: string;
-    type?: QuestionType;
-    category?: QuestionCategory;
-    answers?: UpdateQuestionAnswerRequest[];
-
-    constructor(data?: IUpdateQuestionCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-            this.type = _data["type"];
-            this.category = _data["category"];
-            if (Array.isArray(_data["answers"])) {
-                this.answers = [] as any;
-                for (let item of _data["answers"])
-                    this.answers!.push(UpdateQuestionAnswerRequest.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateQuestionCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateQuestionCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        data["type"] = this.type;
-        data["category"] = this.category;
-        if (Array.isArray(this.answers)) {
-            data["answers"] = [];
-            for (let item of this.answers)
-                data["answers"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IUpdateQuestionCommand {
-    id?: number;
-    text?: string;
-    type?: QuestionType;
-    category?: QuestionCategory;
-    answers?: UpdateQuestionAnswerRequest[];
-}
-
-export class UpdateQuestionAnswerRequest implements IUpdateQuestionAnswerRequest {
-    text?: string;
-    isCorrect?: boolean;
-
-    constructor(data?: IUpdateQuestionAnswerRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.text = _data["text"];
-            this.isCorrect = _data["isCorrect"];
-        }
-    }
-
-    static fromJS(data: any): UpdateQuestionAnswerRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateQuestionAnswerRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["text"] = this.text;
-        data["isCorrect"] = this.isCorrect;
-        return data;
-    }
-}
-
-export interface IUpdateQuestionAnswerRequest {
-    text?: string;
-    isCorrect?: boolean;
-}
-
 export class Question implements IQuestion {
     id?: number;
     text?: string;
@@ -600,6 +499,110 @@ export class Answer implements IAnswer {
 }
 
 export interface IAnswer {
+    id?: number;
+    text?: string;
+    isCorrect?: boolean;
+}
+
+export class UpdateQuestionCommand implements IUpdateQuestionCommand {
+    id?: number;
+    text?: string;
+    type?: QuestionType;
+    category?: QuestionCategory;
+    answers?: UpdateQuestionAnswerRequest[];
+
+    constructor(data?: IUpdateQuestionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.type = _data["type"];
+            this.category = _data["category"];
+            if (Array.isArray(_data["answers"])) {
+                this.answers = [] as any;
+                for (let item of _data["answers"])
+                    this.answers!.push(UpdateQuestionAnswerRequest.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateQuestionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateQuestionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["type"] = this.type;
+        data["category"] = this.category;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IUpdateQuestionCommand {
+    id?: number;
+    text?: string;
+    type?: QuestionType;
+    category?: QuestionCategory;
+    answers?: UpdateQuestionAnswerRequest[];
+}
+
+export class UpdateQuestionAnswerRequest implements IUpdateQuestionAnswerRequest {
+    id?: number;
+    text?: string;
+    isCorrect?: boolean;
+
+    constructor(data?: IUpdateQuestionAnswerRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.isCorrect = _data["isCorrect"];
+        }
+    }
+
+    static fromJS(data: any): UpdateQuestionAnswerRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateQuestionAnswerRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["isCorrect"] = this.isCorrect;
+        return data;
+    }
+}
+
+export interface IUpdateQuestionAnswerRequest {
     id?: number;
     text?: string;
     isCorrect?: boolean;

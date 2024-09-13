@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { CreateQuestionAnswerRequest, CreateQuestionCommand, QuestionCategory, QuestionClient, QuestionType, UpdateQuestionCommand } from '../api/api-reference';
+import { CreateQuestionAnswerRequest, CreateQuestionCommand, QuestionCategory, QuestionClient, QuestionType, UpdateQuestionAnswerRequest, UpdateQuestionCommand } from '../api/api-reference';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -57,7 +57,7 @@ export class QuestionFormComponent implements OnInit{
         this.answersArray.clear();
         if(question.answers){
           question.answers.forEach(answer => {
-            this.answersArray.push(this.createAnswerGroup(answer));
+            this.answersArray.push(this.createAnswerGroupUpdate(answer));
           });
         }
       }
@@ -66,6 +66,14 @@ export class QuestionFormComponent implements OnInit{
 
   createAnswerGroup(answer: CreateQuestionAnswerRequest): FormGroup {
     return this.formBuilder.group({
+      text: [answer.text,  Validators.required],
+      isCorrect: [answer.isCorrect]
+    });
+  }
+
+  createAnswerGroupUpdate(answer: UpdateQuestionAnswerRequest) : FormGroup{
+    return this.formBuilder.group({
+      id: [answer.id, Validators.required],
       text: [answer.text,  Validators.required],
       isCorrect: [answer.isCorrect]
     });
@@ -93,6 +101,7 @@ export class QuestionFormComponent implements OnInit{
     } 
   }
 
+  //Define the answersArray getter to access the FormArray from the questionForm
   get answersArray(): FormArray {
     return this.questionForm.get('answers') as FormArray;
   }
@@ -118,14 +127,19 @@ export class QuestionFormComponent implements OnInit{
     });
   }
 
-  convertAnswerArray(): CreateQuestionAnswerRequest[] {
+  convertAnswerArrayForCreate(): CreateQuestionAnswerRequest[] {
     return this.answersArray.controls.map(control => 
       new CreateQuestionAnswerRequest(control.value)
     );
   }
 
+  convertAnswerArrayForUpdate(): UpdateQuestionAnswerRequest[] {
+    return this.answersArray.controls.map(control => 
+      new UpdateQuestionAnswerRequest(control.value)
+    );
+  }
+
   onCreateQuestion() {
-    //Validations
     if (!this.questionForm.valid) {
       alert("Please fill out all required fields.");
       return;
@@ -139,14 +153,13 @@ export class QuestionFormComponent implements OnInit{
       return;
     }
 
-    
-
     if(!this.isEditing){
+      //create
       const createQuestionCommand = new CreateQuestionCommand({
         text: this.questionForm.get('text')?.value,
         type: this.questionForm.get('type')?.value,
         category: this.questionForm.get('category')?.value,
-        answers: this.convertAnswerArray() 
+        answers: this.convertAnswerArrayForCreate() 
       });
 
       this.questionClient.create(createQuestionCommand).subscribe(response => {
@@ -154,14 +167,16 @@ export class QuestionFormComponent implements OnInit{
         
       });
     }else{
+      //update
       const createQuestionCommand = new UpdateQuestionCommand({
         id: this.questionId,
         text: this.questionForm.get('text')?.value,
         type: this.questionForm.get('type')?.value,
         category: this.questionForm.get('category')?.value,
-        answers: this.convertAnswerArray() 
+        answers: this.convertAnswerArrayForUpdate() 
       });
       
+      console.log("HELP", createQuestionCommand);
       this.questionClient.update(createQuestionCommand).subscribe(response => {
         alert("You successfully updated the question with answers. ");
         
