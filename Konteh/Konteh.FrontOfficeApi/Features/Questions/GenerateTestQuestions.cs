@@ -1,13 +1,11 @@
-﻿using Konteh.Domain;
+﻿namespace Konteh.FrontOfficeApi.Features.Questions;
+using Konteh.Domain;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
 
-namespace Konteh.BackOfficeApi.Features.Questions;
-
-public static class GetAllQuestions
+public static class GenerateTestQuestions
 {
     public class Query : IRequest<IEnumerable<Response>>;
-
 
     public class Response
     {
@@ -17,9 +15,11 @@ public static class GetAllQuestions
 
     }
 
+
     public class RequestHandler : IRequestHandler<Query, IEnumerable<Response>>
     {
         private readonly IRepository<Question> _questionRepository;
+
         public RequestHandler(IRepository<Question> repository)
         {
             _questionRepository = repository;
@@ -27,7 +27,22 @@ public static class GetAllQuestions
 
         public async Task<IEnumerable<Response>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var questions = await _questionRepository.GetAll();
+            var categories = Enum.GetValues(typeof(QuestionCategory)).Cast<QuestionCategory>();
+
+            var questions = new List<Question>();
+
+            foreach (var category in categories)
+            {
+                var questionsByCategory = await _questionRepository.Search(q => q.Category == category);
+
+                var randomTwoQuestions = questionsByCategory
+                    .OrderBy(r => Guid.NewGuid()) 
+                    .Take(2)
+                    .ToList();
+
+                questions.AddRange(randomTwoQuestions);
+            }
+
             return questions.Select(q => new Response
             {
                 Id = q.Id,
@@ -36,4 +51,7 @@ public static class GetAllQuestions
             });
         }
     }
+
+
 }
+

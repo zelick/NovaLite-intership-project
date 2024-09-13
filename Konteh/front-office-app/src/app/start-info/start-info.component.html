@@ -1,0 +1,22 @@
+<!-- src/app/start-info/start-info.component.html -->
+<form [formGroup]="examForm" (ngSubmit)="onSubmit()">
+    <label for="email">Email:</label>
+    <input id="email" formControlName="email" type="email" />
+  
+    <label for="name">Name:</label>
+    <input id="name" formControlName="name" type="text" />
+  
+    <label for="surname">Surname:</label>
+    <input id="surname" formControlName="surname" type="text" />
+  
+    <button type="submit">Submit</button>
+  </form>
+  <div *ngIf="examQuestions.length > 0">
+    <h3>Exam Questions:</h3>
+    <ul>
+      <li *ngFor="let examQuestion of examQuestions">
+        {{ examQuestion.question?.text }}
+      </li>
+    </ul>
+  </div>
+  

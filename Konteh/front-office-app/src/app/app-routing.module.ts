@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { StartInfoComponent } from './start-info/start-info.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path:'',
+    component: StartInfoComponent
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
