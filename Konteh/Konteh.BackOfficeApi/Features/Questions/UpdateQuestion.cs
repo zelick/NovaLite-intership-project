@@ -61,11 +61,6 @@ public class UpdateQuestion
                     answersList.Add(existingAnswer);
                 }
             }
-
-            //// Remove any answers from the list that are not in the request
-            //var requestAnswerIds = request.Answers.Select(a => a.Id).ToList();
-            //answersList.RemoveAll(a => !requestAnswerIds.Contains(a.Id));
-
             existingQuestion.Answers = answersList;
 
             await _questionRepository.SaveChanges();

@@ -25,14 +25,14 @@ h6 {
 }
 
 .question-form-container {
-    width: 470px; 
+    width: 600px; 
     position: relative;
     padding-top: 15px;
     margin-top: 50px;
 }
 
 .answer-form-container {
-    width: 450px;
+    width: 570px;
     margin-top: 10px;
     padding: 15px;
 }
@@ -62,3 +62,14 @@ mat-card-actions {
     display: flex;
     justify-content: flex-end;
 }
+
+.status-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .status-icon {
+    margin-left: 8px; /* Adjust margin as needed */
+    font-size: 20px; /* Adjust font size if needed */
+  }
+  

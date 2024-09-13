@@ -14,6 +14,7 @@ export class QuestionFormComponent implements OnInit{
   questionType = QuestionType;
   questionCategory = QuestionCategory;
   questionId?: number;
+  isEditingQuestion: boolean = false;
   isEditing: boolean = false;
   editIndex?: number;
 
@@ -37,6 +38,7 @@ export class QuestionFormComponent implements OnInit{
       const paramId = param.get('id');
       if(paramId) {
         this.isEditing = true;
+        this.isEditingQuestion = true;
         this.questionId = Number(paramId)
         this.loadQuestionData(this.questionId);
       }
@@ -98,6 +100,9 @@ export class QuestionFormComponent implements OnInit{
       this.answersArray.at(this.editIndex!).patchValue(newAnswer); 
       this.editIndex = undefined;
       this.clearAnswerFormValues();
+      if(!this.isEditingQuestion){
+        this.isEditing = false;
+      }
     } 
   }
 
