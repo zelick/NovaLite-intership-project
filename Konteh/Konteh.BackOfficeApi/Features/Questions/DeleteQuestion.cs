@@ -29,12 +29,7 @@ namespace Konteh.BackOfficeApi.Features.Questions
                 {
                     throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
                 }
-
-                foreach (var answer in question.Answers)
-                {
-                    _answerRepository.Delete(answer);
-                }
-                
+                                
                 await _answerRepository.SaveChanges();
                 _questionRepository.Delete(question);
                 await _questionRepository.SaveChanges();

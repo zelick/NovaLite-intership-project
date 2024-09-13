@@ -7,4 +7,5 @@ public class Question
     public QuestionCategory Category { get; set; }
     public QuestionType Type { get; set; }
     public IEnumerable<Answer> Answers { get; set; } = new List<Answer>();
+    public bool IsDeleted { get; set; } = false;
 }

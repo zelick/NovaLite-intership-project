@@ -18,6 +18,8 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IQuestionClient {
     getAll(): Observable<GetAllQuestionsResponse[]>;
     delete(id: number): Observable<FileResponse>;
+    getAllPaged(page: number, pageSize: number): Observable<GetAllQuestionsResponse[]>;
+    search(text: string, page: number, pageSize: number): Observable<GetAllQuestionsResponse[]>;
 }
 
 @Injectable({
@@ -135,6 +137,131 @@ export class QuestionClient implements IQuestionClient {
                 fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             }
             return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllPaged(page: number, pageSize: number): Observable<GetAllQuestionsResponse[]> {
+        let url_ = this.baseUrl + "/api/questions/{page}&{pageSize}";
+        if (page === undefined || page === null)
+            throw new Error("The parameter 'page' must be defined.");
+        url_ = url_.replace("{page}", encodeURIComponent("" + page));
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined.");
+        url_ = url_.replace("{pageSize}", encodeURIComponent("" + pageSize));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPaged(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetAllQuestionsResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetAllQuestionsResponse[]>;
+        }));
+    }
+
+    protected processGetAllPaged(response: HttpResponseBase): Observable<GetAllQuestionsResponse[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetAllQuestionsResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    search(text: string, page: number, pageSize: number): Observable<GetAllQuestionsResponse[]> {
+        let url_ = this.baseUrl + "/api/questions/search/{text}&{page}&{pageSize}";
+        if (text === undefined || text === null)
+            throw new Error("The parameter 'text' must be defined.");
+        url_ = url_.replace("{text}", encodeURIComponent("" + text));
+        if (page === undefined || page === null)
+            throw new Error("The parameter 'page' must be defined.");
+        url_ = url_.replace("{page}", encodeURIComponent("" + page));
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined.");
+        url_ = url_.replace("{pageSize}", encodeURIComponent("" + pageSize));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetAllQuestionsResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetAllQuestionsResponse[]>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<GetAllQuestionsResponse[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetAllQuestionsResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);

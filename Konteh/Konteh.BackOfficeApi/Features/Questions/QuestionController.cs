@@ -37,4 +37,20 @@ public class QuestionController : Controller
         
         
     }
+
+    [HttpGet]
+    [Route("{page:int}&{pageSize:int}")]
+    public async Task<ActionResult<IEnumerable<GetAllQuestions.Response>>> GetAllPaged(int page, int pageSize)
+    {
+        var response = await _mediator.Send(new GetPagedQuestions.Query{ Page = page, PageSize = pageSize});
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("search/{text}&{page:int}&{pageSize:int}")]
+    public async Task<ActionResult<IEnumerable<GetAllQuestions.Response>>> Search(string text, int page, int pageSize)
+    {
+        var response = await _mediator.Send(new SearchQuestions.Query { Text = text, Page = page, PageSize = pageSize });
+        return Ok(response);
+    }
 }
