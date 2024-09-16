@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { QuestionFormComponent } from './question-form/question-form.component';
 
 const routes: Routes = [
-  {path: 'question-form', component: QuestionFormComponent},
-  {path: 'question-form/:id', component: QuestionFormComponent}
+  {path: 'questions/add', component: QuestionFormComponent},
+  {path: 'questions/:id', component: QuestionFormComponent}
 ];
 
 @NgModule({

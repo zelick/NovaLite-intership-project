@@ -65,12 +65,7 @@ public static class AddQuestion
 
         private async Task UpdateQuestion(Command request)
         {
-            var existingQuestion = new Question();
-
-            if (request.Id != null)
-            {
-                existingQuestion = await _questionRepository.GetById(request.Id.Value);
-            }
+            var existingQuestion = await _questionRepository.GetById(request.Id!.Value);
 
             if (existingQuestion == null)
             {
@@ -81,20 +76,18 @@ public static class AddQuestion
             existingQuestion.Type = request.Type;
             existingQuestion.Category = request.Category;
 
-            var answersList = existingQuestion.Answers.ToList();
 
             var requestAnswerIds = request.Answers.Select(a => a.Id).ToList(); ;
-            var answersToRemove = answersList.Where(a => !requestAnswerIds.Contains(a.Id)).ToList();
+            var answersToRemove = existingQuestion.Answers.Where(a => !requestAnswerIds.Contains(a.Id)).ToList();
             foreach (var answer in answersToRemove)
             {
                 _answerRepository.Delete(answer);
-                await _answerRepository.SaveChanges();
-                answersList.Remove(answer);
+                existingQuestion.Answers.Remove(answer);
             }
 
             foreach (var requestAnswer in request.Answers)
             {
-                var existingAnswer = answersList.FirstOrDefault(a => a.Id == requestAnswer.Id);
+                var existingAnswer = existingQuestion.Answers.SingleOrDefault(a => a.Id == requestAnswer.Id);
 
                 if (existingAnswer != null)
                 {
@@ -108,10 +101,9 @@ public static class AddQuestion
                         Text = requestAnswer.Text,
                         IsCorrect = requestAnswer.IsCorrect
                     };
-                    answersList.Add(newAnswer);
+                    existingQuestion.Answers.Add(newAnswer);
                 }
             }
-            existingQuestion.Answers = answersList;
             await _questionRepository.SaveChanges();
         }
     }

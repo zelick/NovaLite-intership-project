@@ -493,6 +493,7 @@ export class Answer implements IAnswer {
     id?: number;
     text?: string;
     isCorrect?: boolean;
+    isDeleted?: boolean;
 
     constructor(data?: IAnswer) {
         if (data) {
@@ -508,6 +509,7 @@ export class Answer implements IAnswer {
             this.id = _data["id"];
             this.text = _data["text"];
             this.isCorrect = _data["isCorrect"];
+            this.isDeleted = _data["isDeleted"];
         }
     }
 
@@ -523,6 +525,7 @@ export class Answer implements IAnswer {
         data["id"] = this.id;
         data["text"] = this.text;
         data["isCorrect"] = this.isCorrect;
+        data["isDeleted"] = this.isDeleted;
         return data;
     }
 }
@@ -531,6 +534,7 @@ export interface IAnswer {
     id?: number;
     text?: string;
     isCorrect?: boolean;
+    isDeleted?: boolean;
 }
 
 export interface FileResponse {
