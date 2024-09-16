@@ -28,14 +28,17 @@ public static class GenerateExam
         private readonly IRepository<ExamQuestion> _examQuestionRepository;
         private readonly IRepository<Exam> _examRepository;
         private readonly IRepository<Candidate> _candidateRepository;
+        private readonly IRandomNumberGenerator _random;
+
 
         public RequestHandler(IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository,
-                    IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository)
+                    IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository, IRandomNumberGenerator random)
         {
             _questionRepository = questionRepository;
             _examQuestionRepository = examQuestionRepository;
             _examRepository = examRepository;
             _candidateRepository = candidateRepository;
+            _random = random;
         }
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -43,8 +46,8 @@ public static class GenerateExam
             var candidate = await CheckIfCandidateHasTakenTest(request); 
 
             //TODO: Load info on number of questions
-            int numberOfQuestions = 2;
-            List<Question> questions = await GetQuestionsForExam(numberOfQuestions);
+            int numberOfQuestionsPerCategory = 2;
+            List<Question> questions = await GetQuestionsForExam(numberOfQuestionsPerCategory);
 
             var exam = new Exam
             {
@@ -91,10 +94,12 @@ public static class GenerateExam
                 Surname = request.Surname
             };
 
+            _candidateRepository.Add(candidate);
+
             return candidate;
         }
 
-        private async Task<List<Question>> GetQuestionsForExam(int numberOfQuestions)
+        private async Task<List<Question>> GetQuestionsForExam(int numberOfQuestionsPerCategory)
         {
             var categories = Enum.GetValues(typeof(QuestionCategory)).Cast<QuestionCategory>();
             var allQuestions = await _questionRepository.GetAll();
@@ -102,13 +107,20 @@ public static class GenerateExam
 
             foreach (var category in categories)
             {
-                var randomTwoQuestions = allQuestions
+                var randomQuestionsPerCategory = new List<Question>();
+                var allQuestionsFromCategory = allQuestions
                     .Where(x => x.Category == category)
-                    .OrderBy(r => Guid.NewGuid())
-                    .Take(numberOfQuestions)
                     .ToList();
 
-                questions.AddRange(randomTwoQuestions);
+
+                for(int i = 0; i < numberOfQuestionsPerCategory; i++)
+                {
+                    var randomQuestion = allQuestionsFromCategory[_random.Next(0, allQuestionsFromCategory.Count)];
+                    allQuestionsFromCategory.Remove(randomQuestion);
+                    randomQuestionsPerCategory.Add(randomQuestion);
+                }
+
+                questions.AddRange(randomQuestionsPerCategory);
             }
 
             return questions;

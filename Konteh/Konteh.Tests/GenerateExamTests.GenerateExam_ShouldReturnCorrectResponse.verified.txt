@@ -1,0 +1,64 @@
+﻿{
+  ExamQuestions: [
+    {
+      Question: {
+        Text: Question 1,
+        Category: Http
+      }
+    },
+    {
+      Question: {
+        Text: Question 2,
+        Category: Http
+      }
+    },
+    {
+      Question: {
+        Text: Question 9,
+        Category: Git
+      }
+    },
+    {
+      Question: {
+        Text: Question 10,
+        Category: Git
+      }
+    },
+    {
+      Question: {
+        Text: Question 7,
+        Category: Oop
+      }
+    },
+    {
+      Question: {
+        Text: Question 8,
+        Category: Oop
+      }
+    },
+    {
+      Question: {
+        Text: Question 5,
+        Category: Sql
+      }
+    },
+    {
+      Question: {
+        Text: Question 6,
+        Category: Sql
+      }
+    },
+    {
+      Question: {
+        Text: Question 3,
+        Category: CSharp
+      }
+    },
+    {
+      Question: {
+        Text: Question 4,
+        Category: CSharp
+      }
+    }
+  ]
+}

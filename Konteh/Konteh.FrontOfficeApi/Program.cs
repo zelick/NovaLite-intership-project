@@ -1,4 +1,5 @@
 using Konteh.Domain;
+using Konteh.FrontOfficeApi.Features.Exam;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
 builder.Services.AddScoped<IRepository<ExamQuestion>, ExamQuestionRepository>();
 builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
 builder.Services.AddScoped<IRepository<Candidate>, CandidateRepository>();
+builder.Services.AddScoped<IRandomNumberGenerator, RandomNumberGenerator>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
