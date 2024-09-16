@@ -23,17 +23,10 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateQuestion.Command command)
+    public async Task<IActionResult> Add(AddQuestion.Command command)
     {
         await _mediator.Send(command);
         return Ok();
-    }
-
-    [HttpPut]
-    public async Task<ActionResult<Question>> Update(UpdateQuestion.Command command)
-    {
-        var response = await _mediator.Send(command);
-        return Ok(response);
     }
 
     [HttpGet("{id:int}")]

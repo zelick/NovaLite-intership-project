@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
-public static class UpdateQuestion
+public static class AddQuestion
 {
-    public class Command : IRequest<Question>
+    public class Command : IRequest<Unit>
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Text { get; set; } = string.Empty;
         public QuestionType Type { get; set; }
         public QuestionCategory Category { get; set; }
@@ -17,12 +17,12 @@ public static class UpdateQuestion
 
     public class AnswerRequest
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Text { get; set; } = string.Empty;
         public bool IsCorrect { get; set; }
     }
 
-    public class RequestHandler : IRequestHandler<Command, Question>
+    public class RequestHandler : IRequestHandler<Command, Unit>
     {
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
@@ -33,10 +33,44 @@ public static class UpdateQuestion
             _answerRepository = answerRepository;
         }
 
-        public async Task<Question> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
+            if (!request.Id.HasValue)
+            {
+                await CreateQuestion(request);
+            }
+            else
+            {
+                await UpdateQuestion(request);
+            }
+            return Unit.Value;
+        }
 
-            var existingQuestion = await _questionRepository.GetById(request.Id);
+        private async Task CreateQuestion(Command request)
+        {
+            var newQuestion = new Question
+            {
+                Text = request.Text,
+                Type = request.Type,
+                Category = request.Category,
+                Answers = request.Answers.Select(a => new Answer
+                {
+                    Text = a.Text,
+                    IsCorrect = a.IsCorrect
+                }).ToList()
+            };
+            _questionRepository.Add(newQuestion);
+            await _questionRepository.SaveChanges();
+        }
+
+        private async Task UpdateQuestion(Command request)
+        {
+            var existingQuestion = new Question();
+
+            if (request.Id != null)
+            {
+                existingQuestion = await _questionRepository.GetById(request.Id.Value);
+            }
 
             if (existingQuestion == null)
             {
@@ -78,10 +112,8 @@ public static class UpdateQuestion
                 }
             }
             existingQuestion.Answers = answersList;
-
             await _questionRepository.SaveChanges();
-
-            return existingQuestion;
         }
     }
+
 }
