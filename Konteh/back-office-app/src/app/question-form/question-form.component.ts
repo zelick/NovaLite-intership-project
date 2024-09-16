@@ -16,6 +16,7 @@ export class QuestionFormComponent implements OnInit{
   questionId?: number;
   isEditingQuestion: boolean = false;
   isEditing: boolean = false;
+  isEditingAnswer: boolean = false;
   editIndex?: number;
 
   constructor(
@@ -37,8 +38,9 @@ export class QuestionFormComponent implements OnInit{
     this.route.paramMap.subscribe(param =>{
       const paramId = param.get('id');
       if(paramId) {
-        this.isEditing = true;
+        this.isEditing = true; //throw out maybe
         this.isEditingQuestion = true;
+        this.isEditingAnswer = false;
         this.questionId = Number(paramId)
         this.loadQuestionData(this.questionId);
       }
@@ -100,9 +102,10 @@ export class QuestionFormComponent implements OnInit{
       this.answersArray.at(this.editIndex!).patchValue(newAnswer); 
       this.editIndex = undefined;
       this.clearAnswerFormValues();
-      if(!this.isEditingQuestion){
-        this.isEditing = false;
-      }
+      this.isEditingAnswer = false;
+      // if(!this.isEditingQuestion){
+      //   this.isEditing = false;
+      // }
     } 
   }
 
@@ -122,6 +125,7 @@ export class QuestionFormComponent implements OnInit{
       isCorrect: answer.isCorrect
     });
     this.isEditing = true;
+    this.isEditingAnswer = true;
     this.editIndex = index;
   }
 

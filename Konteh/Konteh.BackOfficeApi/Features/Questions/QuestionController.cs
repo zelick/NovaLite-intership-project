@@ -23,10 +23,10 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create(CreateQuestion.Command command)
+    public async Task<IActionResult> Create(CreateQuestion.Command command)
     {
-        var response = await _mediator.Send(command);
-        return Ok(response);
+        await _mediator.Send(command);
+        return Ok();
     }
 
     [HttpPut]
@@ -36,12 +36,13 @@ public class QuestionController : Controller
         return Ok(response);
     }
 
-    [HttpGet]
-    [Route("{id:int}")]
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Question), StatusCodes.Status200OK)]
     public async Task<ActionResult<Question>> GetQuestionById(int id)
     {
         var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
-        return Ok(response);
+        return response == null ? NotFound() : Ok(response);
     }
 
 }

@@ -47,7 +47,16 @@ public class UpdateQuestion
             existingQuestion.Type = request.Type;
             existingQuestion.Category = request.Category;
 
-            List<Answer> answersList = existingQuestion.Answers.ToList();
+            var answersList = existingQuestion.Answers.ToList();
+
+            var requestAnswerIds = request.Answers.Select(a => a.Id).ToList(); ;
+            var answersToRemove = answersList.Where(a => !requestAnswerIds.Contains(a.Id)).ToList();
+            foreach (var answer in answersToRemove)
+            {
+                _answerRepository.Delete(answer);
+                await _answerRepository.SaveChanges();
+                answersList.Remove(answer);
+            }
 
             foreach (var requestAnswer in request.Answers)
             {
@@ -57,8 +66,15 @@ public class UpdateQuestion
                 {
                     existingAnswer.Text = requestAnswer.Text;
                     existingAnswer.IsCorrect = requestAnswer.IsCorrect;
-                    answersList.RemoveAll(a => a.Id == existingAnswer.Id);
-                    answersList.Add(existingAnswer);
+                }
+                else
+                {
+                    var newAnswer = new Answer
+                    {
+                        Text = requestAnswer.Text,
+                        IsCorrect = requestAnswer.IsCorrect
+                    };
+                    answersList.Add(newAnswer);
                 }
             }
             existingQuestion.Answers = answersList;

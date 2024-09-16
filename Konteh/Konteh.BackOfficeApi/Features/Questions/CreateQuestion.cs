@@ -6,7 +6,7 @@ using MediatR;
 
 public static class CreateQuestion
 {
-    public class Command : IRequest<int>
+    public class Command : IRequest<Unit>
     {
         public string Text { get; set; } = string.Empty;
         public QuestionType Type { get; set; }
@@ -20,7 +20,7 @@ public static class CreateQuestion
         public bool IsCorrect { get; set; }
     }
 
-    public class RequestHandler : IRequestHandler<Command, int>
+    public class RequestHandler : IRequestHandler<Command, Unit>
     {
         private readonly IRepository<Question> _questionRepository;
 
@@ -29,7 +29,7 @@ public static class CreateQuestion
             _questionRepository = questionRepository;
         }
 
-        public async Task<int> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
             var newQuestion = new Question
             {
@@ -43,7 +43,8 @@ public static class CreateQuestion
             };
             _questionRepository.Add(newQuestion);
             await _questionRepository.SaveChanges();
-            return newQuestion.Id;
+
+            return Unit.Value;
         }
     }
 

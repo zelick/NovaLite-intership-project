@@ -55,8 +55,8 @@
           <textarea matInput formControlName="answerText"></textarea>
         </mat-form-field>
 
-        <button mat-raised-button (click)="createAnswer()" type="button" *ngIf="!isEditing">ADD</button>
-        <button mat-raised-button (click)="onEditAnswerFormClick()" type="button" *ngIf="isEditing">EDIT</button>
+        <button mat-raised-button (click)="createAnswer()" type="button" *ngIf="!isEditingAnswer">ADD</button>
+        <button mat-raised-button (click)="onEditAnswerFormClick()" type="button" *ngIf="isEditingAnswer">EDIT</button>
 
         <!-- answers as cards -->
         <div formArrayName="answers">
