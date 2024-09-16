@@ -6,7 +6,7 @@ using Konteh.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
 
-public class GenerateExam
+public static class GenerateExam
 {
     public class Query : IRequest<Response>
     {

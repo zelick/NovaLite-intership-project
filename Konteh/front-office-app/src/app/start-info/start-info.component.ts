@@ -31,10 +31,10 @@ export class StartInfoComponent {
       this.examClient.createExam(query).subscribe({
         next: (response: GenerateExamResponse) => {
           this.examQuestions = response.examQuestions || []; // Ensure correct type
-          console.log('Exam questions:', this.examQuestions);
+          
         },
         error: (err) => {
-          console.error('Error creating exam:', err);
+          
         }
       });
     }
