@@ -40,20 +40,30 @@ public static class SearchQuestions
 
         public async Task<SearchResponse> Handle(Query request, CancellationToken cancellationToken)
         {
-            var questions = new Tuple<IEnumerable<Question>,int>(new List<Question>(), 0);
-            if (request.Text.IsNullOrEmpty())           
-                 questions = _questionsRepository.SearchAndPaged(a => !a.IsDeleted, request.Page, request.PageSize);
+            var questions = new List<Question>();
+            int length = 0;
+            if (string.IsNullOrEmpty(request.Text))
+            {
+                var query = await _questionsRepository.Search(a => !a.IsDeleted);
+                length = query.Count();
+                questions = query.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
+            }
             else
-                questions = _questionsRepository.SearchAndPaged(a => a.Text.Contains(request.Text) && !a.IsDeleted, request.Page, request.PageSize);
+            {
+                var query = await _questionsRepository.Search(a => !a.IsDeleted && a.Text.Contains(request.Text));
+                length = query.Count();
+                questions = query.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
+            }
+                
 
-            var resposnes = questions.Item1.Select(q => new Response
+            var resposnes = questions.Select(q => new Response
             {
                 Id = q.Id,
                 Text = q.Text,
                 Category = q.Category,
                 Type = q.Type,
             });
-            return new SearchResponse { Questions = resposnes, Length = questions.Item2};
+            return new SearchResponse { Questions = resposnes, Length = length};
         }
     }
 }

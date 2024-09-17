@@ -15,55 +15,36 @@ export class QuestionsTableComponent{
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   searchControl = new FormControl('');
   pageIndex : number = 0;
-  pageSize : number = 5;
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
+  pageSize : number = 0;
+  length : number = 0;
   displayedColumns = ['category', 'type', 'text', 'edit'];
 
   dataSource: any;
   questionList !: SearchQuestionsResponse[];
 
   constructor(private client: QuestionClient) {
-    this.loadQuestions();
+    this.pageSize = 5;
+    this.search(0);
   }
 
   ngOnInit() {
     this.searchControl.valueChanges
       .pipe(debounceTime(500))
-      .subscribe(value => {
-        let query = new SearchQuestionsQuery({
-          text: value ?? undefined,
-          page: this.pageIndex,
-          pageSize: this.pageSize
-        });        
-        this.client.search(query).subscribe(res => {
-          this.questionList = res.questions === undefined ? [] : res.questions;
-          this.paginator.length = res.length === undefined ? 0 : res.length;
-          this.paginator.pageIndex = 0;
-          this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
-        })
+      .subscribe(() => {
+        this.search(0);
       })
-  }
-
-  loadQuestions() {
-    this.client.getAll().subscribe(res => {
-      this.questionList = res;
-      this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
-      this.dataSource.paginator = this.paginator;
-      this.paginator.pageIndex = 0;
-    })
-
   }
 
   deleteQuestion(id: number) {
     this.client.delete(id).subscribe(res => {
-      this.loadQuestions();
+      this.search(this.pageIndex);
     })
   }
-  editQuestion(name: string) {
-    alert(name)
+  editQuestion(id: number) {
+    alert(id)
   }
 
-  writeQuestionCategory(val: QuestionCategory): string {
+  getQuestionCategoryName(val: QuestionCategory): string {
     switch (val) {
       case QuestionCategory.Http:
         return "Http";
@@ -77,25 +58,30 @@ export class QuestionsTableComponent{
         return "SQL";
     }
   }
-  writeQuestionType(val: QuestionType) {
+  getQuestionTypeName (val: QuestionType) {
     if (val === QuestionType.RadioButton)
       return "Radio button"
     else
       return "Checkbox"
   }
 
-  handlePageEvent(e: PageEvent) {
+  search(page:number){
     let query = new SearchQuestionsQuery({
       text: this.searchControl.value ?? undefined,
-      page: e.pageIndex,
-      pageSize: e.pageSize
-    });
-    this.pageSize = e.pageSize;
+      page: page,
+      pageSize: this.pageSize
+    });        
     this.client.search(query).subscribe(res => {
       this.questionList = res.questions === undefined ? [] : res.questions;
-      this.paginator.length = res.length === undefined ? 0 : res.length;
+      this.length = res.length === undefined ? 0 : res.length;
+      this.pageIndex = page;
       this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
     })
+  }
+  handlePageEvent(e: PageEvent) {
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    this.search(e.pageIndex);
   }
 }
 

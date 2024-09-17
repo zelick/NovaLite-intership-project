@@ -27,21 +27,12 @@ public class QuestionController : Controller
     [Route("{id:int}")]
     public async Task<ActionResult> Delete(int id) 
     {
-        try
-        {
-            await _mediator.Send(new DeleteQuestion.Command { Id = id });
-            return Ok();
-        }
-        catch(KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        
-        
-    }
+        await _mediator.Send(new DeleteQuestion.Command { Id = id });
+        return Ok(); 
+}
 
     [HttpPut]
-    [Route("search/")]
+    [Route("search")]
     public async Task<ActionResult<SearchQuestions.SearchResponse>> Search(SearchQuestions.Query request)
     {
         var response = await _mediator.Send(request);

@@ -373,3 +373,4 @@ modules/.vscode
 *.js
 *.map
 *.tsbuildinfo
+_metadata.json

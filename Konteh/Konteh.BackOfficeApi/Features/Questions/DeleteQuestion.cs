@@ -11,26 +11,22 @@ public static class DeleteQuestion
     {
         public int Id { get; set; }
     }
-    public class CommandHandler : IRequestHandler<Command>
+    public class RequestHandler : IRequestHandler<Command>
     {
         private readonly IRepository<Question> _questionRepository;
-        private readonly IRepository<Answer> _answerRepository;
-        public CommandHandler(IRepository<Question> repository, IRepository<Answer> answerRepository)
+        public RequestHandler(IRepository<Question> repository)
         {
             _questionRepository = repository;
-            _answerRepository = answerRepository;
         }
 
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
-            Question question = await _questionRepository.GetById(request.Id);
+            var question = await _questionRepository.GetById(request.Id);
 
             if (question == null)
             {
                 throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
             }
-                            
-            await _answerRepository.SaveChanges();
             _questionRepository.Delete(question);
             await _questionRepository.SaveChanges();
         }

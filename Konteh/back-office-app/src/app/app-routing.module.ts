@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { QuestionsOverviewComponent } from './questions-overview/questions-overview.component';
+import { QuestionsTableComponent } from './questions-table/questions-table.component';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   { 
     path: 'questions', 
-    component: QuestionsOverviewComponent
+    component: QuestionsTableComponent
   }
   
 ];

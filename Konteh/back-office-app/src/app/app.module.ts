@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { QuestionsOverviewComponent } from './questions-overview/questions-overview.component';
 import { QuestionsTableComponent } from './questions-table/questions-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -32,7 +31,6 @@ import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
-    QuestionsOverviewComponent,
     QuestionsTableComponent,
     NavbarComponent,
     HomeComponent,
