@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -15,19 +14,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FormErrorsComponent } from './shared/form-errors/form-errors.component';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
 
 import {
   MsalModule,
   MsalRedirectComponent,
   MsalInterceptor,
+} from "@azure/msal-angular";
+
+import {
   InteractionType,
   PublicClientApplication,
-} from "@azure/msal-angular";
+} from "@azure/msal-browser";
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -38,10 +36,11 @@ import { environment } from '../environments/environment';
   declarations: [
     AppComponent,
     QuestionFormComponent,
-    FormErrorsComponent
+    FormErrorsComponent,
+    NavbarComponent,
+    HomeComponent
   ],
   imports: [
-    BrowserModule,
     FormsModule,
     HttpClientModule, 
     ReactiveFormsModule,
@@ -53,10 +52,6 @@ import { environment } from '../environments/environment';
     MatIconModule, 
     MatButtonModule,
     MatCardModule,
-    NavbarComponent,
-    HomeComponent,
-  ],
-  imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,

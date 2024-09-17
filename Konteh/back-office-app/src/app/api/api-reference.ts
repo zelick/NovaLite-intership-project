@@ -46,7 +46,6 @@ export class QuestionClient implements IQuestionClient {
             })
         };
 
-
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetAll(response_);
         })).pipe(_observableCatch((response_: any) => {
@@ -378,7 +377,7 @@ export interface IHttpValidationProblemDetails extends IProblemDetails {
 }
 
 export class ValidationProblemDetails extends HttpValidationProblemDetails implements IValidationProblemDetails {
-    errors?: { [key: string]: string[]; };
+    declare errors?: { [key: string]: string[]; }; //added DECLARE - AFTER MERGE
 
     [key: string]: any;
 

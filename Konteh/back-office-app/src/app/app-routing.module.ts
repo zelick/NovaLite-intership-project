@@ -5,18 +5,14 @@ import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
 
-const routes: Routes = [
-  {path: 'questions/add', component: QuestionFormComponent},
-  {path: 'questions/:id', component: QuestionFormComponent}
-];
-
-
 
 const routes: Routes = [
   {
     path:'',
     component: HomeComponent
-  }
+  },
+  {path: 'questions/add', component: QuestionFormComponent},
+  {path: 'questions/:id', component: QuestionFormComponent}
   
 ];
 
