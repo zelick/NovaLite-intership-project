@@ -10,6 +10,7 @@ const routes: Routes = [
     path:'',
     component: HomeComponent
   },
+
   { 
     path: 'questions', 
     component: QuestionsTableComponent
