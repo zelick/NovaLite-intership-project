@@ -23,6 +23,8 @@ public class QuestionController : Controller
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Add(AddQuestion.Command command)
     {
         await _mediator.Send(command);
@@ -35,7 +37,7 @@ public class QuestionController : Controller
     public async Task<ActionResult<Question>> GetQuestionById(int id)
     {
         var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
-        return response == null ? NotFound() : Ok(response);
+        return Ok(response);
     }
 
 }

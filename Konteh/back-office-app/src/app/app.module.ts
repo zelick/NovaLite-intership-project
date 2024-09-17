@@ -15,11 +15,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { FormErrorsComponent } from './shared/form-errors/form-errors.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    QuestionFormComponent
+    QuestionFormComponent,
+    FormErrorsComponent
   ],
   imports: [
     BrowserModule,

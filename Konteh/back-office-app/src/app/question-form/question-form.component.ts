@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { AddQuestionAnswerRequest, AddQuestionCommand, QuestionCategory, QuestionClient, QuestionType } from '../api/api-reference';
 import { ActivatedRoute } from '@angular/router';
+import { setServerSideValidationErrors } from '../validation';
 
 @Component({
   selector: 'app-question-form',
@@ -146,6 +147,10 @@ export class QuestionFormComponent implements OnInit {
     });
 
 
+    this.questionClient.add(createQuestionCommand).subscribe({
+      next: _ => this.clearForm(),
+      error: errors => setServerSideValidationErrors(errors, this.questionForm)
+    })
     this.questionClient.add(createQuestionCommand).subscribe(_ => {
       alert("You successfully created the question with answers. ");
       this.clearForm();

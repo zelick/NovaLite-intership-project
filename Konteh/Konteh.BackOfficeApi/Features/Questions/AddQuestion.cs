@@ -1,4 +1,6 @@
-﻿using Konteh.Domain;
+﻿using FluentValidation;
+using Konteh.Domain;
+using Konteh.Infrastructure.Exceptions;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
 
@@ -26,6 +28,7 @@ public static class AddQuestion
     {
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
+
 
         public RequestHandler(IRepository<Question> questionRepository, IRepository<Answer> answerRepository)
         {
@@ -65,13 +68,7 @@ public static class AddQuestion
 
         private async Task UpdateQuestion(Command request)
         {
-            var existingQuestion = await _questionRepository.GetById(request.Id!.Value);
-
-            if (existingQuestion == null)
-            {
-                throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
-            }
-
+            var existingQuestion = await _questionRepository.GetById(request.Id!.Value) ?? throw new NotFoundException();
             existingQuestion.Text = request.Text;
             existingQuestion.Type = request.Type;
             existingQuestion.Category = request.Category;
