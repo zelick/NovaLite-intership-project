@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
-public static class AddQuestion
+public static class CreateOrUpdateQuestion
 {
     public class Command : IRequest<Unit>
     {
@@ -84,24 +84,21 @@ public static class AddQuestion
 
             foreach (var requestAnswer in request.Answers)
             {
-                if (requestAnswer.Id != null)
-                {
-                    var existingAnswer = existingQuestion.Answers.SingleOrDefault(a => a.Id == requestAnswer.Id);
+                var existingAnswer = existingQuestion.Answers.SingleOrDefault(a => a.Id == requestAnswer.Id);
 
-                    if (existingAnswer != null)
+                if (existingAnswer != null)
+                {
+                    existingAnswer.Text = requestAnswer.Text;
+                    existingAnswer.IsCorrect = requestAnswer.IsCorrect;
+                }
+                else
+                {
+                    var newAnswer = new Answer
                     {
-                        existingAnswer.Text = requestAnswer.Text;
-                        existingAnswer.IsCorrect = requestAnswer.IsCorrect;
-                    }
-                    else
-                    {
-                        var newAnswer = new Answer
-                        {
-                            Text = requestAnswer.Text,
-                            IsCorrect = requestAnswer.IsCorrect
-                        };
-                        existingQuestion.Answers.Add(newAnswer);
-                    }
+                        Text = requestAnswer.Text,
+                        IsCorrect = requestAnswer.IsCorrect
+                    };
+                    existingQuestion.Answers.Add(newAnswer);
                 }
             }
             await _questionRepository.SaveChanges();

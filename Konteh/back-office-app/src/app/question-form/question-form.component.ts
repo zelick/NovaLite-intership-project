@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { AddQuestionAnswerRequest, AddQuestionCommand, QuestionCategory, QuestionClient, QuestionType } from '../api/api-reference';
 import { ActivatedRoute } from '@angular/router';
 import { setServerSideValidationErrors } from '../validation';
+import { QuestionType, QuestionCategory, QuestionClient, CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionCommand } from '../api/api-reference';
 
 @Component({
   selector: 'app-question-form',
@@ -82,7 +82,7 @@ export class QuestionFormComponent implements OnInit {
     return this.questionForm.get('answers') as FormArray;
   }
 
-  createAnswerGroup(answer: AddQuestionAnswerRequest): FormGroup {
+  createAnswerGroup(answer: CreateOrUpdateQuestionAnswerRequest): FormGroup {
     return new FormGroup({
       text: new FormControl(answer.text, { validators: Validators.required, nonNullable: true }),
       isCorrect: new FormControl(answer.isCorrect, { nonNullable: true })
@@ -90,7 +90,7 @@ export class QuestionFormComponent implements OnInit {
   }
 
   createAnswer() {
-    const newAnswer = new AddQuestionAnswerRequest({
+    const newAnswer = new CreateOrUpdateQuestionAnswerRequest({
       text: this.questionForm.get('answerText')?.value,
       isCorrect: this.questionForm.get('isCorrect')?.value
     });
@@ -99,7 +99,7 @@ export class QuestionFormComponent implements OnInit {
   }
 
   onEditAnswerFormClick() {
-    const newAnswer = new AddQuestionAnswerRequest({
+    const newAnswer = new CreateOrUpdateQuestionAnswerRequest({
       text: this.questionForm.get('answerText')?.value,
       isCorrect: this.questionForm.get('isCorrect')?.value
     });
@@ -133,9 +133,9 @@ export class QuestionFormComponent implements OnInit {
     });
   }
 
-  convertAnswerArray(): AddQuestionAnswerRequest[] {
+  convertAnswerArray(): CreateOrUpdateQuestionAnswerRequest[] {
     return this.answersArray.controls.map(control =>
-      new AddQuestionAnswerRequest(control.value)
+      new CreateOrUpdateQuestionAnswerRequest(control.value)
     );
   }
 
@@ -153,7 +153,7 @@ export class QuestionFormComponent implements OnInit {
       return;
     }
 
-    const createQuestionCommand = new AddQuestionCommand({
+    const createQuestionCommand = new CreateOrUpdateQuestionCommand({
       id: this.questionId,
       text: this.questionForm.get('text')?.value,
       type: this.questionForm.get('type')?.value,
@@ -162,14 +162,10 @@ export class QuestionFormComponent implements OnInit {
     });
 
 
-    this.questionClient.add(createQuestionCommand).subscribe({
+    this.questionClient.createOrUpdate(createQuestionCommand).subscribe({
       next: _ => this.clearForm(),
       error: errors => setServerSideValidationErrors(errors, this.questionForm)
     })
-    this.questionClient.add(createQuestionCommand).subscribe(_ => {
-      alert("You successfully created the question with answers. ");
-      this.clearForm();
-    });
   }
 
   clearForm() {

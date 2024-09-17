@@ -27,7 +27,7 @@ public class QuestionController : Controller
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Add(AddQuestion.Command command)
+    public async Task<IActionResult> CreateOrUpdate(CreateOrUpdateQuestion.Command command)
     {
         await _mediator.Send(command);
         return Ok();

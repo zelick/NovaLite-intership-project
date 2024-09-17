@@ -3,7 +3,7 @@ using Konteh.Domain;
 
 namespace Konteh.BackOfficeApi.Features.Questions.Validators;
 
-public class AddQuestionValidator : AbstractValidator<AddQuestion.Command>
+public class AddQuestionValidator : AbstractValidator<CreateOrUpdateQuestion.Command>
 {
     public AddQuestionValidator()
     {
@@ -23,11 +23,11 @@ public class AddQuestionValidator : AbstractValidator<AddQuestion.Command>
         RuleForEach(x => x.Answers)
                .SetValidator(new AnswerValidator());
     }
-    private bool HaveExactlyOneCorrectAnswer(AddQuestion.Command command)
+    private bool HaveExactlyOneCorrectAnswer(CreateOrUpdateQuestion.Command command)
     {
         return command.Answers.Count(a => a.IsCorrect) == 1;
     }
-    private bool HaveAtLeastTwoCorrectAnswers(AddQuestion.Command command)
+    private bool HaveAtLeastTwoCorrectAnswers(CreateOrUpdateQuestion.Command command)
     {
         return command.Answers.Count(a => a.IsCorrect) >= 2;
     }

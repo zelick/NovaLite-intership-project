@@ -17,7 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IQuestionClient {
     getAll(): Observable<GetAllQuestionsResponse[]>;
-    add(command: AddQuestionCommand): Observable<void>;
+    createOrUpdate(command: CreateOrUpdateQuestionCommand): Observable<void>;
     getQuestionById(id: number): Observable<Question>;
 }
 
@@ -89,7 +89,7 @@ export class QuestionClient implements IQuestionClient {
         return _observableOf(null as any);
     }
 
-    add(command: AddQuestionCommand): Observable<void> {
+    createOrUpdate(command: CreateOrUpdateQuestionCommand): Observable<void> {
         let url_ = this.baseUrl + "/api/questions";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -105,11 +105,11 @@ export class QuestionClient implements IQuestionClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAdd(response_);
+            return this.processCreateOrUpdate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAdd(response_ as any);
+                    return this.processCreateOrUpdate(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -118,7 +118,7 @@ export class QuestionClient implements IQuestionClient {
         }));
     }
 
-    protected processAdd(response: HttpResponseBase): Observable<void> {
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -433,14 +433,14 @@ export interface IValidationProblemDetails extends IHttpValidationProblemDetails
     [key: string]: any;
 }
 
-export class AddQuestionCommand implements IAddQuestionCommand {
+export class CreateOrUpdateQuestionCommand implements ICreateOrUpdateQuestionCommand {
     id?: number | undefined;
     text?: string;
     type?: QuestionType;
     category?: QuestionCategory;
-    answers?: AddQuestionAnswerRequest[];
+    answers?: CreateOrUpdateQuestionAnswerRequest[];
 
-    constructor(data?: IAddQuestionCommand) {
+    constructor(data?: ICreateOrUpdateQuestionCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -458,14 +458,14 @@ export class AddQuestionCommand implements IAddQuestionCommand {
             if (Array.isArray(_data["answers"])) {
                 this.answers = [] as any;
                 for (let item of _data["answers"])
-                    this.answers!.push(AddQuestionAnswerRequest.fromJS(item));
+                    this.answers!.push(CreateOrUpdateQuestionAnswerRequest.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): AddQuestionCommand {
+    static fromJS(data: any): CreateOrUpdateQuestionCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new AddQuestionCommand();
+        let result = new CreateOrUpdateQuestionCommand();
         result.init(data);
         return result;
     }
@@ -485,12 +485,12 @@ export class AddQuestionCommand implements IAddQuestionCommand {
     }
 }
 
-export interface IAddQuestionCommand {
+export interface ICreateOrUpdateQuestionCommand {
     id?: number | undefined;
     text?: string;
     type?: QuestionType;
     category?: QuestionCategory;
-    answers?: AddQuestionAnswerRequest[];
+    answers?: CreateOrUpdateQuestionAnswerRequest[];
 }
 
 export enum QuestionType {
@@ -498,12 +498,12 @@ export enum QuestionType {
     Checkbox = 2,
 }
 
-export class AddQuestionAnswerRequest implements IAddQuestionAnswerRequest {
+export class CreateOrUpdateQuestionAnswerRequest implements ICreateOrUpdateQuestionAnswerRequest {
     id?: number | undefined;
     text?: string;
     isCorrect?: boolean;
 
-    constructor(data?: IAddQuestionAnswerRequest) {
+    constructor(data?: ICreateOrUpdateQuestionAnswerRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -520,9 +520,9 @@ export class AddQuestionAnswerRequest implements IAddQuestionAnswerRequest {
         }
     }
 
-    static fromJS(data: any): AddQuestionAnswerRequest {
+    static fromJS(data: any): CreateOrUpdateQuestionAnswerRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new AddQuestionAnswerRequest();
+        let result = new CreateOrUpdateQuestionAnswerRequest();
         result.init(data);
         return result;
     }
@@ -536,7 +536,7 @@ export class AddQuestionAnswerRequest implements IAddQuestionAnswerRequest {
     }
 }
 
-export interface IAddQuestionAnswerRequest {
+export interface ICreateOrUpdateQuestionAnswerRequest {
     id?: number | undefined;
     text?: string;
     isCorrect?: boolean;

@@ -2,7 +2,7 @@
 
 namespace Konteh.BackOfficeApi.Features.Questions.Validators;
 
-public class AnswerValidator : AbstractValidator<AddQuestion.AnswerRequest>
+public class AnswerValidator : AbstractValidator<CreateOrUpdateQuestion.AnswerRequest>
 {
     public AnswerValidator()
     {
