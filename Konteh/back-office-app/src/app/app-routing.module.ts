@@ -22,7 +22,6 @@ const isIframe = window !== window.parent && !window.opener;
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      // Don't perform initial navigation in iframes or popups
       initialNavigation:
         !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
           ? "enabledNonBlocking"

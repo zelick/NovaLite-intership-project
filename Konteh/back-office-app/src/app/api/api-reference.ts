@@ -377,7 +377,7 @@ export interface IHttpValidationProblemDetails extends IProblemDetails {
 }
 
 export class ValidationProblemDetails extends HttpValidationProblemDetails implements IValidationProblemDetails {
-    declare errors?: { [key: string]: string[]; }; //added DECLARE - AFTER MERGE
+    errors?: { [key: string]: string[]; };
 
     [key: string]: any;
 

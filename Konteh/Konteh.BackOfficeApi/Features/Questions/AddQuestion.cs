@@ -84,21 +84,24 @@ public static class AddQuestion
 
             foreach (var requestAnswer in request.Answers)
             {
-                var existingAnswer = existingQuestion.Answers.SingleOrDefault(a => a.Id == requestAnswer.Id);
+                if (requestAnswer.Id != null)
+                {
+                    var existingAnswer = existingQuestion.Answers.SingleOrDefault(a => a.Id == requestAnswer.Id);
 
-                if (existingAnswer != null)
-                {
-                    existingAnswer.Text = requestAnswer.Text;
-                    existingAnswer.IsCorrect = requestAnswer.IsCorrect;
-                }
-                else
-                {
-                    var newAnswer = new Answer
+                    if (existingAnswer != null)
                     {
-                        Text = requestAnswer.Text,
-                        IsCorrect = requestAnswer.IsCorrect
-                    };
-                    existingQuestion.Answers.Add(newAnswer);
+                        existingAnswer.Text = requestAnswer.Text;
+                        existingAnswer.IsCorrect = requestAnswer.IsCorrect;
+                    }
+                    else
+                    {
+                        var newAnswer = new Answer
+                        {
+                            Text = requestAnswer.Text,
+                            IsCorrect = requestAnswer.IsCorrect
+                        };
+                        existingQuestion.Answers.Add(newAnswer);
+                    }
                 }
             }
             await _questionRepository.SaveChanges();

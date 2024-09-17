@@ -413,6 +413,10 @@ Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-OCPREDXM.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-OCPREDXM.js.map
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-UXXSI3DX.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-UXXSI3DX.js.map
+
+.angular/
+dist/
+
 *.js
 *.map
 *.tsbuildinfo

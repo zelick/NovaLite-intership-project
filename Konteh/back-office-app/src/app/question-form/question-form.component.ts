@@ -62,7 +62,22 @@ export class QuestionFormComponent implements OnInit {
     });
   }
 
-  //Define the answersArray getter to access the FormArray from the questionForm
+  get questionTypeOptions() {
+    return Object.keys(this.questionType).filter(key => isNaN(Number(key)));
+  }
+
+  get questionCategoryOptions() {
+    return Object.keys(this.questionCategory).filter(key => isNaN(Number(key)));
+  }
+
+  getEnumValueForType(type: string): QuestionType {
+    return this.questionType[type as keyof typeof QuestionType];
+  }
+  
+  getEnumValueForCategory(category: string): QuestionCategory {
+    return this.questionCategory[category as keyof typeof QuestionCategory];
+  }
+  
   get answersArray(): FormArray {
     return this.questionForm.get('answers') as FormArray;
   }

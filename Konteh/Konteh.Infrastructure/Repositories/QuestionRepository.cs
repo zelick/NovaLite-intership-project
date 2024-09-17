@@ -8,5 +8,5 @@ public class QuestionRepository : BaseRepository<Question>
     {
     }
 
-    public override async Task<Question?> GetById(int id) => await _dbSet.Include(x => x.Answers).SingleOrDefaultAsync(x => x.Id == id);
+    public override async Task<Question?> GetById(int id) => await _dbSet.Include(x => x.Answers.Where(a => !a.IsDeleted)).SingleOrDefaultAsync(x => x.Id == id);
 }

@@ -12,14 +12,13 @@
       <h6 *ngIf="!isEditingQuestion">CREATE QUESTION</h6>
       <h6 *ngIf="isEditingQuestion">EDIT QUESTION</h6>
 
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-label>TYPE</mat-label>
         <mat-select formControlName="type">
           <mat-option [value]="questionType.RadioButton">RADIO BUTTONS</mat-option>
           <mat-option [value]="questionType.Checkbox">CHECKBOX</mat-option>
         </mat-select>
       </mat-form-field>
-
 
       <mat-form-field>
         <mat-label>CATEGORY</mat-label>
@@ -29,6 +28,24 @@
           <mat-option [value]="questionCategory.Http">HTTP</mat-option>
           <mat-option [value]="questionCategory.Sql">SQL</mat-option>
           <mat-option [value]="questionCategory.Git">GIT</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-label>TYPE</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of questionTypeOptions" [value]="getEnumValueForType(type)">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field>
+        <mat-label>CATEGORY</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let category of questionCategoryOptions" [value]="getEnumValueForCategory(category)">
+            {{ category }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 

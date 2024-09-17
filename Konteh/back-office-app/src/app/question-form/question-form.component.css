@@ -1,12 +1,9 @@
 .main-form {
     display: flex;
     justify-content: space-between;
-    /* width: 100%; */
-    /* height: 100vh; */
     padding: 5px;
     margin: 0;
     font-family: Arial, sans-serif;
-    /* background-color: #FCF55F; */
     background-color: white;
 }
 
@@ -16,7 +13,7 @@
     width: 100%;
     height: calc(100vh - 100px); 
     padding: 20px;
-    box-sizing: border-box; /*sta znaci ovo*/
+    box-sizing: border-box; 
 }
 
 
@@ -29,17 +26,14 @@ h6 {
     letter-spacing: 1px;
 }
 
-
-/* General page styling */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    /* background-color: #FCF55F;  */
     background-color: white;
 }
 
-/* Header styling */
+
 .title {
     width: 100%;
     font-size: 24px;
@@ -61,7 +55,7 @@ body {
     margin-right: 15px;
 }
 
-/* General styling for the h3 */
+
 .title h3 {
     font-size: 24px;
     margin: 0;
@@ -69,7 +63,7 @@ body {
 }
 
 
-/* General content styling for both containers */
+
 h6 {
     font-size: 20px;
     font-weight: bold;
@@ -79,53 +73,48 @@ h6 {
     letter-spacing: 1px;
 }
 
-/* General content styling for both containers */
+
 .question-form-container, .answer-form-container {
     width: 50%;
     margin: 0 1%;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    /* background-color: #FFFFF0; */
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     box-sizing: border-box;
     background-color: #FCF55F;
 }
 
-/* Question container: dynamic height based on content */
 .question-form-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    height: 500px; /* This will make it adjust to its content */
-    /* Ensure no unnecessary scrollbars appear */
-    /* overflow: visible;  */
+    height: 500px;
     margin-top: 0;
     box-sizing: border-box;
 }
 
-/* Answer container: fixed height */
+
 .answer-form-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: calc(100vh - 160px); /* Adjust height based on available space */
-    overflow: auto; /* Allows scrolling if content overflows */
+    height: calc(100vh - 160px); 
+    overflow: auto; 
     margin-top: 0;
     margin-top: 0;
     box-sizing: border-box;
 }
 
 
-/* Button and form element styling */
+
 button[mat-raised-button] {
     width: 150px;
     height: fit-content;
     padding: 6px;
     margin-top: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    /* background-color: #FCF55F;  */
     background-color: white;
     font-weight: bold
 }
@@ -156,7 +145,6 @@ mat-card-actions {
     font-size: 20px;
 }
 
-/* Ensure that textareas resize properly within the containers */
 textarea {
     resize: vertical;
     max-height: 300px;
