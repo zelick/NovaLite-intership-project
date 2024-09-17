@@ -370,6 +370,11 @@ modules/.vscode
 .nvimrc
 
 # End of https://www.gitignore.io/api/visualstudio,visualstudiocode
+
+.angular/
+dist/
+
 *.js
 *.map
 *.tsbuildinfo
+

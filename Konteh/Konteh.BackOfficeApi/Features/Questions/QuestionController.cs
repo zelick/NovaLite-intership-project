@@ -1,4 +1,5 @@
-﻿using MediatR;
+using Konteh.Domain;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,4 +23,23 @@ public class QuestionController : Controller
         var response = await _mediator.Send(new GetAllQuestions.Query());
         return Ok(response);
     }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateOrUpdate(CreateOrUpdateQuestion.Command command)
+    {
+        await _mediator.Send(command);
+        return Ok();
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Question), StatusCodes.Status200OK)]
+    public async Task<ActionResult<Question>> GetQuestionById(int id)
+    {
+        var response = await _mediator.Send(new GetQuestionById.Query { Id = id });
+        return Ok(response);
+    }
+
 }
