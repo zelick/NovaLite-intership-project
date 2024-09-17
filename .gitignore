@@ -370,6 +370,7 @@ modules/.vscode
 .nvimrc
 
 # End of https://www.gitignore.io/api/visualstudio,visualstudiocode
+
 Konteh/back-office-app/.angular/cache/18.2.3/back-office-app/.tsbuildinfo
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/@angular_common.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/@angular_common.js.map
@@ -414,3 +415,5 @@ Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-UXXSI3DX.js
 Konteh/back-office-app/.angular/cache/18.2.3/vite/deps/chunk-UXXSI3DX.js.map
 *.js
 *.map
+*.tsbuildinfo
+

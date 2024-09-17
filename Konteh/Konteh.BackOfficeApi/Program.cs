@@ -5,12 +5,17 @@ using Konteh.Infrastructure.ExeptionHandler;
 using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-// Add services to the container.
+
 
 builder.Services.AddControllers();
 
@@ -38,7 +43,16 @@ builder.Services.AddCors(options =>
         });
 });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200") 
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -47,7 +61,11 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
+
 app.UseExceptionHandler();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
