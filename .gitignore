@@ -374,4 +374,4 @@ modules/.vscode
 *.map
 *.tsbuildinfo
 _metadata.json
-
+.angular/cache/18.2.3
