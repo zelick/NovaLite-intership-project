@@ -30,7 +30,6 @@ public static class GenerateExam
         private readonly IRepository<Candidate> _candidateRepository;
         private readonly IRandomNumberGenerator _random;
 
-
         public RequestHandler(IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository,
                     IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository, IRandomNumberGenerator random)
         {
@@ -40,7 +39,6 @@ public static class GenerateExam
             _candidateRepository = candidateRepository;
             _random = random;
         }
-
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             var candidate = await CheckIfCandidateHasTakenTest(request); 
@@ -124,6 +122,28 @@ public static class GenerateExam
             }
 
             return questions;
+        }
+
+        private List<Question> PrepareQuestions()
+        {
+            return new List<Question>
+            {
+                new Question { Text = "Question 1", Category = QuestionCategory.Http },
+                new Question { Text = "Question 2", Category = QuestionCategory.Http },
+                new Question { Text = "Question 3", Category = QuestionCategory.CSharp },
+                new Question { Text = "Question 4", Category = QuestionCategory.CSharp },
+                new Question { Text = "Question 5", Category = QuestionCategory.Sql },
+                new Question { Text = "Question 6", Category = QuestionCategory.Sql },
+                new Question { Text = "Question 7", Category = QuestionCategory.Oop },
+                new Question { Text = "Question 8", Category = QuestionCategory.Oop },
+                new Question { Text = "Question 9", Category = QuestionCategory.Git },
+                new Question {  Text = "Question 10", Category = QuestionCategory.Git },
+                new Question {  Text = "Question 11", Category = QuestionCategory.Http },
+                new Question {  Text = "Question 12", Category = QuestionCategory.CSharp },
+                new Question {  Text = "Question 13", Category = QuestionCategory.Sql },
+                new Question {  Text = "Question 14", Category = QuestionCategory.Oop },
+                new Question {  Text = "Question 15", Category = QuestionCategory.Git }
+            };
         }
 
     }

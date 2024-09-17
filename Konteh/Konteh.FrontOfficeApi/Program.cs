@@ -48,3 +48,5 @@ app.UseOpenApi();
 app.UseSwaggerUi();
 
 app.Run();
+
+public partial class Program { }

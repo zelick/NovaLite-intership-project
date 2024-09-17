@@ -33,7 +33,7 @@ namespace Konteh.Tests
         }
 
         [Test]
-        public async Task GenerateExam_ShouldThrowException_WhenCandidateHasAlreadyTakenTest()
+        public void GenerateExam_ShouldThrowException_WhenCandidateHasAlreadyTakenTest()
         {
             var query = new GenerateExam.Query
             {
