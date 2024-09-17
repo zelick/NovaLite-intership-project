@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Konteh.Infrastructure.Repositories 
+namespace Konteh.Infrastructure.Repositories; 
+
+public class AnswerRepository : BaseRepository<Answer>
 {
-    public class AnswerRepository : BaseRepository<Answer>
+    private DbSet<Answer> _answers;
+    public AnswerRepository(KontehDbContext context) : base(context)
     {
-        private DbSet<Answer> _answers;
-        public AnswerRepository(KontehDbContext context) : base(context)
-        {
-            _answers = context.Answers;
-        }
-        
+        _answers = context.Answers;
     }
+    
 }

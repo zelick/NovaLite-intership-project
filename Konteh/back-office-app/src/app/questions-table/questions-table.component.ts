@@ -1,47 +1,70 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Component, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { GetAllQuestionsResponse, IGetAllQuestionsResponse, QuestionCategory, QuestionClient, QuestionType } from '../api/api-reference';
+import { FormControl } from '@angular/forms';
+import { debounceTime, map } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { ISearchQuestionsResponse, QuestionCategory, QuestionClient, QuestionType, SearchQuestionsQuery, SearchQuestionsResponse } from '../api/api-reference';
 
 @Component({
   selector: 'app-questions-table',
   templateUrl: './questions-table.component.html',
   styleUrl: './questions-table.component.css'
 })
-export class QuestionsTableComponent  {
+export class QuestionsTableComponent{
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  value = '';
+  searchControl = new FormControl('');
+  pageIndex : number = 0;
+  pageSize : number = 5;
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['category', 'type', 'text',  'edit'];
+  displayedColumns = ['category', 'type', 'text', 'edit'];
 
   dataSource: any;
-  questionList !: GetAllQuestionsResponse[];
-  constructor(private client:QuestionClient){
+  questionList !: SearchQuestionsResponse[];
+
+  constructor(private client: QuestionClient) {
     this.loadQuestions();
   }
 
-  loadQuestions(){
-    this.client.getAll().subscribe(res =>{
-    this.questionList = res;
-    this.dataSource = new MatTableDataSource<IGetAllQuestionsResponse>(this.questionList);
-    this.dataSource.paginator = this.paginator;
-    })
+  ngOnInit() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe(value => {
+        let query = new SearchQuestionsQuery({
+          text: value ?? undefined,
+          page: this.pageIndex,
+          pageSize: this.pageSize
+        });        
+        this.client.search(query).subscribe(res => {
+          this.questionList = res.questions === undefined ? [] : res.questions;
+          this.paginator.length = res.length === undefined ? 0 : res.length;
+          this.paginator.pageIndex = 0;
+          this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
+        })
+      })
   }
 
-  deleteQuestion(id:number){
+  loadQuestions() {
+    this.client.getAll().subscribe(res => {
+      this.questionList = res;
+      this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
+      this.dataSource.paginator = this.paginator;
+      this.paginator.pageIndex = 0;
+    })
+
+  }
+
+  deleteQuestion(id: number) {
     this.client.delete(id).subscribe(res => {
       this.loadQuestions();
     })
   }
-  editQuestion(name: string){
+  editQuestion(name: string) {
     alert(name)
   }
 
-   writeQuestionCategory(val: QuestionCategory): string {
-    switch(val) {
+  writeQuestionCategory(val: QuestionCategory): string {
+    switch (val) {
       case QuestionCategory.Http:
         return "Http";
       case QuestionCategory.CSharp:
@@ -54,33 +77,24 @@ export class QuestionsTableComponent  {
         return "SQL";
     }
   }
-  writeQuestionType(val: QuestionType){
-    if(val === QuestionType.RadioButton)
+  writeQuestionType(val: QuestionType) {
+    if (val === QuestionType.RadioButton)
       return "Radio button"
     else
       return "Checkbox"
   }
-  search(data: Event){
-    const value = (data.target as HTMLInputElement).value;
-
-    if(value === '')
-      this.loadQuestions();
-    
-    this.client.search(value, this.paginator.pageIndex, this.paginator.pageSize).subscribe(res => {
-      this.questionList = res;
-      this.dataSource = new MatTableDataSource<IGetAllQuestionsResponse>(this.questionList);
-      this.dataSource.paginator = this.paginator;
-    })
-
-  }
 
   handlePageEvent(e: PageEvent) {
-    // if(this.value!=='')
-    //   return;
-     this.client.getAllPaged(e.pageIndex+1, e.pageSize).subscribe(res => {
-      this.questionList = res;
-      this.dataSource = new MatTableDataSource<IGetAllQuestionsResponse>(this.questionList);
-     // this.dataSource.paginator = this.paginator;
+    let query = new SearchQuestionsQuery({
+      text: this.searchControl.value ?? undefined,
+      page: e.pageIndex,
+      pageSize: e.pageSize
+    });
+    this.pageSize = e.pageSize;
+    this.client.search(query).subscribe(res => {
+      this.questionList = res.questions === undefined ? [] : res.questions;
+      this.paginator.length = res.length === undefined ? 0 : res.length;
+      this.dataSource = new MatTableDataSource<ISearchQuestionsResponse>(this.questionList);
     })
   }
 }

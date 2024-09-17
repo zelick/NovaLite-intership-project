@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 
 namespace Konteh.Infrastructure.Repositories;
@@ -23,4 +24,17 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class
     public async Task SaveChanges() => await _context.SaveChangesAsync();
 
     public async Task<IEnumerable<T>> Search(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
+
+    public  Tuple<IEnumerable<T>, int> SearchAndPaged(Expression<Func<T, bool>> predicate, int page, int pagesize)
+    {
+        IQueryable<T> queryList =  _dbSet.Where(predicate);
+        int length = queryList.Count();
+        queryList = queryList.Skip(page * pagesize).Take(pagesize);
+        return new Tuple<IEnumerable<T>, int>( queryList.ToList(), length); 
+    }
+    public virtual IEnumerable<T> GetPaged(int page, int pagesize)
+    {
+        IQueryable<T> queryList = _dbSet.Skip((page) * pagesize).Take(pagesize);
+        return  queryList.ToList();
+    }
 }

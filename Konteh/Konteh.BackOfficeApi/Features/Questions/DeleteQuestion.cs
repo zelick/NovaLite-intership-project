@@ -3,37 +3,36 @@ using Konteh.Infrastructure.Repositories;
 using MediatR;
 using System.Runtime.CompilerServices;
 
-namespace Konteh.BackOfficeApi.Features.Questions
+namespace Konteh.BackOfficeApi.Features.Questions;
+
+public static class DeleteQuestion
 {
-    public static class DeleteQuestion
+    public class Command : IRequest
     {
-        public class Command : IRequest
+        public int Id { get; set; }
+    }
+    public class CommandHandler : IRequestHandler<Command>
+    {
+        private readonly IRepository<Question> _questionRepository;
+        private readonly IRepository<Answer> _answerRepository;
+        public CommandHandler(IRepository<Question> repository, IRepository<Answer> answerRepository)
         {
-            public int Id { get; set; }
+            _questionRepository = repository;
+            _answerRepository = answerRepository;
         }
-        public class CommandHandler : IRequestHandler<Command>
+
+        public async Task Handle(Command request, CancellationToken cancellationToken)
         {
-            private readonly IRepository<Question> _questionRepository;
-            private readonly IRepository<Answer> _answerRepository;
-            public CommandHandler(IRepository<Question> repository, IRepository<Answer> answerRepository)
-            {
-                _questionRepository = repository;
-                _answerRepository = answerRepository;
-            }
+            Question question = await _questionRepository.GetById(request.Id);
 
-            public async Task Handle(Command request, CancellationToken cancellationToken)
+            if (question == null)
             {
-                Question question = await _questionRepository.GetById(request.Id);
-
-                if (question == null)
-                {
-                    throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
-                }
-                                
-                await _answerRepository.SaveChanges();
-                _questionRepository.Delete(question);
-                await _questionRepository.SaveChanges();
+                throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
             }
+                            
+            await _answerRepository.SaveChanges();
+            _questionRepository.Delete(question);
+            await _questionRepository.SaveChanges();
         }
     }
 }

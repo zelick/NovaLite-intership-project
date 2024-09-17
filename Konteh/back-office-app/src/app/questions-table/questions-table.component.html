@@ -2,7 +2,7 @@
   <div class="search">
     <mat-form-field class="search-form-field">
         <mat-label>Search</mat-label>
-        <input matInput type="text" [(ngModel)]="value" (keydown)="search($event)">
+        <input matInput type="text" [formControl]="searchControl">
     </mat-form-field>
 </div>
   <table mat-table [dataSource]="dataSource"   class="full-width-table" matSort aria-label="Elements">
@@ -44,5 +44,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5,10,20]" (page)="handlePageEvent($event)"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5,10,20]" pageIndex="pageIndex" pageSize="pageSize" (page)="handlePageEvent($event)"></mat-paginator>
 </div>
