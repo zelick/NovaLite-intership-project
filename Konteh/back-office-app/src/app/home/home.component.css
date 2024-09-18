@@ -1,0 +1,42 @@
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: black;
+    color: #f6e04e; /* Yellow */
+    text-align: center;
+  }
+  
+  .header {
+    background-color: #f6e04e; /* Yellow */
+    color: black;
+    padding: 20px 0;
+  }
+  
+  .main-content {
+    flex: 1; /* Allows the main content to grow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .welcome-section {
+    background-color: black;
+    border: 2px solid #f6e04e; /* Yellow border */
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  button {
+    background-color: #f6e04e; /* Yellow */
+    color: black;
+    margin-top: 20px;
+  }
+  
+  .footer {
+    background-color: black;
+    color: #f6e04e; /* Yellow */
+    padding: 10px 0;
+  }
+  
