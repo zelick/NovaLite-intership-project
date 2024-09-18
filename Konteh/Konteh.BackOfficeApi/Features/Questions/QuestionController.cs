@@ -24,6 +24,23 @@ public class QuestionController : Controller
         return Ok(response);
     }
 
+
+    [HttpDelete]
+    [Route("{id:int}")]
+    public async Task<ActionResult> Delete(int id) 
+    {
+        await _mediator.Send(new DeleteQuestion.Command { Id = id });
+        return Ok(); 
+    }
+
+    [HttpPut]
+    [Route("search")]
+    public async Task<ActionResult<SearchQuestions.SearchResponse>> Search(SearchQuestions.Query request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

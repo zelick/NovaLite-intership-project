@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Konteh.Infrastructure.Migrations;
 
 [DbContext(typeof(KontehDbContext))]
-[Migration("20240909125939_InitalMigration")]
-partial class InitalMigration
+[Migration("20240913091438_AddIsDeletedColumn")]
+partial class AddIsDeletedColumn
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,9 @@ partial class InitalMigration
 
                 b.Property<int>("Category")
                     .HasColumnType("int");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("bit");
 
                 b.Property<string>("Text")
                     .IsRequired()

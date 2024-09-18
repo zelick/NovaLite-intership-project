@@ -1,20 +1,24 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { QuestionsTableComponent } from './questions-table/questions-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule} from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { QuestionFormComponent } from './question-form/question-form.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FormErrorsComponent } from './shared/form-errors/form-errors.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
 
 import {
   MsalModule,
@@ -35,6 +39,7 @@ import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
+    QuestionsTableComponent,
     QuestionFormComponent,
     FormErrorsComponent,
     NavbarComponent,
@@ -53,10 +58,13 @@ import { environment } from '../environments/environment';
     MatButtonModule,
     MatCardModule,
     BrowserModule,
-    HttpClientModule,
     AppRoutingModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatMenuModule,
     MatToolbarModule,
-    MatButtonModule,
+    
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {

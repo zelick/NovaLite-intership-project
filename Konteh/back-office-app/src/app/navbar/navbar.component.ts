@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
 import { GetAllQuestionsResponse, QuestionClient } from '../api/api-reference';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -9,9 +10,10 @@ import { GetAllQuestionsResponse, QuestionClient } from '../api/api-reference';
 })
 export class NavbarComponent implements OnInit{
 
+
   username: string | undefined;
 
-  constructor(private authService: MsalService, private questionClient: QuestionClient){}
+  constructor(private authService: MsalService, private questionClient: QuestionClient, private router: Router){}
 
   ngOnInit(): void {
     this.authService.initialize();
@@ -47,6 +49,13 @@ export class NavbarComponent implements OnInit{
       this.username = undefined;
       this.authService.instance.setActiveAccount(null);
     }
+  }
+
+  addQuestion() {
+    this.router.navigate(['questions/add'])
+  }
+  questionsTable() {
+    this.router.navigate(['questions'])
   }
 
 }

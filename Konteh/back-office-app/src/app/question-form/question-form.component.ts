@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { setServerSideValidationErrors } from '../validation';
 import { QuestionType, QuestionCategory, QuestionClient, CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionCommand } from '../api/api-reference';
 
@@ -28,7 +28,8 @@ export class QuestionFormComponent implements OnInit {
 
   constructor(
     private questionClient: QuestionClient,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router : Router
   ) { }
 
   ngOnInit(): void {
@@ -163,7 +164,7 @@ export class QuestionFormComponent implements OnInit {
 
 
     this.questionClient.createOrUpdate(createQuestionCommand).subscribe({
-      next: _ => this.clearForm(),
+      next: _ => this.router.navigate(['questions']),
       error: errors => setServerSideValidationErrors(errors, this.questionForm)
     })
   }

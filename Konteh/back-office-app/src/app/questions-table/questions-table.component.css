@@ -1,0 +1,52 @@
+.full-width-table {
+  width: 60%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+.questions-table {
+  width: 60%;
+  margin: 20px auto;
+  color: black; 
+}
+
+.questions-table tr {
+  background-color: white; 
+}
+
+.questions-table th {
+  background-color: #f6e04e; 
+  color: black; 
+  padding: 10px;
+}
+
+.questions-table td {
+  background-color: white;
+  color: black; 
+  padding: 10px;
+}
+
+.questions-table tr:hover {
+  background-color: #f6e04e; 
+}
+
+.text-column {
+  width: 700px;
+  word-break: break-all;
+}
+
+.type-column {
+  width: 130px;
+}
+
+.search-form-field {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  color: black;
+}
+
+th{
+  font-size: 22px;
+}
