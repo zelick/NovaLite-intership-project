@@ -11,7 +11,6 @@ namespace Konteh.Tests
     {
         private static Respawner _respawner;
         private static string _connectionString = "Server=.;Database=KontehDBTest;Trusted_Connection=True;TrustServerCertificate=True;";
-        private static IServiceScopeFactory _scopeFactory;
 
         [OneTimeSetUp]
         public async Task RunBeforeAnyTests()

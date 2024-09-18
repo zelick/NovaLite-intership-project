@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { StartInfoComponent } from './start-info/start-info.component';
+import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
 
 const routes: Routes = [
   {
     path:'',
-    component: StartInfoComponent
+    component: CandidateInfoFormComponent
   }
 ];
 

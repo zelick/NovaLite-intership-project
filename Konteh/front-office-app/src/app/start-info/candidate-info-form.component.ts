@@ -1,19 +1,22 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ExamClient, GenerateExamQuery, GenerateExamResponse, ExamQuestion } from '../api/api-reference'; 
+import { ExamClient, GenerateExamCommand, GenerateExamResponse, ExamQuestionDto } from '../api/api-reference'; 
 
 @Component({
-  selector: 'app-start-info',
-  templateUrl: './start-info.component.html',
-  styleUrls: ['./start-info.component.css']
+  selector: 'app-candidate-info-form',
+  templateUrl: './candidate-info-form.component.html',
+  styleUrls: ['./candidate-info-form.component.css']
 })
-export class StartInfoComponent {
+export class CandidateInfoFormComponent {
   examForm: FormGroup;
-  examQuestions: ExamQuestion[] = []; 
+  examQuestions: ExamQuestionDto[] = []; 
 
   constructor(private fb: FormBuilder, private examClient: ExamClient) {
     this.examForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [
+        Validators.required, 
+        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$') 
+      ]],
       name: ['', Validators.required],
       surname: ['', Validators.required]
     });
@@ -22,7 +25,7 @@ export class StartInfoComponent {
   onSubmit() {
     if (this.examForm.valid) {
       const formValue = this.examForm.value;
-      const query = GenerateExamQuery.fromJS({
+      const query = GenerateExamCommand.fromJS({
         email: formValue.email,
         name: formValue.name,
         surname: formValue.surname

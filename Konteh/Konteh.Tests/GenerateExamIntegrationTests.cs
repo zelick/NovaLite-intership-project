@@ -19,7 +19,7 @@ namespace Konteh.Tests
         public async Task CreateExam_Returns_ExamResponse()
         {
             //TODO dodaj u bazu nova polja
-            var candidateRequest = new GenerateExam.Query
+            var candidateRequest = new GenerateExam.Command
             {
                 Name = "Djordje",
                 Surname = "Loncar",

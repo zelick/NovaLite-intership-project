@@ -1,74 +1,44 @@
 ﻿{
   ExamQuestions: [
     {
-      Question: {
-        Text: Question 1,
-        Category: Http,
-        IsDeleted: false
-      }
+      QuestionId: 1,
+      QuestionText: Question 1
     },
     {
-      Question: {
-        Text: Question 2,
-        Category: Http,
-        IsDeleted: false
-      }
+      QuestionId: 2,
+      QuestionText: Question 2
     },
     {
-      Question: {
-        Text: Question 9,
-        Category: Git,
-        IsDeleted: false
-      }
+      QuestionId: 9,
+      QuestionText: Question 9
     },
     {
-      Question: {
-        Text: Question 10,
-        Category: Git,
-        IsDeleted: false
-      }
+      QuestionId: 10,
+      QuestionText: Question 10
     },
     {
-      Question: {
-        Text: Question 7,
-        Category: Oop,
-        IsDeleted: false
-      }
+      QuestionId: 7,
+      QuestionText: Question 7
     },
     {
-      Question: {
-        Text: Question 8,
-        Category: Oop,
-        IsDeleted: false
-      }
+      QuestionId: 8,
+      QuestionText: Question 8
     },
     {
-      Question: {
-        Text: Question 5,
-        Category: Sql,
-        IsDeleted: false
-      }
+      QuestionId: 5,
+      QuestionText: Question 5
     },
     {
-      Question: {
-        Text: Question 6,
-        Category: Sql,
-        IsDeleted: false
-      }
+      QuestionId: 6,
+      QuestionText: Question 6
     },
     {
-      Question: {
-        Text: Question 3,
-        Category: CSharp,
-        IsDeleted: false
-      }
+      QuestionId: 3,
+      QuestionText: Question 3
     },
     {
-      Question: {
-        Text: Question 4,
-        Category: CSharp,
-        IsDeleted: false
-      }
+      QuestionId: 4,
+      QuestionText: Question 4
     }
   ]
 }

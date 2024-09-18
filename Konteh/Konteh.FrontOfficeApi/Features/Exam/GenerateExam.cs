@@ -1,12 +1,14 @@
 ﻿namespace Konteh.FrontOfficeApi.Features.Exam;
 
 using Konteh.Domain;
+using Konteh.FrontOfficeApi.Dtos;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 public static class GenerateExam
 {
-    public class Query : IRequest<Response>
+    public class Command : IRequest<Response> // Rename this to Command
     {
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
@@ -16,34 +18,31 @@ public static class GenerateExam
     public class Response
     {
         public int Id { get; set; }
-        public List<ExamQuestion> ExamQuestions { get; set; } = [];
+        public List<ExamQuestionDto> ExamQuestions { get; set; } = [];
     }
 
-    public class RequestHandler : IRequestHandler<Query, Response>
+    public class RequestHandler : IRequestHandler<Command, Response>
     {
         private readonly IRepository<Question> _questionRepository;
-        private readonly IRepository<ExamQuestion> _examQuestionRepository;
         private readonly IRepository<Exam> _examRepository;
         private readonly IRepository<Candidate> _candidateRepository;
         private readonly IRandomNumberGenerator _random;
 
-        public RequestHandler(IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository,
+        public RequestHandler(IRepository<Question> questionRepository,
                               IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository,
                               IRandomNumberGenerator random)
         {
             _questionRepository = questionRepository;
-            _examQuestionRepository = examQuestionRepository;
             _examRepository = examRepository;
             _candidateRepository = candidateRepository;
             _random = random;
         }
-        public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
         {
-            var candidate = await CheckIfCandidateHasTakenTest(request);
+            var candidate = CheckIfCandidateHasTakenTest(request);
 
-            //TODO: Load info on number of questions
             int numberOfQuestionsPerCategory = 2;
-            List<Question> questions = await GetQuestionsForExam(numberOfQuestionsPerCategory);
+            var questions = await GetQuestionsForExam(numberOfQuestionsPerCategory);
 
             var exam = new Exam
             {
@@ -51,36 +50,38 @@ public static class GenerateExam
                 ExamQuestions = new List<ExamQuestion>()
             };
 
-            foreach (var question in questions)
-            {
-                var examQuestion = new ExamQuestion
+            exam.ExamQuestions = questions
+                .Select(question => new ExamQuestion
                 {
                     Question = question,
                     SelectedAnswers = new List<Answer>()
-                };
-
-                exam.ExamQuestions.Add(examQuestion);
-
-                _examQuestionRepository.Add(examQuestion);
-            }
+                })
+                .ToList();
 
             _examRepository.Add(exam);
             await _examRepository.SaveChanges();
 
+            var examQuestionDtos = exam.ExamQuestions.Select(eq => new ExamQuestionDto
+            {
+                QuestionId = eq.Question.Id,
+                QuestionText = eq.Question.Text,
+                SelectedAnswers = new List<AnswerDto>()
+            }).ToList();
+
             return new Response
             {
                 Id = exam.Id,
-                ExamQuestions = exam.ExamQuestions
+                ExamQuestions = examQuestionDtos
             };
         }
 
-        private async Task<Candidate> CheckIfCandidateHasTakenTest(Query request)
+        private Candidate CheckIfCandidateHasTakenTest(Command request)
         {
             var existingExam = _examRepository.Search(e => e.Candidate.Email == request.Email).ToList();
 
             if (existingExam.Any())
             {
-                throw new InvalidOperationException("Candidate has already taken the test.");
+                throw new ValidationException("Candidate has already taken the test.");
             }
 
             var candidate = new Candidate
@@ -115,7 +116,7 @@ public static class GenerateExam
 
                 for (int i = 0; i < numberOfQuestionsPerCategory; i++)
                 {
-                    var randomQuestion = allQuestionsFromCategory[_random.Next(0, allQuestionsFromCategory.Count)];
+                    var randomQuestion = allQuestionsFromCategory[_random.Next(allQuestionsFromCategory.Count)];
                     allQuestionsFromCategory.Remove(randomQuestion);
                     randomQuestionsPerCategory.Add(randomQuestion);
                 }

@@ -2,6 +2,7 @@ using Konteh.Domain;
 using Konteh.FrontOfficeApi.Features.Exam;
 using Konteh.Infrastructure.Repositories;
 using NSubstitute;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace Konteh.Tests
@@ -25,7 +26,6 @@ namespace Konteh.Tests
             _rand = Substitute.For<IRandomNumberGenerator>();
             _handler = new GenerateExam.RequestHandler(
                 _questionRepositoryMock,
-                _examQuestionRepositoryMock,
                 _examRepositoryMock,
                 _candidateRepositoryMock,
                 _rand);
@@ -34,7 +34,7 @@ namespace Konteh.Tests
         [Test]
         public void GenerateExam_ShouldThrowException_WhenCandidateHasAlreadyTakenTest()
         {
-            var query = new GenerateExam.Query
+            var query = new GenerateExam.Command
             {
                 Email = "loncardjole@gmail.com",
                 Name = "Djordje",
@@ -50,7 +50,7 @@ namespace Konteh.Tests
                 .Search(Arg.Any<Expression<Func<Exam, bool>>>())
                 .Returns(existingExams.AsQueryable());
 
-            var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            var exception = Assert.ThrowsAsync<ValidationException>(async () =>
                 await _handler!.Handle(query, CancellationToken.None));
 
             Assert.That(exception.Message, Is.EqualTo("Candidate has already taken the test."));
@@ -59,11 +59,14 @@ namespace Konteh.Tests
         [Test]
         public async Task GenerateExam_ShouldCreateNewCandidate_WhenCandidateDoesNotExist()
         {
-            var request = new GenerateExam.Query { Email = "test@test.com", Name = "Kristina", Surname = "Zelic" };
+            var request = new GenerateExam.Command
+            {
+                Email = "test@test.com",
+                Name = "Kristina",
+                Surname = "Zelic"
+            };
 
-            _examRepositoryMock
-                .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-                .Returns(new List<Exam>().AsQueryable());
+            MockExamRepositorySearch();
 
             _questionRepositoryMock
                 .GetAll()
@@ -79,22 +82,27 @@ namespace Konteh.Tests
         [Test]
         public async Task GenerateExam_ShouldReturnCorrectResponse()
         {
-            var request = new GenerateExam.Query { Email = "testnovi@test.com" };
+            var request = new GenerateExam.Command { Email = "testnovi@test.com" };
             var questions = PrepareQuestions();
 
-            _examRepositoryMock
-                .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-                .Returns(new List<Exam>().AsQueryable());
+            MockExamRepositorySearch();
 
             _questionRepositoryMock
                 .GetAll()
                 .Returns(questions);
 
-            _rand.Next(Arg.Any<int>(), Arg.Any<int>()).Returns(0);
+            _rand.Next(Arg.Any<int>()).Returns(0);
             var response = await _handler!.Handle(request, CancellationToken.None);
 
             await Verify(response)
                 .IgnoreMember("Id");
+        }
+
+        private void MockExamRepositorySearch()
+        {
+            _examRepositoryMock
+                .Search(Arg.Any<Expression<Func<Exam, bool>>>())
+                .Returns(new List<Exam>().AsQueryable());
         }
 
         private List<Question> PrepareQuestions()
