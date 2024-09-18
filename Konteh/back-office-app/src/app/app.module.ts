@@ -14,15 +14,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { QuestionFormComponent } from './question-form/question-form.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { FormErrorsComponent } from './shared/form-errors/form-errors.component';
+
 import {
   MsalModule,
   MsalRedirectComponent,
   MsalInterceptor,
 } from "@azure/msal-angular";
+
 import {
   InteractionType,
   PublicClientApplication,
 } from "@azure/msal-browser";
+
 import { NavbarComponent } from './navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
@@ -32,23 +40,29 @@ import { environment } from '../environments/environment';
   declarations: [
     AppComponent,
     QuestionsTableComponent,
+    QuestionFormComponent,
+    FormErrorsComponent,
     NavbarComponent,
-    HomeComponent,
+    HomeComponent
   ],
   imports: [
+    FormsModule,
+    HttpClientModule, 
+    ReactiveFormsModule,
+    AppRoutingModule, 
+    MatCheckboxModule, 
+    MatFormFieldModule,
+    MatInputModule, 
+    MatSelectModule, 
+    MatIconModule, 
+    MatButtonModule,
+    MatCardModule,
     BrowserModule,
     AppRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatIconModule,
     MatMenuModule,
-    MatButtonModule,
-    MatInputModule,
-    FormsModule,
-    MatSelectModule,
-    HttpClientModule,
-    ReactiveFormsModule,
     MatToolbarModule,
     
     MsalModule.forRoot(
