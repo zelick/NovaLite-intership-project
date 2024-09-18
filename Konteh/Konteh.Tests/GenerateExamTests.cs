@@ -1,7 +1,7 @@
-using Konteh.Infrastructure.Repositories;
 using Konteh.Domain;
-using NSubstitute;
 using Konteh.FrontOfficeApi.Features.Exam;
+using Konteh.Infrastructure.Repositories;
+using NSubstitute;
 using System.Linq.Expressions;
 
 namespace Konteh.Tests
@@ -14,7 +14,6 @@ namespace Konteh.Tests
         private IRepository<Candidate> _candidateRepositoryMock;
         private IRandomNumberGenerator _rand;
         private GenerateExam.RequestHandler? _handler;
-
 
         [SetUp]
         public void Setup()
@@ -49,7 +48,7 @@ namespace Konteh.Tests
 
             _examRepositoryMock
                 .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-                .Returns(existingExams);
+                .Returns(existingExams.AsQueryable());
 
             var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await _handler!.Handle(query, CancellationToken.None));
@@ -64,7 +63,7 @@ namespace Konteh.Tests
 
             _examRepositoryMock
                 .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-                .Returns(new List<Exam>());
+                .Returns(new List<Exam>().AsQueryable());
 
             _questionRepositoryMock
                 .GetAll()
@@ -85,7 +84,7 @@ namespace Konteh.Tests
 
             _examRepositoryMock
                 .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-                .Returns(new List<Exam>());
+                .Returns(new List<Exam>().AsQueryable());
 
             _questionRepositoryMock
                 .GetAll()
@@ -93,7 +92,6 @@ namespace Konteh.Tests
 
             _rand.Next(Arg.Any<int>(), Arg.Any<int>()).Returns(0);
             var response = await _handler!.Handle(request, CancellationToken.None);
-
 
             await Verify(response)
                 .IgnoreMember("Id");

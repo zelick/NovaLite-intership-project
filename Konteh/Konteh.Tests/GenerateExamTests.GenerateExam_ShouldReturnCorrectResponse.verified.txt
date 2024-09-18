@@ -3,61 +3,71 @@
     {
       Question: {
         Text: Question 1,
-        Category: Http
+        Category: Http,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 2,
-        Category: Http
+        Category: Http,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 9,
-        Category: Git
+        Category: Git,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 10,
-        Category: Git
+        Category: Git,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 7,
-        Category: Oop
+        Category: Oop,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 8,
-        Category: Oop
+        Category: Oop,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 5,
-        Category: Sql
+        Category: Sql,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 6,
-        Category: Sql
+        Category: Sql,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 3,
-        Category: CSharp
+        Category: CSharp,
+        IsDeleted: false
       }
     },
     {
       Question: {
         Text: Question 4,
-        Category: CSharp
+        Category: CSharp,
+        IsDeleted: false
       }
     }
   ]

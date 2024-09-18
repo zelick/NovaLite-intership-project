@@ -76,7 +76,7 @@ public static class GenerateExam
 
         private async Task<Candidate> CheckIfCandidateHasTakenTest(Query request)
         {
-            var existingExam = await _examRepository.Search(e => e.Candidate.Email == request.Email);
+            var existingExam = _examRepository.Search(e => e.Candidate.Email == request.Email).ToList();
 
             if (existingExam.Any())
             {
