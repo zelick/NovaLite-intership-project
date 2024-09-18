@@ -5,6 +5,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, map } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { ISearchQuestionsResponse, QuestionCategory, QuestionClient, QuestionType, SearchQuestionsQuery, SearchQuestionsResponse } from '../api/api-reference';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-questions-table',
@@ -21,7 +22,7 @@ export class QuestionsTableComponent{
   dataSource: MatTableDataSource<ISearchQuestionsResponse> = new MatTableDataSource<ISearchQuestionsResponse>();
   questionList !: SearchQuestionsResponse[];
   
-  constructor(private client: QuestionClient) {
+  constructor(private client: QuestionClient, private router:Router) {
     this.pageSize = 5;
     this.pageIndex=0;
     this.search();
@@ -43,7 +44,7 @@ export class QuestionsTableComponent{
     })
   }
   editQuestion(id: number) {
-    alert(id)
+    this.router.navigate(['questions', id]);
   }
 
   getQuestionCategoryName(value: number): string {
