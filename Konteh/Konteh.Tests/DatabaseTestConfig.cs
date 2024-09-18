@@ -16,23 +16,25 @@ namespace Konteh.Tests
         [OneTimeSetUp]
         public async Task RunBeforeAnyTests()
         {
-            //await ApplyMigrations();
+            await ApplyMigrations();
             _respawner = await Respawner.CreateAsync(_connectionString, new RespawnerOptions
             {
                 TablesToIgnore = ["__EFMigrationsHistory"]
             });
-            InsertTestData();
+            //InsertTestData();
         }
 
         [OneTimeTearDown]
         public async Task RunAfterAnyTests()
         {
+
             // Clean up test data if necessary
         }
 
         public static async Task ResetDatabase()
         {
             await _respawner.ResetAsync(_connectionString);
+
         }
 
         private static async Task ApplyMigrations()
