@@ -14,7 +14,7 @@ namespace Konteh.Tests
         private IRepository<Exam> _examRepositoryMock;
         private IRepository<Candidate> _candidateRepositoryMock;
         private IRandomNumberGenerator _rand;
-        private GenerateExam.RequestHandler? _handler;
+        private GenerateExam.RequestHandler _handler;
 
         [SetUp]
         public void Setup()
