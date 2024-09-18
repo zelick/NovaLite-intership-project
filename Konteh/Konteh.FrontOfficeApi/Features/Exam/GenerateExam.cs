@@ -1,10 +1,8 @@
 ﻿namespace Konteh.FrontOfficeApi.Features.Exam;
 
-using Azure.Core;
 using Konteh.Domain;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
 
 public static class GenerateExam
 {
@@ -13,7 +11,6 @@ public static class GenerateExam
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-
     }
 
     public class Response
@@ -31,7 +28,8 @@ public static class GenerateExam
         private readonly IRandomNumberGenerator _random;
 
         public RequestHandler(IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository,
-                    IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository, IRandomNumberGenerator random)
+                              IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository,
+                              IRandomNumberGenerator random)
         {
             _questionRepository = questionRepository;
             _examQuestionRepository = examQuestionRepository;
@@ -41,7 +39,7 @@ public static class GenerateExam
         }
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var candidate = await CheckIfCandidateHasTakenTest(request); 
+            var candidate = await CheckIfCandidateHasTakenTest(request);
 
             //TODO: Load info on number of questions
             int numberOfQuestionsPerCategory = 2;
@@ -58,7 +56,7 @@ public static class GenerateExam
                 var examQuestion = new ExamQuestion
                 {
                     Question = question,
-                    SelectedAnswers = new List<Answer>() 
+                    SelectedAnswers = new List<Answer>()
                 };
 
                 exam.ExamQuestions.Add(examQuestion);
@@ -110,8 +108,12 @@ public static class GenerateExam
                     .Where(x => x.Category == category)
                     .ToList();
 
+                if (numberOfQuestionsPerCategory > allQuestionsFromCategory.Count())
+                {
+                    throw new InvalidOperationException($"Not enough questions in {category} category.");
+                }
 
-                for(int i = 0; i < numberOfQuestionsPerCategory; i++)
+                for (int i = 0; i < numberOfQuestionsPerCategory; i++)
                 {
                     var randomQuestion = allQuestionsFromCategory[_random.Next(0, allQuestionsFromCategory.Count)];
                     allQuestionsFromCategory.Remove(randomQuestion);
@@ -122,28 +124,6 @@ public static class GenerateExam
             }
 
             return questions;
-        }
-
-        private List<Question> PrepareQuestions()
-        {
-            return new List<Question>
-            {
-                new Question { Text = "Question 1", Category = QuestionCategory.Http },
-                new Question { Text = "Question 2", Category = QuestionCategory.Http },
-                new Question { Text = "Question 3", Category = QuestionCategory.CSharp },
-                new Question { Text = "Question 4", Category = QuestionCategory.CSharp },
-                new Question { Text = "Question 5", Category = QuestionCategory.Sql },
-                new Question { Text = "Question 6", Category = QuestionCategory.Sql },
-                new Question { Text = "Question 7", Category = QuestionCategory.Oop },
-                new Question { Text = "Question 8", Category = QuestionCategory.Oop },
-                new Question { Text = "Question 9", Category = QuestionCategory.Git },
-                new Question {  Text = "Question 10", Category = QuestionCategory.Git },
-                new Question {  Text = "Question 11", Category = QuestionCategory.Http },
-                new Question {  Text = "Question 12", Category = QuestionCategory.CSharp },
-                new Question {  Text = "Question 13", Category = QuestionCategory.Sql },
-                new Question {  Text = "Question 14", Category = QuestionCategory.Oop },
-                new Question {  Text = "Question 15", Category = QuestionCategory.Git }
-            };
         }
 
     }

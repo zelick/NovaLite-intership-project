@@ -5,11 +5,11 @@ import { ExamClient, GenerateExamQuery, GenerateExamResponse, ExamQuestion } fro
 @Component({
   selector: 'app-start-info',
   templateUrl: './start-info.component.html',
-  styleUrls: ['./start-info.component.css'] // Fixed typo: should be styleUrls
+  styleUrls: ['./start-info.component.css']
 })
 export class StartInfoComponent {
   examForm: FormGroup;
-  examQuestions: ExamQuestion[] = []; // Use the correct type
+  examQuestions: ExamQuestion[] = []; 
 
   constructor(private fb: FormBuilder, private examClient: ExamClient) {
     this.examForm = this.fb.group({
@@ -30,8 +30,7 @@ export class StartInfoComponent {
 
       this.examClient.createExam(query).subscribe({
         next: (response: GenerateExamResponse) => {
-          this.examQuestions = response.examQuestions || []; // Ensure correct type
-          
+          this.examQuestions = response.examQuestions || [];
         },
         error: (err) => {
           

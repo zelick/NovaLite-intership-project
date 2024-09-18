@@ -1,6 +1,5 @@
-﻿using Konteh.Domain;
-
-namespace Konteh.Infrastructure.Repositories;
+﻿namespace Konteh.Infrastructure.Repositories;
+using Konteh.Domain;
 
 public class ExamRepository : BaseRepository<Exam>
 {

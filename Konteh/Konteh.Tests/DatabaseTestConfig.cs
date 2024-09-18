@@ -25,10 +25,8 @@ namespace Konteh.Tests
         }
 
         [OneTimeTearDown]
-        public async Task RunAfterAnyTests()
+        public void RunAfterAnyTests()
         {
-
-            // Clean up test data if necessary
         }
 
         public static async Task ResetDatabase()

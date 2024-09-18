@@ -1,7 +1,5 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam
+﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+public interface IRandomNumberGenerator
 {
-    public interface IRandomNumberGenerator
-    {
-        int Next(int minValue, int maxValue);
-    }
+    int Next(int minValue, int maxValue);
 }

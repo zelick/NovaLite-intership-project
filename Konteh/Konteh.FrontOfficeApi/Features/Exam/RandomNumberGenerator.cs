@@ -1,9 +1,6 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam
+﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+public class RandomNumberGenerator : IRandomNumberGenerator
 {
-    public class RandomNumberGenerator : IRandomNumberGenerator
-    {
-        private readonly Random _random = new Random();
-
-        public int Next(int minValue, int maxValue) => _random.Next(minValue, maxValue);
-    }
+    private readonly Random _random = new Random();
+    public int Next(int minValue, int maxValue) => _random.Next(minValue, maxValue);
 }
