@@ -19,6 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="NUnit" Version="4.2.2" />
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Konteh.BackOfficeApi\Konteh.BackOfficeApi.csproj" />
     <ProjectReference Include="..\Konteh.Domain\Konteh.Domain.csproj" />
     <ProjectReference Include="..\Konteh.FrontOfficeApi\Konteh.FrontOfficeApi.csproj" />
     <ProjectReference Include="..\Konteh.Infrastructure\Konteh.Infrastructure.csproj" />

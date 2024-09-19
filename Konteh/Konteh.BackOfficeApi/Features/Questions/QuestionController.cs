@@ -1,11 +1,9 @@
 using Konteh.Domain;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
-[Authorize]
 [ApiController]
 [Route("api/questions")]
 public class QuestionController : Controller
@@ -27,10 +25,10 @@ public class QuestionController : Controller
 
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<ActionResult> Delete(int id) 
+    public async Task<ActionResult> Delete(int id)
     {
         await _mediator.Send(new DeleteQuestion.Command { Id = id });
-        return Ok(); 
+        return Ok();
     }
 
     [HttpPut]

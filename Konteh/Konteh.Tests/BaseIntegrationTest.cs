@@ -1,23 +1,22 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Konteh.Tests
+namespace Konteh.Tests;
+
+public class BaseIntegrationTest<TProgram> where TProgram : class
 {
-    public class BaseIntegrationTest
+    protected readonly CustomWebApplicationFactory<TProgram> _webApplicationFactory;
+
+    public BaseIntegrationTest()
     {
-        protected readonly CustomWebApplicationFactory<Program> _webApplicationFactory;
+        _webApplicationFactory = new CustomWebApplicationFactory<TProgram>();
+    }
 
-        public BaseIntegrationTest()
-        {
-            _webApplicationFactory = new CustomWebApplicationFactory<Program>();
-        }
+    public HttpClient GetClient() => _webApplicationFactory.CreateClient();
 
-        public HttpClient GetClient() => _webApplicationFactory.CreateClient();
-
-        protected T Resolve<T>() where T : class
-        {
-            var scope = _webApplicationFactory.Services.CreateScope();
-            var service = scope.ServiceProvider.GetRequiredService<T>();
-            return service;
-        }
+    protected T Resolve<T>() where T : class
+    {
+        var scope = _webApplicationFactory.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<T>();
+        return service;
     }
 }

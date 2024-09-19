@@ -6,72 +6,79 @@ using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Microsoft.Identity.Web;
+using System.Reflection;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+namespace Konteh.BackOfficeApi;
 
-
-
-builder.Services.AddControllers();
-
-builder.Services.AddDbContext<KontehDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
-builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
-builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+
+
+        builder.Services.AddControllers();
+
+        builder.Services.AddDbContext<KontehDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
+        builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
+
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+
+        builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+        builder.Services.AddCors(options =>
         {
-            builder.WithOrigins("http://localhost:4200")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            options.AddPolicy("AllowSpecificOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
         });
-});
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
+        builder.Services.AddCors(options =>
         {
-            builder.WithOrigins("http://localhost:4200") 
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            options.AddPolicy("AllowSpecificOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
         });
-});
 
-var app = builder.Build();
-
-
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigins");
-
-app.UseExceptionHandler();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.MapControllers();
+        var app = builder.Build();
 
 
-app.UseOpenApi();
-app.UseSwaggerUi();
+        // Configure the HTTP request pipeline.
 
-app.Run();
+        app.UseHttpsRedirection();
+        app.UseCors("AllowSpecificOrigins");
+
+        app.UseExceptionHandler();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+
+        app.UseOpenApi();
+        app.UseSwaggerUi();
+
+        app.Run();
+    }
+}
