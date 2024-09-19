@@ -4,8 +4,8 @@
   height: 80px;
   position: relative;
   display: flex;
-  align-items: center; /* Vertically centers content */
-  border-bottom: 3px solid white; /* First border - white */
+  align-items: center; 
+  border-bottom: 3px solid white; 
 }
 
 .mat-toolbar::after {
@@ -15,7 +15,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: #FCF55F; /* Second border - yellow */
+  background-color: #FCF55F;
 }
 
 .mat-button {
@@ -113,6 +113,8 @@
   transition: all 900ms cubic-bezier(0.48, 0, 0.12, 1);
 }
 
+
 .menu-button{
   margin-left: 20px;
 }
+
