@@ -10,18 +10,23 @@ namespace Konteh.Tests
     public class CustomWebApplicationFactory<TProgram>
     : WebApplicationFactory<TProgram> where TProgram : class
     {
+        public KontehDbContext db;
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
             {
+
                 var descriptor = services.Single(d => d.ServiceType == typeof(DbContextOptions<KontehDbContext>));
                 services.Remove(descriptor);
 
-                var dbConnectionDescriptor = services.Single(
+
+                var dbConnectionDescriptor = services.FirstOrDefault(
                 d => d.ServiceType ==
                     typeof(DbConnection));
-
-                services.Remove(dbConnectionDescriptor);
+                if (dbConnectionDescriptor != null)
+                {
+                    services.Remove(dbConnectionDescriptor);
+                }
 
                 services.AddDbContext<KontehDbContext>(options =>
                 {
@@ -32,7 +37,7 @@ namespace Konteh.Tests
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<KontehDbContext>();
+                db = scopedServices.GetRequiredService<KontehDbContext>();
                 db.Database.Migrate();
             });
 

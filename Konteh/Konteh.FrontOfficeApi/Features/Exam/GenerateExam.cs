@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 public static class GenerateExam
 {
-    public class Command : IRequest<Response> // Rename this to Command
+    public class Command : IRequest<Response>
     {
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;

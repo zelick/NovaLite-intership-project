@@ -25,7 +25,7 @@ export class CandidateInfoFormComponent {
   onSubmit() {
     if (this.examForm.valid) {
       const formValue = this.examForm.value;
-      const query = GenerateExamCommand.fromJS({
+      const query = new GenerateExamCommand({
         email: formValue.email,
         name: formValue.name,
         surname: formValue.surname

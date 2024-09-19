@@ -1,11 +1,10 @@
-﻿
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Konteh.Tests
 {
     public class BaseIntegrationTest
     {
-        private readonly CustomWebApplicationFactory<Program> _webApplicationFactory;
+        protected readonly CustomWebApplicationFactory<Program> _webApplicationFactory;
 
         public BaseIntegrationTest()
         {
@@ -13,5 +12,12 @@ namespace Konteh.Tests
         }
 
         public HttpClient GetClient() => _webApplicationFactory.CreateClient();
+
+        protected T Resolve<T>() where T : class
+        {
+            var scope = _webApplicationFactory.Services.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<T>();
+            return service;
+        }
     }
 }
