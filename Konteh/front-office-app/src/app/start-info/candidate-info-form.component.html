@@ -1,0 +1,30 @@
+<form [formGroup]="examForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput id="email" formControlName="email" type="email" />
+    <mat-error *ngIf="examForm.controls['email'].hasError('required')">
+      Email is required
+    </mat-error>
+    <mat-error *ngIf="examForm.controls['email'].hasError('email')">
+      Please enter a valid email
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput id="name" formControlName="name" type="text" />
+    <mat-error *ngIf="examForm.controls['name'].hasError('required')">
+      Name is required
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Surname</mat-label>
+    <input matInput id="surname" formControlName="surname" type="text" />
+    <mat-error *ngIf="examForm.controls['surname'].hasError('required')">
+      Surname is required
+    </mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="examForm.invalid">Submit</button>
+</form>
