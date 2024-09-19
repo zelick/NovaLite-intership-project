@@ -5,7 +5,7 @@
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "strict": true,
-    "noImplicitOverride": false,
+    "noImplicitOverride": false, //ovo
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -25,7 +25,7 @@
     ]
   },
   "angularCompilerOptions": {
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": false, //ovo
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
