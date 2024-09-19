@@ -22,14 +22,14 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": true, //false ?
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7221;http://localhost:5045",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IIS Express": {
+    "IIS Express": {  //delete ?
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",

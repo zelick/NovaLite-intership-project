@@ -1,15 +1,17 @@
 using FluentValidation;
+using Konteh.BackOfficeApi.Consumers;
+using Konteh.BackOfficeApi.HubConfig;
 using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.ExeptionHandler;
 using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Microsoft.Identity.Web;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -32,6 +34,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
@@ -43,16 +46,37 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddCors(options =>
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigins",
+//        builder =>
+//        {
+//            builder.WithOrigins("http://localhost:54326")
+//                   .AllowAnyMethod()
+//                   .AllowAnyHeader();
+//        });
+//});
+
+builder.Services.AddMassTransit(x =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
+    x.AddConsumer<ExamRequestedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
         {
-            builder.WithOrigins("http://localhost:4200") 
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            h.Username("admin");
+            h.Password("admin");
         });
+
+        cfg.ReceiveEndpoint("exam-requested-queue", e =>
+        {
+            e.ConfigureConsumer<ExamRequestedConsumer>(context);
+        });
+    });
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -67,6 +91,11 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapHub<ExamHub>("/examHub");
+//app.UseDefaultFiles(); //mozda treba
+//app.UseStaticFiles(); //mozda treba za index.html
+
 
 app.MapControllers();
 
