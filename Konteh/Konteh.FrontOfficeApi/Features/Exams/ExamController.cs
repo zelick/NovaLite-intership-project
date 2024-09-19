@@ -1,4 +1,4 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+﻿namespace Konteh.FrontOfficeApi.Features.Exams;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +19,14 @@ public class ExamController : Controller
     public async Task<ActionResult<GenerateExam.Response>> CreateExam([FromBody] GenerateExam.Command candidate)
     {
         var response = await _mediator.Send(candidate);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("{id:int}")]
+    public async Task<ActionResult<IEnumerable<GetExam.Response>>> GetExam(int id)
+    {
+        var response = await _mediator.Send(new GetExam.Query { Id = id });
         return Ok(response);
     }
 }

@@ -8,11 +8,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
+import { MatInput } from '@angular/material/input';
+import { TakingTestComponent } from './taking-test/taking-test.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CandidateInfoFormComponent
+    CandidateInfoFormComponent,
+    TakingTestComponent
   ],
   imports: [
     BrowserModule,
@@ -21,6 +24,7 @@ import { CandidateInfoFormComponent } from './start-info/candidate-info-form.com
     HttpClientModule,
     MatFormField,
     MatLabel,
+    MatInput,
     MatError,
 
   ],

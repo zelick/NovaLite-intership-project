@@ -1,4 +1,4 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+﻿namespace Konteh.FrontOfficeApi.Features.Exams;
 
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Dtos;
@@ -27,7 +27,6 @@ public static class GenerateExam
         private readonly IRepository<Exam> _examRepository;
         private readonly IRepository<Candidate> _candidateRepository;
         private readonly IRandomNumberGenerator _random;
-
         public RequestHandler(IRepository<Question> questionRepository,
                               IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository,
                               IRandomNumberGenerator random)

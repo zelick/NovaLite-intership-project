@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExamClient, GenerateExamCommand, GenerateExamResponse, ExamQuestionDto } from '../api/api-reference'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-candidate-info-form',
@@ -8,37 +9,38 @@ import { ExamClient, GenerateExamCommand, GenerateExamResponse, ExamQuestionDto 
   styleUrls: ['./candidate-info-form.component.css']
 })
 export class CandidateInfoFormComponent {
-  examForm: FormGroup;
+  //examForm: FormGroup;
   examQuestions: ExamQuestionDto[] = []; 
-
-  constructor(private fb: FormBuilder, private examClient: ExamClient) {
-    this.examForm = this.fb.group({
-      email: ['', [
-        Validators.required, 
-        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$') 
-      ]],
-      name: ['', Validators.required],
-      surname: ['', Validators.required]
-    });
+  error : boolean = false;
+  examForm = new FormGroup({
+    email: new FormControl('', [
+      Validators.required, 
+      Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$') 
+    ]),
+    name: new FormControl('', Validators.required),
+    surname: new FormControl('', Validators.required),
+  });
+  constructor(private examClient: ExamClient, private router: Router) {
   }
 
   onSubmit() {
-    if (this.examForm.valid) {
-      const formValue = this.examForm.value;
+    if(!this.examForm.valid)
+      return;
+    
+    const formValue = this.examForm.value;
       const query = new GenerateExamCommand({
-        email: formValue.email,
-        name: formValue.name,
-        surname: formValue.surname
+        email: formValue.email!,
+        name: formValue.name!,
+        surname: formValue.surname!
       });
-
-      this.examClient.createExam(query).subscribe({
-        next: (response: GenerateExamResponse) => {
-          this.examQuestions = response.examQuestions || [];
-        },
-        error: (err) => {
-          
-        }
-      });
-    }
+            console.log(query);
+    this.examClient.createExam(query).subscribe({
+      next:(res) => {
+        this.router.navigate(['test', res.id]);
+      },
+      error:() => {
+        this.error = true;
+      }
+    })
   }
 }
