@@ -1,4 +1,4 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+﻿namespace Konteh.FrontOfficeApi.Features.Exams;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

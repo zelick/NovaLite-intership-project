@@ -5,6 +5,7 @@ import { QuestionFormComponent } from './question-form/question-form.component';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
+import { ExamsOverviewComponent } from './exams-overview/exams-overview.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'questions/:id', 
     component: QuestionFormComponent
+  },
+  {
+    path: 'exams',
+    component: ExamsOverviewComponent
   }
   
 ];

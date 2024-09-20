@@ -35,6 +35,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { environment } from '../environments/environment';
+import { ExamsOverviewComponent } from './exams-overview/exams-overview.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { environment } from '../environments/environment';
     QuestionFormComponent,
     FormErrorsComponent,
     NavbarComponent,
-    HomeComponent
+    HomeComponent,
+    ExamsOverviewComponent
   ],
   imports: [
     FormsModule,

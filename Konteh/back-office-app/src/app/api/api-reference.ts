@@ -312,6 +312,80 @@ export class QuestionClient implements IQuestionClient {
     }
 }
 
+export interface IExamClient {
+    getAllExams(page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class ExamClient implements IExamClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "https://localhost:7221";
+    }
+
+    getAllExams(page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse> {
+        let url_ = this.baseUrl + "/api/exams?";
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllExams(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllExams(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetExamsForOverviewResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetExamsForOverviewResponse>;
+        }));
+    }
+
+    protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsForOverviewResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetExamsForOverviewResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export class GetAllQuestionsResponse implements IGetAllQuestionsResponse {
     id?: number;
     text?: string;
@@ -905,6 +979,146 @@ export interface IAnswer {
     text?: string;
     isCorrect?: boolean;
     isDeleted?: boolean;
+}
+
+export class GetExamsForOverviewResponse implements IGetExamsForOverviewResponse {
+    exams?: GetExamsForOverviewExamResponse[];
+    length?: number;
+
+    constructor(data?: IGetExamsForOverviewResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["exams"])) {
+                this.exams = [] as any;
+                for (let item of _data["exams"])
+                    this.exams!.push(GetExamsForOverviewExamResponse.fromJS(item));
+            }
+            this.length = _data["length"];
+        }
+    }
+
+    static fromJS(data: any): GetExamsForOverviewResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamsForOverviewResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.exams)) {
+            data["exams"] = [];
+            for (let item of this.exams)
+                data["exams"].push(item.toJSON());
+        }
+        data["length"] = this.length;
+        return data;
+    }
+}
+
+export interface IGetExamsForOverviewResponse {
+    exams?: GetExamsForOverviewExamResponse[];
+    length?: number;
+}
+
+export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExamResponse {
+    id?: number;
+    candidate?: GetExamsForOverviewCandidateInformation;
+    totalNumberOfQuestions?: number;
+    correctAnswersCount?: number;
+
+    constructor(data?: IGetExamsForOverviewExamResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.candidate = _data["candidate"] ? GetExamsForOverviewCandidateInformation.fromJS(_data["candidate"]) : <any>undefined;
+            this.totalNumberOfQuestions = _data["totalNumberOfQuestions"];
+            this.correctAnswersCount = _data["correctAnswersCount"];
+        }
+    }
+
+    static fromJS(data: any): GetExamsForOverviewExamResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamsForOverviewExamResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["candidate"] = this.candidate ? this.candidate.toJSON() : <any>undefined;
+        data["totalNumberOfQuestions"] = this.totalNumberOfQuestions;
+        data["correctAnswersCount"] = this.correctAnswersCount;
+        return data;
+    }
+}
+
+export interface IGetExamsForOverviewExamResponse {
+    id?: number;
+    candidate?: GetExamsForOverviewCandidateInformation;
+    totalNumberOfQuestions?: number;
+    correctAnswersCount?: number;
+}
+
+export class GetExamsForOverviewCandidateInformation implements IGetExamsForOverviewCandidateInformation {
+    email?: string;
+    name?: string;
+    surname?: string;
+
+    constructor(data?: IGetExamsForOverviewCandidateInformation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+        }
+    }
+
+    static fromJS(data: any): GetExamsForOverviewCandidateInformation {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamsForOverviewCandidateInformation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        return data;
+    }
+}
+
+export interface IGetExamsForOverviewCandidateInformation {
+    email?: string;
+    name?: string;
+    surname?: string;
 }
 
 export interface FileResponse {

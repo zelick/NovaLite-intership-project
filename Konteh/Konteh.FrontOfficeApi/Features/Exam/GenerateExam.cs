@@ -1,4 +1,4 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exam;
+﻿namespace Konteh.FrontOfficeApi.Features.Exams;
 
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Dtos;
@@ -47,7 +47,9 @@ public static class GenerateExam
             var exam = new Exam
             {
                 Candidate = candidate,
-                ExamQuestions = new List<ExamQuestion>()
+                ExamQuestions = new List<ExamQuestion>(),
+                Status = ExamStatus.InProgress,
+                StartTime = DateTime.UtcNow
             };
 
             exam.ExamQuestions = questions

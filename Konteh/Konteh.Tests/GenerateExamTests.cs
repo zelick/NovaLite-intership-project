@@ -1,5 +1,5 @@
 using Konteh.Domain;
-using Konteh.FrontOfficeApi.Features.Exam;
+using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.Infrastructure.Repositories;
 using NSubstitute;
 using System.ComponentModel.DataAnnotations;

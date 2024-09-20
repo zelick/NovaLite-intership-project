@@ -9,8 +9,6 @@ import { Router } from '@angular/router';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent implements OnInit{
-
-
   username: string | undefined;
 
   constructor(private authService: MsalService, private questionClient: QuestionClient, private router: Router){}
@@ -56,6 +54,9 @@ export class NavbarComponent implements OnInit{
   }
   questionsTable() {
     this.router.navigate(['questions'])
+  }
+  examOverview() {
+    this.router.navigate(['exams'])
   }
 
 }
