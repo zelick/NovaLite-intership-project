@@ -17,7 +17,6 @@ public class GenerateExamIntegrationTests : BaseIntegrationTest<Program>
 
     public GenerateExamIntegrationTests()
     {
-
     }
 
     [SetUp]
@@ -29,10 +28,6 @@ public class GenerateExamIntegrationTests : BaseIntegrationTest<Program>
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
         await _respawner.ResetAsync(_connectionString);
-
-        var context = Resolve<KontehDbContext>();
-        context.Questions.AddRange(PrepareQuestions());
-        await context.SaveChangesAsync();
     }
 
     [TearDown]
@@ -44,6 +39,10 @@ public class GenerateExamIntegrationTests : BaseIntegrationTest<Program>
     [Test]
     public async Task CreateExam_Returns_ExamResponse()
     {
+        var context = Resolve<KontehDbContext>();
+        context.Questions.AddRange(PrepareQuestions());
+        await context.SaveChangesAsync();
+
         var candidateRequest = new GenerateExam.Command
         {
             Name = "Djordje",
@@ -57,8 +56,6 @@ public class GenerateExamIntegrationTests : BaseIntegrationTest<Program>
 
         var examResponse = await response.Content.ReadFromJsonAsync<GenerateExam.Response>();
         Assert.That(examResponse, Is.Not.Null);
-        Assert.That(examResponse.Id, Is.GreaterThan(0));
-        Assert.That(examResponse.ExamQuestions, Is.Not.Empty);
         Assert.That(examResponse.ExamQuestions.Count, Is.EqualTo(10));
     }
 

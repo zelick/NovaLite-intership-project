@@ -46,9 +46,7 @@ public class GenerateExamTests
             new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
         };
 
-        _examRepositoryMock
-            .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-            .Returns(existingExams.AsQueryable());
+        MockExamRepositorySearch(existingExams);
 
         var exception = Assert.ThrowsAsync<ValidationException>(async () =>
             await _handler!.Handle(query, CancellationToken.None));
@@ -66,7 +64,7 @@ public class GenerateExamTests
             Surname = "Zelic"
         };
 
-        MockExamRepositorySearch();
+        MockExamRepositorySearch(new List<Exam>());
 
         _questionRepositoryMock
             .GetAll()
@@ -85,7 +83,7 @@ public class GenerateExamTests
         var request = new GenerateExam.Command { Email = "testnovi@test.com" };
         var questions = PrepareQuestions();
 
-        MockExamRepositorySearch();
+        MockExamRepositorySearch(new List<Exam>());
 
         _questionRepositoryMock
             .GetAll()
@@ -98,11 +96,11 @@ public class GenerateExamTests
             .IgnoreMember("Id");
     }
 
-    private void MockExamRepositorySearch()
+    private void MockExamRepositorySearch(List<Exam> exams)
     {
         _examRepositoryMock
             .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-            .Returns(new List<Exam>().AsQueryable());
+            .Returns(exams.AsQueryable());
     }
 
     private List<Question> PrepareQuestions()

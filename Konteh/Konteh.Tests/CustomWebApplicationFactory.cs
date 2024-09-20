@@ -37,12 +37,6 @@ public class CustomWebApplicationFactory<TProgram>
                 options.UseSqlServer("Server=.;Database=KontehDBTest;Trusted_Connection=True;TrustServerCertificate=True;");
             });
 
-            var authServiceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IAuthenticationService));
-            if (authServiceDescriptor != null)
-            {
-                services.Remove(authServiceDescriptor);
-            }
-
             services.RemoveAll(typeof(IConfigureOptions<JwtBearerOptions>));
 
             services.AddAuthentication("Test")
@@ -57,6 +51,5 @@ public class CustomWebApplicationFactory<TProgram>
         });
 
     }
-
 
 }

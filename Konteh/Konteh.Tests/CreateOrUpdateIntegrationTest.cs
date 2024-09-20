@@ -28,7 +28,6 @@ public class CreateOrUpdateIntegrationTest : BaseIntegrationTest<Program>
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
         await _respawner.ResetAsync(_connectionString);
-
     }
 
     [TearDown]
@@ -56,12 +55,11 @@ public class CreateOrUpdateIntegrationTest : BaseIntegrationTest<Program>
         var response = await _client.PostAsJsonAsync("api/questions", command);
         var questions = _questionRepository.GetAll().Result;
 
-        Assert.That(response.IsSuccessStatusCode, Is.True, "Expected response status to be success.");
-        var createdQuestion = questions.FirstOrDefault(q => q.Text == command.Text && q.Type == command.Type && q.Category == command.Category);
 
-        Assert.That(createdQuestion, Is.Not.Null, "Expected the created question to exist in the repository.");
-        Assert.That(createdQuestion.Answers.Count, Is.EqualTo(3), "Expected the question to have 3 answers.");
-        Assert.That(createdQuestion.Answers.Any(a => a.Text == "Answer 1" && a.IsCorrect), Is.True, "Expected one of the answers to be 'Answer 1' and marked as correct.");
-        Assert.That(createdQuestion.Answers.Any(a => a.Text == "Answer 2" && !a.IsCorrect), Is.True, "Expected one of the answers to be 'Answer 2' and marked as incorrect.");
+        Assert.That(response.IsSuccessStatusCode, Is.True, "Expected response status to be success.");
+
+        var createdQuestion = questions.FirstOrDefault(q => q.Text == command.Text);
+
+        await Verify(createdQuestion).IgnoreMember("Id");
     }
 }
