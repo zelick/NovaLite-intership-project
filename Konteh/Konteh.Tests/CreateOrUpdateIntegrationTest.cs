@@ -54,12 +54,9 @@ public class CreateOrUpdateIntegrationTest : BaseIntegrationTest<Program>
 
         var response = await _client.PostAsJsonAsync("api/questions", command);
         var questions = _questionRepository.GetAll().Result;
-
-
-        Assert.That(response.IsSuccessStatusCode, Is.True, "Expected response status to be success.");
-
         var createdQuestion = questions.FirstOrDefault(q => q.Text == command.Text);
 
+        Assert.That(response.IsSuccessStatusCode, Is.True, "Expected response status to be success.");
         await Verify(createdQuestion).IgnoreMember("Id");
     }
 }

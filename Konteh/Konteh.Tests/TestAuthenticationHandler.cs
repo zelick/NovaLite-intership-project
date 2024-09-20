@@ -15,19 +15,16 @@ public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSch
     {
     }
 
-#pragma warning disable CS1998 
-    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
-#pragma warning restore CS1998 
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, "validUser"),
         };
-
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         var principal = new ClaimsPrincipal(identity);
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
-        return AuthenticateResult.Success(ticket);
+        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }
