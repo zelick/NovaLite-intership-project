@@ -9,9 +9,10 @@ import { SignalRService } from './services/signar-service';
 export class AppComponent implements OnInit{
   title = 'back-office-app';
   
-  constructor(private signalRService: SignalRService){}
+  constructor(public signalRService: SignalRService) { }
 
-  ngOnInit(): void {
-
+  ngOnInit() {
+    this.signalRService.startConnection('https://localhost:7221/examHub');
+    this.signalRService.receiveExamRequest();
   }
 }

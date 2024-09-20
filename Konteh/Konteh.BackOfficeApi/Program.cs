@@ -42,20 +42,11 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("http://localhost:4200")
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials();
         });
 });
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowSpecificOrigins",
-//        builder =>
-//        {
-//            builder.WithOrigins("http://localhost:54326")
-//                   .AllowAnyMethod()
-//                   .AllowAnyHeader();
-//        });
-//});
 
 builder.Services.AddMassTransit(x =>
 {
@@ -88,14 +79,13 @@ app.UseCors("AllowSpecificOrigins");
 
 app.UseExceptionHandler();
 
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapHub<ExamHub>("/examHub");
-//app.UseDefaultFiles(); //mozda treba
-//app.UseStaticFiles(); //mozda treba za index.html
 
+app.MapHub<ExamHub>("/examHub");
 
 app.MapControllers();
 
