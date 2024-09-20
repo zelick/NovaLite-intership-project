@@ -13,84 +13,91 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using System.Reflection;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+namespace Konteh.BackOfficeApi;
 
-
-
-builder.Services.AddControllers();
-
-builder.Services.AddDbContext<KontehDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
-builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
-
-builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:4200")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials();
-        });
-});
-
-
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<ExamRequestedConsumer>();
-
-    x.UsingRabbitMq((context, cfg) =>
+    private static void Main(string[] args)
     {
-        cfg.Host("localhost", "/", h =>
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+
+
+        builder.Services.AddControllers();
+
+        builder.Services.AddDbContext<KontehDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
+        builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
+
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+
+        builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+
+        builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+        builder.Services.AddCors(options =>
         {
-            h.Username("admin");
-            h.Password("admin");
+            options.AddPolicy("AllowSpecificOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                           .AllowCredentials();
+                });
         });
 
-        cfg.ReceiveEndpoint("exam-requested-queue", e =>
+
+        builder.Services.AddMassTransit(x =>
         {
-            e.ConfigureConsumer<ExamRequestedConsumer>(context);
+            x.AddConsumer<ExamRequestedConsumer>();
+
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("localhost", "/", h =>
+                {
+                    h.Username("admin");
+                    h.Password("admin");
+                });
+
+                cfg.ReceiveEndpoint("exam-requested-queue", e =>
+                {
+                    e.ConfigureConsumer<ExamRequestedConsumer>(context);
+                });
+            });
         });
-    });
-});
 
-builder.Services.AddSignalR();
+        builder.Services.AddSignalR();
 
-var app = builder.Build();
+        // Configure the HTTP request pipeline.
 
+        app.UseHttpsRedirection();
+        app.UseCors("AllowSpecificOrigins");
 
-// Configure the HTTP request pipeline.
+        app.UseExceptionHandler();
 
-app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigins");
+        app.UseAuthentication();
 
-app.UseExceptionHandler();
-
-
-app.UseAuthentication();
-
-app.UseAuthorization();
+        app.UseAuthorization();
 
 
-app.MapHub<ExamHub>("/examHub");
 
-app.MapControllers();
+        app.MapHub<ExamHub>("/examHub");
 
+        app.MapControllers();
 
-app.UseOpenApi();
-app.UseSwaggerUi();
+        app.UseOpenApi();
+        app.UseSwaggerUi();
 
-app.Run();
+        app.Run();
+    }
+}
