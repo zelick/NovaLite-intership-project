@@ -1,6 +1,7 @@
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Features.Exam;
 using Konteh.Infrastructure.Repositories;
+using MassTransit;
 using NSubstitute;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -15,6 +16,7 @@ namespace Konteh.Tests
         private IRepository<Candidate> _candidateRepositoryMock;
         private IRandomNumberGenerator _rand;
         private GenerateExam.RequestHandler _handler;
+        private IPublishEndpoint _publishEndpoint;
 
         [SetUp]
         public void Setup()
@@ -24,11 +26,13 @@ namespace Konteh.Tests
             _examRepositoryMock = Substitute.For<IRepository<Exam>>();
             _candidateRepositoryMock = Substitute.For<IRepository<Candidate>>();
             _rand = Substitute.For<IRandomNumberGenerator>();
+            _publishEndpoint = Substitute.For<IPublishEndpoint>();
             _handler = new GenerateExam.RequestHandler(
                 _questionRepositoryMock,
                 _examRepositoryMock,
                 _candidateRepositoryMock,
-                _rand);
+                _rand,
+                _publishEndpoint);
         }
 
         [Test]
