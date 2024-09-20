@@ -10,6 +10,9 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
 import { MatInput } from '@angular/material/input';
 import { TakingTestComponent } from './taking-test/taking-test.component';
+import { FormsModule } from '@angular/forms';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,9 @@ import { TakingTestComponent } from './taking-test/taking-test.component';
     MatLabel,
     MatInput,
     MatError,
-
+    FormsModule,
+    MatRadioModule,
+    MatCheckboxModule
   ],
   providers: [
     provideAnimationsAsync()

@@ -1,1 +1,25 @@
-<p>taking-test works!</p>
+<div>
+    <h1>{{question.text}}</h1>
+    <div *ngIf="question.type === 2">
+        <section class="section" *ngFor="let answer of question.answers">
+            <mat-checkbox [checked]="isChecked(answer)" (change)="onCheckboxChange(answer)">{{answer.answerText}}</mat-checkbox> <br/>
+        </section>
+    </div>
+    <div *ngIf="question.type === 1">
+        <mat-radio-group
+            aria-labelledby="radio-group-label"
+            class="radio-group">
+            @for (answer of question.answers; track answer) {
+            <mat-radio-button class="radio-button" [checked]="isChecked(answer)" (change)="onRadioButtonChange(answer)" [value]="answer.answerId">{{answer.answerText}}</mat-radio-button> <br/>
+            }
+        </mat-radio-group>
+    </div>
+    <br />
+    <p>{{page+1}}/{{examQuestions.length}}</p>
+    <br/>
+    <br/>
+    <button *ngIf="page!==0" (click)="previous()">Previous</button>
+    <button class="next" *ngIf="page!==examQuestions.length-1" (click)="next()">Next</button>
+    <button class="next" *ngIf="page ===examQuestions.length-1" (click)="submit()">Submit</button>
+    <br/>
+</div>

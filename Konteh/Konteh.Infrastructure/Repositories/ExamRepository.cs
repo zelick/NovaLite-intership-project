@@ -9,6 +9,6 @@ public class ExamRepository : BaseRepository<Exam>
     {
 
     }
-    public override async Task<Exam> GetById(int id) => await _dbSet.Include(x => x.ExamQuestions).ThenInclude(eq => eq.Question).SingleOrDefaultAsync(x => x.Id == id);
+    public override async Task<Exam> GetById(int id) => await _dbSet.Include(x => x.ExamQuestions).ThenInclude(eq => eq.Question).ThenInclude(eq => eq.Answers).SingleOrDefaultAsync(x => x.Id == id);
 
 }

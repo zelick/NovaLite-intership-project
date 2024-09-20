@@ -33,10 +33,10 @@ export class CandidateInfoFormComponent {
         name: formValue.name!,
         surname: formValue.surname!
       });
-            console.log(query);
+    
     this.examClient.createExam(query).subscribe({
       next:(res) => {
-        this.router.navigate(['test', res.id]);
+        this.router.navigate(['test'], { queryParams: { id: res.id } });
       },
       error:() => {
         this.error = true;
