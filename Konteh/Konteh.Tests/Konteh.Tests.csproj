@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Konteh.BackOfficeApi\Konteh.BackOfficeApi.csproj" />
     <ProjectReference Include="..\Konteh.Domain\Konteh.Domain.csproj" />
     <ProjectReference Include="..\Konteh.FrontOfficeApi\Konteh.FrontOfficeApi.csproj" />
     <ProjectReference Include="..\Konteh.Infrastructure\Konteh.Infrastructure.csproj" />
