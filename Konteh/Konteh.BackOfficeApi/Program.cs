@@ -75,9 +75,12 @@ public class Program
                 });
             });
         });
+
         builder.Services.AddSignalR();
 
         // Configure the HTTP request pipeline.
+
+        var app = builder.Build();
 
         app.UseHttpsRedirection();
         app.UseCors("AllowSpecificOrigins");
