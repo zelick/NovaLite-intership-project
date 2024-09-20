@@ -51,7 +51,7 @@ public class Program
                 {
                     builder.WithOrigins("http://localhost:4200")
                            .AllowAnyMethod()
-                           .AllowAnyHeader();
+                           .AllowAnyHeader()
                            .AllowCredentials();
                 });
         });
@@ -75,7 +75,6 @@ public class Program
                 });
             });
         });
-
         builder.Services.AddSignalR();
 
         // Configure the HTTP request pipeline.

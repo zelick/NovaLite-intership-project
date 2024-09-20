@@ -35,81 +35,81 @@ namespace Konteh.Tests
                 _publishEndpoint);
         }
 
-    [Test]
-    public void GenerateExam_ShouldThrowException_WhenCandidateHasAlreadyTakenTest()
-    {
-        var query = new GenerateExam.Command
+        [Test]
+        public void GenerateExam_ShouldThrowException_WhenCandidateHasAlreadyTakenTest()
         {
-            Email = "loncardjole@gmail.com",
-            Name = "Djordje",
-            Surname = "Loncar"
-        };
+            var query = new GenerateExam.Command
+            {
+                Email = "loncardjole@gmail.com",
+                Name = "Djordje",
+                Surname = "Loncar"
+            };
 
-        var existingExams = new List<Exam>
+            var existingExams = new List<Exam>
         {
             new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
         };
 
-        MockExamRepositorySearch(existingExams);
+            MockExamRepositorySearch(existingExams);
 
-        var exception = Assert.ThrowsAsync<ValidationException>(async () =>
-            await _handler!.Handle(query, CancellationToken.None));
+            var exception = Assert.ThrowsAsync<ValidationException>(async () =>
+                await _handler!.Handle(query, CancellationToken.None));
 
-        Assert.That(exception.Message, Is.EqualTo("Candidate has already taken the test."));
-    }
+            Assert.That(exception.Message, Is.EqualTo("Candidate has already taken the test."));
+        }
 
-    [Test]
-    public async Task GenerateExam_ShouldCreateNewCandidate_WhenCandidateDoesNotExist()
-    {
-        var request = new GenerateExam.Command
+        [Test]
+        public async Task GenerateExam_ShouldCreateNewCandidate_WhenCandidateDoesNotExist()
         {
-            Email = "test@test.com",
-            Name = "Kristina",
-            Surname = "Zelic"
-        };
+            var request = new GenerateExam.Command
+            {
+                Email = "test@test.com",
+                Name = "Kristina",
+                Surname = "Zelic"
+            };
 
-        MockExamRepositorySearch(new List<Exam>());
+            MockExamRepositorySearch(new List<Exam>());
 
-        _questionRepositoryMock
-            .GetAll()
-            .Returns(PrepareQuestions());
+            _questionRepositoryMock
+                .GetAll()
+                .Returns(PrepareQuestions());
 
-        var response = await _handler!.Handle(request, CancellationToken.None);
+            var response = await _handler!.Handle(request, CancellationToken.None);
 
-        _candidateRepositoryMock
-            .Received(1)
-            .Add(Arg.Is<Candidate>(c => c.Email == request.Email && c.Name == request.Name && c.Surname == request.Surname));
-    }
+            _candidateRepositoryMock
+                .Received(1)
+                .Add(Arg.Is<Candidate>(c => c.Email == request.Email && c.Name == request.Name && c.Surname == request.Surname));
+        }
 
-    [Test]
-    public async Task GenerateExam_ShouldReturnCorrectResponse()
-    {
-        var request = new GenerateExam.Command { Email = "testnovi@test.com" };
-        var questions = PrepareQuestions();
+        [Test]
+        public async Task GenerateExam_ShouldReturnCorrectResponse()
+        {
+            var request = new GenerateExam.Command { Email = "testnovi@test.com" };
+            var questions = PrepareQuestions();
 
-        MockExamRepositorySearch(new List<Exam>());
+            MockExamRepositorySearch(new List<Exam>());
 
-        _questionRepositoryMock
-            .GetAll()
-            .Returns(questions);
+            _questionRepositoryMock
+                .GetAll()
+                .Returns(questions);
 
-        _rand.Next(Arg.Any<int>()).Returns(0);
-        var response = await _handler!.Handle(request, CancellationToken.None);
+            _rand.Next(Arg.Any<int>()).Returns(0);
+            var response = await _handler!.Handle(request, CancellationToken.None);
 
-        await Verify(response)
-            .IgnoreMember("Id");
-    }
+            await Verify(response)
+                .IgnoreMember("Id");
+        }
 
-    private void MockExamRepositorySearch(List<Exam> exams)
-    {
-        _examRepositoryMock
-            .Search(Arg.Any<Expression<Func<Exam, bool>>>())
-            .Returns(exams.AsQueryable());
-    }
+        private void MockExamRepositorySearch(List<Exam> exams)
+        {
+            _examRepositoryMock
+                .Search(Arg.Any<Expression<Func<Exam, bool>>>())
+                .Returns(exams.AsQueryable());
+        }
 
-    private List<Question> PrepareQuestions()
-    {
-        return new List<Question>
+        private List<Question> PrepareQuestions()
+        {
+            return new List<Question>
         {
             new Question { Id = 1,Text = "Question 1", Category = QuestionCategory.Http },
             new Question { Id = 2,Text = "Question 2", Category = QuestionCategory.Http },
@@ -127,6 +127,7 @@ namespace Konteh.Tests
             new Question { Id = 14, Text = "Question 14", Category = QuestionCategory.Oop },
             new Question { Id = 15, Text = "Question 15", Category = QuestionCategory.Git }
         };
-    }
+        }
 
+    }
 }
