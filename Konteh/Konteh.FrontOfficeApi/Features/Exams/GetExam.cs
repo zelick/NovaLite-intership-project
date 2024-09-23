@@ -44,6 +44,8 @@ public static class GetExam
         public async Task<IEnumerable<Response>> Handle(Query request, CancellationToken cancellationToken)
         {
             var exam = await _examRepository.GetById(request.Id);
+            if (exam == null)
+                throw new KeyNotFoundException($"Exam with ID {request.Id} not found.");
             var examQuestions = exam.ExamQuestions;
 
             var responseList = new List<Response>();
@@ -61,8 +63,9 @@ public static class GetExam
                         Type = examQuestion.Question.Type,
                         Answers = examQuestion.Question.Answers.Select(a => new AnswerDto { AnswerId = a.Id, AnswerText = a.Text }).ToList()
                     }
+
                 };
-                response.SelectedAnswers = new List<AnswerDto>();
+                response.SelectedAnswers = examQuestion.SelectedAnswers.Select(a => new AnswerDto { AnswerId = a.Id, AnswerText = a.Text }).ToList();
                 responseList.Add(response);
 
             }

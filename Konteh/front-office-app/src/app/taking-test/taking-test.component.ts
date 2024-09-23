@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { AnswerDto, ExamClient, GetExamQuestionDto, GetExamResponse, IGetExamResponse, QuestionType } from '../api/api-reference';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AnswerDto, ExamClient, ExamQuestionClient, GetExamQuestionDto, GetExamResponse, IGetExamResponse, QuestionType, SaveExamQuestionsCommand } from '../api/api-reference';
 
 @Component({
   selector: 'app-taking-test',
@@ -12,11 +12,11 @@ export class TakingTestComponent implements OnInit{
   page: number = 0;
   examQuestions: GetExamResponse[] = [];
   question: GetExamQuestionDto = new GetExamQuestionDto();
-  constructor (private route: ActivatedRoute, private client: ExamClient){
+  constructor (private route: ActivatedRoute, private examClient: ExamClient, private examQuestionClient: ExamQuestionClient, private router:Router){
   }
   
   loadExam(){
-    this.client.getExam(this.id).subscribe(res => {
+    this.examClient.getExam(this.id).subscribe(res => {
       this.examQuestions = res;
       this.question = res[0].questionDto!;
     })
@@ -58,6 +58,10 @@ export class TakingTestComponent implements OnInit{
     }
   }
   submit() {
-    console.log(this.examQuestions[this.page].selectedAnswers);
+    var save = new SaveExamQuestionsCommand;
+    save.examQuestions = this.examQuestions;
+    this.examQuestionClient.save(save).subscribe(res => {
+      this.router.navigate([""])
+    })
   }
 }
