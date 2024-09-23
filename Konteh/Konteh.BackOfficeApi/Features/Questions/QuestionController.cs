@@ -27,10 +27,10 @@ public class QuestionController : Controller
 
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<ActionResult> Delete(int id) 
+    public async Task<ActionResult> Delete(int id)
     {
         await _mediator.Send(new DeleteQuestion.Command { Id = id });
-        return Ok(); 
+        return Ok();
     }
 
     [HttpPut]
