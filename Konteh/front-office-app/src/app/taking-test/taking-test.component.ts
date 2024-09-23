@@ -8,7 +8,7 @@ import { AnswerDto, ExamClient, ExamQuestionClient, GetExamQuestionDto, GetExamR
   styleUrl: './taking-test.component.css'
 })
 export class TakingTestComponent implements OnInit{
-  id : any;
+  id : number = 0;
   page: number = 0;
   examQuestions: GetExamResponse[] = [];
   question: GetExamQuestionDto = new GetExamQuestionDto();
@@ -24,7 +24,7 @@ export class TakingTestComponent implements OnInit{
 
   ngOnInit(): void{
     this.route.queryParamMap.subscribe(param => {
-      this.id = param.get('id');
+      this.id = Number(param.get('id'));
     })
     this.loadExam();
   }

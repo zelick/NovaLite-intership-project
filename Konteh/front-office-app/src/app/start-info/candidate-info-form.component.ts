@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./candidate-info-form.component.css']
 })
 export class CandidateInfoFormComponent {
-  //examForm: FormGroup;
   examQuestions: ExamQuestionDto[] = []; 
   error : boolean = false;
   examForm = new FormGroup({

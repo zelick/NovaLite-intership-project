@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Konteh.FrontOfficeApi.Features.ExamQuestions;
 
-public static class SaveExamQuestions
+public static class UpdateExamQuestions
 {
     public class Command : IRequest
     {

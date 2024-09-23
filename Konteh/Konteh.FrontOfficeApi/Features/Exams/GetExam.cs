@@ -1,5 +1,6 @@
 ﻿using Konteh.Domain;
 using Konteh.FrontOfficeApi.Dtos;
+using Konteh.Infrastructure.Exceptions;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
 
@@ -14,8 +15,8 @@ public static class GetExam
 
     public class Response
     {
-        public int Id { get; set; }  //id exq treba ti kasnije da bi update 
-        public QuestionDto QuestionDto { get; set; } = null!;
+        public int Id { get; set; }
+        public QuestionDto QuestionDto { get; set; } = new QuestionDto();
         public IEnumerable<AnswerDto> SelectedAnswers { get; set; } = new List<AnswerDto>();
     }
 
@@ -45,7 +46,7 @@ public static class GetExam
         {
             var exam = await _examRepository.GetById(request.Id);
             if (exam == null)
-                throw new KeyNotFoundException($"Exam with ID {request.Id} not found.");
+                throw new NotFoundException();
             var examQuestions = exam.ExamQuestions;
 
             var responseList = new List<Response>();

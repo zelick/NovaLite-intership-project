@@ -15,7 +15,7 @@ public class ExamQuestionController : Controller
     }
 
     [HttpPut]
-    public async Task<ActionResult> Save(SaveExamQuestions.Command request)
+    public async Task<ActionResult> Update(UpdateExamQuestions.Command request)
     {
         await _mediator.Send(request);
         return Ok();

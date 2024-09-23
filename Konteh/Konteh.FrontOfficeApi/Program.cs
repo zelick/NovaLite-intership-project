@@ -1,7 +1,11 @@
+using FluentValidation;
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.ExeptionHandler;
+using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -22,8 +26,13 @@ public class Program
         builder.Services.AddScoped<IRepository<Candidate>, CandidateRepository>();
         builder.Services.AddScoped<IRandomNumberGenerator, RandomNumberGenerator>();
         builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
-      
+
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
 
         builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
 
@@ -43,8 +52,9 @@ public class Program
         app.UseCors("AllowSpecificOrigins");
         app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        app.UseExceptionHandler();
 
+        app.UseAuthorization();
 
         app.MapControllers();
 
