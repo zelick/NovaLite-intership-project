@@ -15,15 +15,10 @@ public class ExamController : Controller
         _mediator = mediator;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<GetExamsForOverview.Response>> GetAllExams([FromQuery] int page, [FromQuery] int pageSize)
+    [HttpPut]
+    public async Task<ActionResult<GetExamsForOverview.Response>> GetAllExams(GetExamsForOverview.Query request)
     {
-        var response = await _mediator.Send(new GetExamsForOverview.Query
-        {
-            Page = page,
-            PageSize = pageSize
-        });
-
+        var response = await _mediator.Send(request);
         return Ok(response);
     }
 

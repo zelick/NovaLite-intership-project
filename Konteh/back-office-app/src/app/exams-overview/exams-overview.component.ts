@@ -1,40 +1,76 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ExamClient, GetAllQuestionsResponse, GetExamsForOverviewExamResponse, GetExamsForOverviewResponse } from '../api/api-reference';
+import { ExamClient, GetExamsForOverviewExamResponse, GetExamsForOverviewQuery, GetExamsForOverviewResponse } from '../api/api-reference';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-exams-overview',
   templateUrl: './exams-overview.component.html',
-  styleUrls: ['./exams-overview.component.css'] 
+  styleUrls: ['./exams-overview.component.css']
 })
 export class ExamsOverviewComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'candidate', 'totalQuestions'];
+  displayedColumns: string[] = [ 'candidate', 'status', 'score', 'startTime'];
   dataSource = new MatTableDataSource<GetExamsForOverviewExamResponse>([]);
   pageSize = 5;
-  totalExams = 0; 
+  totalExams = 0;
   currentPage = 0;
-  examsList!: GetAllQuestionsResponse[];
-
-  constructor(private examClient: ExamClient) {}
+  searchText: string = ''; 
+  
+  constructor(
+    private examClient: ExamClient,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadExams(0, this.pageSize);
+    this.route.queryParams.subscribe(params => {
+      this.searchText = params['searchText'] || '';  
+      this.currentPage = +params['page'] || 0;       
+      this.pageSize = +params['pageSize'] || 5;      
+
+      this.loadExams(this.currentPage, this.pageSize, this.searchText);
+    });
   }
 
-  loadExams(page: number, pageSize: number){
-    this.examClient.getAllExams(page, pageSize).subscribe(response => {
-      console.log(response)
+  loadExams(page: number, pageSize: number, searchText: string = ''): void {
+    let request = new GetExamsForOverviewQuery({
+      text: searchText,
+      page: this.currentPage,
+      pageSize: this.pageSize
+    });
+    this.examClient.getAllExams(request).subscribe((response: GetExamsForOverviewResponse) => {
       this.dataSource.data = response.exams || [];
-      
+      this.totalExams = response.length || 0;
     }, error => {
       console.error('Error loading exams: ', error);
     });
   }
 
+  onSearchChange(searchText: string): void {
+    this.searchText = searchText;
+    this.updateUrlParams();
+    this.loadExams(this.currentPage, this.pageSize, this.searchText);
+  }
+
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.loadExams(this.currentPage, this.pageSize);
+    this.updateUrlParams();
+    this.loadExams(this.currentPage, this.pageSize, this.searchText);
+  }
+
+  updateUrlParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        searchText: this.searchText,
+        page: this.currentPage,
+        pageSize: this.pageSize
+      },
+      queryParamsHandling: 'merge'  
+    });
   }
 }
+
+

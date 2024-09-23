@@ -313,7 +313,7 @@ export class QuestionClient implements IQuestionClient {
 }
 
 export interface IExamClient {
-    getAllExams(page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse>;
+    getAllExams(request: GetExamsForOverviewQuery): Observable<GetExamsForOverviewResponse>;
 }
 
 @Injectable({
@@ -329,27 +329,23 @@ export class ExamClient implements IExamClient {
         this.baseUrl = baseUrl ?? "https://localhost:7221";
     }
 
-    getAllExams(page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse> {
-        let url_ = this.baseUrl + "/api/exams?";
-        if (page === null)
-            throw new Error("The parameter 'page' cannot be null.");
-        else if (page !== undefined)
-            url_ += "page=" + encodeURIComponent("" + page) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+    getAllExams(request: GetExamsForOverviewQuery): Observable<GetExamsForOverviewResponse> {
+        let url_ = this.baseUrl + "/api/exams";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(request);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetAllExams(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -1034,6 +1030,8 @@ export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExam
     candidate?: GetExamsForOverviewCandidateInformation;
     totalNumberOfQuestions?: number;
     correctAnswersCount?: number;
+    examStatus?: string;
+    startTime?: Date;
 
     constructor(data?: IGetExamsForOverviewExamResponse) {
         if (data) {
@@ -1050,6 +1048,8 @@ export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExam
             this.candidate = _data["candidate"] ? GetExamsForOverviewCandidateInformation.fromJS(_data["candidate"]) : <any>undefined;
             this.totalNumberOfQuestions = _data["totalNumberOfQuestions"];
             this.correctAnswersCount = _data["correctAnswersCount"];
+            this.examStatus = _data["examStatus"];
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
         }
     }
 
@@ -1066,6 +1066,8 @@ export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExam
         data["candidate"] = this.candidate ? this.candidate.toJSON() : <any>undefined;
         data["totalNumberOfQuestions"] = this.totalNumberOfQuestions;
         data["correctAnswersCount"] = this.correctAnswersCount;
+        data["examStatus"] = this.examStatus;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1075,6 +1077,8 @@ export interface IGetExamsForOverviewExamResponse {
     candidate?: GetExamsForOverviewCandidateInformation;
     totalNumberOfQuestions?: number;
     correctAnswersCount?: number;
+    examStatus?: string;
+    startTime?: Date;
 }
 
 export class GetExamsForOverviewCandidateInformation implements IGetExamsForOverviewCandidateInformation {
@@ -1119,6 +1123,50 @@ export interface IGetExamsForOverviewCandidateInformation {
     email?: string;
     name?: string;
     surname?: string;
+}
+
+export class GetExamsForOverviewQuery implements IGetExamsForOverviewQuery {
+    text?: string;
+    page?: number;
+    pageSize?: number;
+
+    constructor(data?: IGetExamsForOverviewQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            this.page = _data["page"];
+            this.pageSize = _data["pageSize"];
+        }
+    }
+
+    static fromJS(data: any): GetExamsForOverviewQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamsForOverviewQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["page"] = this.page;
+        data["pageSize"] = this.pageSize;
+        return data;
+    }
+}
+
+export interface IGetExamsForOverviewQuery {
+    text?: string;
+    page?: number;
+    pageSize?: number;
 }
 
 export interface FileResponse {
