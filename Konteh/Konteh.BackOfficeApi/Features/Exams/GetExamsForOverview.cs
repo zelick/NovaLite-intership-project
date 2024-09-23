@@ -8,7 +8,7 @@ public static class GetExamsForOverview
 {
     public class Query : IRequest<Response>
     {
-        public string Text { get; set; } = string.Empty;
+        public string? Text { get; set; } = string.Empty;
         public int Page { get; set; }
         public int PageSize { get; set; }
     }
@@ -20,18 +20,10 @@ public static class GetExamsForOverview
     public class ExamResponse
     {
         public int Id { get; set; }
-        public CandidateInformation Candidate { get; set; } = new CandidateInformation();
-        public int TotalNumberOfQuestions { get; set; }
-        public int CorrectAnswersCount { get; set; }
+        public string CandidateName { get; set; } = string.Empty;
+        public string Score { get; set; } = string.Empty;
         public string ExamStatus { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
-    }
-
-    public class CandidateInformation
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Surname { get; set; } = string.Empty;
     }
 
     public class RequestHandler : IRequestHandler<Query, Response>
@@ -44,7 +36,7 @@ public static class GetExamsForOverview
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            IQueryable<Exam> query;
+            List<Exam> query;
             int length;
 
             if (!string.IsNullOrEmpty(request.Text))
@@ -53,38 +45,31 @@ public static class GetExamsForOverview
 
                 query = _examRepository.Search(exam =>
                     exam.Candidate.Name.Contains(searchText) ||
-                    exam.Candidate.Surname.Contains(searchText));
+                    exam.Candidate.Surname.Contains(searchText)).ToList();
 
                 length = query.Count();
 
                 query = query
                     .Skip(request.Page * request.PageSize)
                     .Take(request.PageSize)
-                    .OrderByDescending(exam => exam.StartTime);
+                    .OrderByDescending(exam => exam.StartTime).ToList();
             }
             else
             {
                 query = _examRepository.GetPaged(request.Page, request.PageSize)
-                    .OrderByDescending(exam => exam.StartTime)
-                    .AsQueryable();
+                    .OrderByDescending(exam => exam.StartTime).ToList();
 
-                var allExams = await _examRepository.GetAll();
-                length = allExams.Count();
+
+                length = await _examRepository.CountAsync();
             }
 
-            var exams = query.ToList();
+            var exams = query;
             var examResult = exams.Select(exam => new ExamResponse
             {
                 Id = exam.Id,
-                Candidate = new CandidateInformation
-                {
-                    Email = exam.Candidate.Email,
-                    Name = exam.Candidate.Name,
-                    Surname = exam.Candidate.Surname
-                },
-                TotalNumberOfQuestions = exam.ExamQuestions.Count,
-                CorrectAnswersCount = exam.ExamQuestions.Count(eq => eq.SelectedAnswers.Any() &&
-                                                                     eq.SelectedAnswers.All(sa => sa.IsCorrect)),
+                CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
+                Score = $"{exam.ExamQuestions.Count(eq => eq.SelectedAnswers.Any() &&
+                                                          eq.SelectedAnswers.All(sa => sa.IsCorrect))}/{exam.ExamQuestions.Count}",
                 ExamStatus = exam.Status.ToString(),
                 StartTime = exam.StartTime
             });

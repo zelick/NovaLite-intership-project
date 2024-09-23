@@ -9,7 +9,7 @@
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="candidate">
       <th mat-header-cell *matHeaderCellDef> Candidate </th>
-      <td mat-cell *matCellDef="let exam"> {{exam.candidate.name}} {{exam.candidate.surname}} </td>
+      <td mat-cell *matCellDef="let exam"> {{exam.candidateName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
@@ -19,7 +19,7 @@
 
     <ng-container matColumnDef="score">
       <th mat-header-cell *matHeaderCellDef> Score </th>
-      <td mat-cell *matCellDef="let exam"> {{exam.correctAnswersCount}}/{{exam.totalNumberOfQuestions}} </td>
+      <td mat-cell *matCellDef="let exam"> {{exam.score}} </td>
     </ng-container>
 
     <ng-container matColumnDef="startTime">
