@@ -36,33 +36,24 @@ public static class GetExamsForOverview
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            List<Exam> query;
-            int length;
-
-            if (!string.IsNullOrEmpty(request.Text))
+            string searchText = "";
+            if (request.Text != null)
             {
-                string searchText = request.Text.Trim().ToLower();
-
-                query = _examRepository.Search(exam =>
-                    exam.Candidate.Name.Contains(searchText) ||
-                    exam.Candidate.Surname.Contains(searchText)).ToList();
-
-                length = query.Count();
-
-                query = query
-                    .Skip(request.Page * request.PageSize)
-                    .Take(request.PageSize)
-                    .OrderByDescending(exam => exam.StartTime).ToList();
-            }
-            else
-            {
-                query = _examRepository.GetPaged(request.Page, request.PageSize)
-                    .OrderByDescending(exam => exam.StartTime).ToList();
-
-                length = await _examRepository.CountAsync();
+                searchText = request.Text.Trim().ToLower();
             }
 
-            var exams = query;
+            var query = _examRepository.Search(exam =>
+                exam.Candidate.Name.Contains(searchText) ||
+                exam.Candidate.Surname.Contains(searchText));
+
+            var length = query.Count();
+
+            var exams = query
+                .OrderByDescending(exam => exam.StartTime)
+                .Skip(request.Page * request.PageSize)
+                .Take(request.PageSize)
+                .ToList();
+
             var examResult = exams.Select(exam => new ExamResponse
             {
                 Id = exam.Id,
