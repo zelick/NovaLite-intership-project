@@ -380,6 +380,5 @@ dist/
 
 _metadata.json
 
-.angular/cache/18.2.3
-
-
+/.angular/cache/
+*.db
