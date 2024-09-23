@@ -1,4 +1,5 @@
 using Konteh.Domain;
+using Konteh.FrontOfficeApi.Configuration;
 using Konteh.FrontOfficeApi.Features.Exam;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repositories;
@@ -28,14 +29,19 @@ public class Program
 
         builder.Services.AddMassTransit(x =>
         {
-            x.UsingRabbitMq((context, cfg) =>
+            var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQConfiguration").Get<RabbitMQConfiguration>();
+            if (rabbitMQConfig != null)
             {
-                cfg.Host("localhost", "/", c =>
+                x.UsingRabbitMq((context, cfg) =>
                 {
-                    c.Username("admin");
-                    c.Password("admin");
+                    cfg.Host(rabbitMQConfig.Host, "/", c =>
+                    {
+                        c.Username(rabbitMQConfig.Username);
+                        c.Password(rabbitMQConfig.Password);
+                    });
                 });
-            });
+            }
+
         });
 
 
@@ -43,24 +49,19 @@ public class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowSpecificOrigins",
+            var corsConfig = builder.Configuration.GetSection("CorsConfiguration").Get<CorsConfiguration>();
+            if (corsConfig != null)
+            {
+                options.AddPolicy("AllowSpecificOrigins",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins(corsConfig.AllowedOriginFrontOffice)
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
-        });
 
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("AllowSpecificOrigins",
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:5000")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
+            }
+
         });
 
         var app = builder.Build();

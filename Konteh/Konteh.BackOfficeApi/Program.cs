@@ -1,4 +1,5 @@
 using FluentValidation;
+using Konteh.BackOfficeApi.Configuration;
 using Konteh.BackOfficeApi.Consumers;
 using Konteh.BackOfficeApi.HubConfig;
 using Konteh.Domain;
@@ -42,38 +43,44 @@ public class Program
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
-
-        builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowSpecificOrigins",
+            var corsConfig = builder.Configuration.GetSection("CorsConfiguration").Get<CorsConfiguration>();
+            if (corsConfig != null)
+            {
+                options.AddPolicy("AllowSpecificOrigins",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins(corsConfig.AllowedOriginBackOffice)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
-        });
 
+            }
+
+        });
 
         builder.Services.AddMassTransit(x =>
         {
             x.AddConsumer<ExamRequestedConsumer>();
-
-            x.UsingRabbitMq((context, cfg) =>
+            var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQConfiguration").Get<RabbitMQConfiguration>();
+            if (rabbitMQConfig != null)
             {
-                cfg.Host("localhost", "/", h =>
+                x.UsingRabbitMq((context, cfg) =>
                 {
-                    h.Username("admin");
-                    h.Password("admin");
+                    cfg.Host(rabbitMQConfig.Host, "/", c =>
+                    {
+                        c.Username(rabbitMQConfig.Username);
+                        c.Password(rabbitMQConfig.Password);
+                    });
+                    cfg.ReceiveEndpoint("exam-requested-queue", e =>
+                    {
+                        e.ConfigureConsumer<ExamRequestedConsumer>(context);
+                    });
                 });
+            }
 
-                cfg.ReceiveEndpoint("exam-requested-queue", e =>
-                {
-                    e.ConfigureConsumer<ExamRequestedConsumer>(context);
-                });
-            });
         });
 
         builder.Services.AddSignalR();
