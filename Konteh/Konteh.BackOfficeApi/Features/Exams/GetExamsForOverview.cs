@@ -59,7 +59,6 @@ public static class GetExamsForOverview
                 query = _examRepository.GetPaged(request.Page, request.PageSize)
                     .OrderByDescending(exam => exam.StartTime).ToList();
 
-
                 length = await _examRepository.CountAsync();
             }
 

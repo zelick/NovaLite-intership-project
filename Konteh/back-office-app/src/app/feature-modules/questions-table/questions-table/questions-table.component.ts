@@ -4,7 +4,7 @@ import {  PageEvent } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
 import { debounceTime, map } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
-import { ISearchQuestionsResponse, QuestionCategory, QuestionClient, QuestionType, SearchQuestionsQuery, SearchQuestionsResponse } from '../api/api-reference';
+import { ISearchQuestionsResponse, QuestionCategory, QuestionClient, QuestionType, SearchQuestionsQuery, SearchQuestionsResponse } from '../../../api/api-reference';
 import { Router } from '@angular/router';
 
 @Component({

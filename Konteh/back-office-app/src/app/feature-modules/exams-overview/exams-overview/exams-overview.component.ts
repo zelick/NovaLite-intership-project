@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ExamClient, GetExamsForOverviewExamResponse, GetExamsForOverviewResponse } from '../api/api-reference';
+import { ExamClient, GetExamsForOverviewExamResponse, GetExamsForOverviewResponse } from '../../../api/api-reference';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 

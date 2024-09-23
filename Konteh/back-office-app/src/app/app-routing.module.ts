@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { QuestionsTableComponent } from './questions-table/questions-table.component';
-import { QuestionFormComponent } from './question-form/question-form.component';
+import { QuestionsTableComponent } from './feature-modules/questions-table/questions-table/questions-table.component';
+import { QuestionFormComponent } from './feature-modules/question-form/question-form/question-form.component';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
-import { ExamsOverviewComponent } from './exams-overview/exams-overview.component';
+import { ExamsOverviewModule } from './feature-modules/exams-overview/exams-overview.module';
+import { ExamsOverviewComponent } from './feature-modules/exams-overview/exams-overview/exams-overview.component';
 
 const routes: Routes = [
   {
@@ -15,19 +16,27 @@ const routes: Routes = [
 
   { 
     path: 'questions', 
-    component: QuestionsTableComponent
+    component: QuestionsTableComponent,
+    canActivate: [authGuard],
+    loadChildren: () => import('./feature-modules/questions-table/questions-table.module').then(m=>m.QuestionsTableModule)
   },
   {
     path: 'questions/add',
-    component: QuestionFormComponent
+    component: QuestionFormComponent,
+    canActivate: [authGuard],
+    loadChildren: () => import('./feature-modules/question-form/question-form.module').then(m=>m.QuestionFormModule)
   },
   {
     path: 'questions/:id', 
-    component: QuestionFormComponent
+    component: QuestionFormComponent,
+    canActivate: [authGuard],
+    loadChildren: () => import('./feature-modules/question-form/question-form.module').then(m=>m.QuestionFormModule)
   },
   {
     path: 'exams',
-    component: ExamsOverviewComponent
+    component: ExamsOverviewComponent,
+    canActivate: [authGuard],
+    loadChildren: () => import('./feature-modules/exams-overview/exams-overview.module').then(m=> m.ExamsOverviewModule)
   }
   
 ];
