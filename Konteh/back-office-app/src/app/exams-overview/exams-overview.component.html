@@ -3,7 +3,7 @@
 
   <mat-form-field class="search-input">
     <mat-label>Search by Candidate</mat-label>
-    <input matInput [(ngModel)]="searchText" placeholder="Enter name or surname" [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)">
+    <input matInput placeholder="Enter name or surname" [(ngModel)]="searchText" (ngModelChange)="onSearchChange($event)">
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

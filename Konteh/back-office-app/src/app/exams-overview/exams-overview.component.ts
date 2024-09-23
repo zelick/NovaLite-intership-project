@@ -29,13 +29,13 @@ export class ExamsOverviewComponent implements OnInit {
       this.currentPage = +params['page'] || 0;       
       this.pageSize = +params['pageSize'] || 5;      
 
-      this.loadExams(this.currentPage, this.pageSize, this.searchText);
+      this.loadExams();
     });
   }
 
-  loadExams(page: number, pageSize: number, searchText: string = ''): void {
+  loadExams(): void {
     let request = new GetExamsForOverviewQuery({
-      text: searchText,
+      text: this.searchText,
       page: this.currentPage,
       pageSize: this.pageSize
     });
@@ -43,21 +43,20 @@ export class ExamsOverviewComponent implements OnInit {
       this.dataSource.data = response.exams || [];
       this.totalExams = response.length || 0;
     }, error => {
-      console.error('Error loading exams: ', error);
     });
   }
 
   onSearchChange(searchText: string): void {
     this.searchText = searchText;
     this.updateUrlParams();
-    this.loadExams(this.currentPage, this.pageSize, this.searchText);
+    this.loadExams();
   }
 
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.updateUrlParams();
-    this.loadExams(this.currentPage, this.pageSize, this.searchText);
+    this.loadExams();
   }
 
   updateUrlParams(): void {

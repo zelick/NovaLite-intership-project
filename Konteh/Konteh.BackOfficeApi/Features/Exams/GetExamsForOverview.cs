@@ -52,15 +52,15 @@ public static class GetExamsForOverview
                 string searchText = request.Text.Trim().ToLower();
 
                 query = _examRepository.Search(exam =>
-                    exam.Candidate.Name.ToLower().Contains(searchText) ||
-                    exam.Candidate.Surname.ToLower().Contains(searchText));
+                    exam.Candidate.Name.Contains(searchText) ||
+                    exam.Candidate.Surname.Contains(searchText));
 
                 length = query.Count();
 
                 query = query
-                    .OrderByDescending(exam => exam.StartTime)
                     .Skip(request.Page * request.PageSize)
-                    .Take(request.PageSize);
+                    .Take(request.PageSize)
+                    .OrderByDescending(exam => exam.StartTime);
             }
             else
             {
