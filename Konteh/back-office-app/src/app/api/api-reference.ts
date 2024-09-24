@@ -313,7 +313,7 @@ export class QuestionClient implements IQuestionClient {
 }
 
 export interface IExamClient {
-    getAllExams(text: string | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse>;
+    getAllExams(text: string | null | undefined): Observable<GetExamsResponse[]>;
 }
 
 @Injectable({
@@ -329,18 +329,10 @@ export class ExamClient implements IExamClient {
         this.baseUrl = baseUrl ?? "https://localhost:7221";
     }
 
-    getAllExams(text: string | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<GetExamsForOverviewResponse> {
+    getAllExams(text: string | null | undefined): Observable<GetExamsResponse[]> {
         let url_ = this.baseUrl + "/api/exams?";
         if (text !== undefined && text !== null)
             url_ += "Text=" + encodeURIComponent("" + text) + "&";
-        if (page === null)
-            throw new Error("The parameter 'page' cannot be null.");
-        else if (page !== undefined)
-            url_ += "Page=" + encodeURIComponent("" + page) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -358,14 +350,14 @@ export class ExamClient implements IExamClient {
                 try {
                     return this.processGetAllExams(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<GetExamsForOverviewResponse>;
+                    return _observableThrow(e) as any as Observable<GetExamsResponse[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<GetExamsForOverviewResponse>;
+                return _observableThrow(response_) as any as Observable<GetExamsResponse[]>;
         }));
     }
 
-    protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsForOverviewResponse> {
+    protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsResponse[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -376,7 +368,14 @@ export class ExamClient implements IExamClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetExamsForOverviewResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetExamsResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -983,62 +982,14 @@ export interface IAnswer {
     isDeleted?: boolean;
 }
 
-export class GetExamsForOverviewResponse implements IGetExamsForOverviewResponse {
-    exams?: GetExamsForOverviewExamResponse[];
-    length?: number;
-
-    constructor(data?: IGetExamsForOverviewResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["exams"])) {
-                this.exams = [] as any;
-                for (let item of _data["exams"])
-                    this.exams!.push(GetExamsForOverviewExamResponse.fromJS(item));
-            }
-            this.length = _data["length"];
-        }
-    }
-
-    static fromJS(data: any): GetExamsForOverviewResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetExamsForOverviewResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.exams)) {
-            data["exams"] = [];
-            for (let item of this.exams)
-                data["exams"].push(item.toJSON());
-        }
-        data["length"] = this.length;
-        return data;
-    }
-}
-
-export interface IGetExamsForOverviewResponse {
-    exams?: GetExamsForOverviewExamResponse[];
-    length?: number;
-}
-
-export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExamResponse {
+export class GetExamsResponse implements IGetExamsResponse {
     id?: number;
     candidateName?: string;
     score?: string;
     examStatus?: string;
     startTime?: Date;
 
-    constructor(data?: IGetExamsForOverviewExamResponse) {
+    constructor(data?: IGetExamsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1057,9 +1008,9 @@ export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExam
         }
     }
 
-    static fromJS(data: any): GetExamsForOverviewExamResponse {
+    static fromJS(data: any): GetExamsResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new GetExamsForOverviewExamResponse();
+        let result = new GetExamsResponse();
         result.init(data);
         return result;
     }
@@ -1075,7 +1026,7 @@ export class GetExamsForOverviewExamResponse implements IGetExamsForOverviewExam
     }
 }
 
-export interface IGetExamsForOverviewExamResponse {
+export interface IGetExamsResponse {
     id?: number;
     candidateName?: string;
     score?: string;

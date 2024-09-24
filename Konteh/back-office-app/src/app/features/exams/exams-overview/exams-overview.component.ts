@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ExamClient, GetExamsForOverviewExamResponse, GetExamsForOverviewResponse } from '../../../api/api-reference';
-import { PageEvent } from '@angular/material/paginator';
+import { ExamClient, GetExamsResponse, IGetExamsResponse } from '../../../api/api-reference';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SignalRService } from '../../../services/signar-service';
 
 @Component({
   selector: 'app-exams-overview',
@@ -10,33 +10,33 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./exams-overview.component.css']
 })
 export class ExamsOverviewComponent implements OnInit {
-  displayedColumns: string[] = [ 'candidate', 'status', 'score', 'startTime'];
-  dataSource = new MatTableDataSource<GetExamsForOverviewExamResponse>([]);
-  pageSize = 5;
-  totalExams = 0;
-  currentPage = 0;
+  displayedColumns: string[] = ['candidate', 'status', 'score', 'startTime'];
+  dataSource = new MatTableDataSource<IGetExamsResponse>([]);
   searchText: string = ''; 
+  examList: IGetExamsResponse[] = [];
   
   constructor(
     private examClient: ExamClient,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private signalRService: SignalRService
   ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.searchText = params['searchText'] || '';  
-      this.currentPage = +params['page'] || 0;       
-      this.pageSize = +params['pageSize'] || 5;      
-
       this.loadExams();
+    });
+
+    this.signalRService.receiveExamRequest((message) => {
+      this.handleNewExamRequest(message);
     });
   }
 
   loadExams(): void {
-    this.examClient.getAllExams(this.searchText, this.currentPage, this.pageSize).subscribe((response: GetExamsForOverviewResponse) => {
-      this.dataSource.data = response.exams || [];
-      this.totalExams = response.length || 0;
+    this.examClient.getAllExams(this.searchText).subscribe((response: IGetExamsResponse[]) => {
+      this.examList = response || [];
+      this.dataSource =  new MatTableDataSource<IGetExamsResponse>(this.examList);
     });
   }
 
@@ -46,24 +46,20 @@ export class ExamsOverviewComponent implements OnInit {
     this.loadExams();
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.updateUrlParams();
-    this.loadExams();
-  }
-
   updateUrlParams(): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         searchText: this.searchText,
-        page: this.currentPage,
-        pageSize: this.pageSize
       },
       queryParamsHandling: 'merge'  
     });
   }
+
+  
+
+  handleNewExamRequest(message: GetExamsResponse): void {
+    this.examList.unshift(message);
+    this.dataSource = new MatTableDataSource<IGetExamsResponse>(this.examList);
+  }
 }
-
-

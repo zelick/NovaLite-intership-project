@@ -69,9 +69,11 @@ public static class GenerateExam
 
             await _publishEndpoint.Publish(new ExamRequestedEvent
             {
-                Email = candidate.Email,
                 Name = candidate.Name,
-                Surname = candidate.Surname
+                Surname = candidate.Surname,
+                NumberOfQuestions = exam.ExamQuestions.Count,
+                StartTime = exam.StartTime,
+                Id = exam.Id
             });
 
             var examQuestionDtos = exam.ExamQuestions.Select(eq => new ExamQuestionDto

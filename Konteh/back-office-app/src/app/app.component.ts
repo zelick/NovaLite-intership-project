@@ -13,6 +13,5 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.signalRService.startConnection('https://localhost:7221/examHub');
-    this.signalRService.receiveExamRequest();
   }
 }

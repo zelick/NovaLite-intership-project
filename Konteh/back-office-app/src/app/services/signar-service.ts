@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { GetExamsResponse } from '../api/api-reference';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,9 @@ export class SignalRService {
     .catch(err => console.log('Error while starting connection' + err))
   }
 
-  receiveExamRequest (){
+  receiveExamRequest(callback: (message: GetExamsResponse) => void): void {
     this.hubConnection.on('ReceiveExamRequest', (message) => {
-      //TO DO:
+      callback(message); 
     });
   }
 }
