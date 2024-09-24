@@ -1,6 +1,7 @@
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.Infrastructure.Repositories;
+using MassTransit;
 using NSubstitute;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -15,6 +16,7 @@ public class GenerateExamTests
     private IRepository<Candidate> _candidateRepositoryMock;
     private IRandomNumberGenerator _rand;
     private GenerateExam.RequestHandler _handler;
+    private IPublishEndpoint _publishEndpoint;
 
     [SetUp]
     public void Setup()
@@ -24,11 +26,13 @@ public class GenerateExamTests
         _examRepositoryMock = Substitute.For<IRepository<Exam>>();
         _candidateRepositoryMock = Substitute.For<IRepository<Candidate>>();
         _rand = Substitute.For<IRandomNumberGenerator>();
+        _publishEndpoint = Substitute.For<IPublishEndpoint>();
         _handler = new GenerateExam.RequestHandler(
             _questionRepositoryMock,
             _examRepositoryMock,
             _candidateRepositoryMock,
-            _rand);
+            _rand,
+            _publishEndpoint);
     }
 
     [Test]
@@ -42,9 +46,9 @@ public class GenerateExamTests
         };
 
         var existingExams = new List<Exam>
-        {
-            new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
-        };
+    {
+        new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
+    };
 
         MockExamRepositorySearch(existingExams);
 
@@ -106,23 +110,23 @@ public class GenerateExamTests
     private List<Question> PrepareQuestions()
     {
         return new List<Question>
-        {
-            new Question { Id = 1,Text = "Question 1", Category = QuestionCategory.Http },
-            new Question { Id = 2,Text = "Question 2", Category = QuestionCategory.Http },
-            new Question { Id = 3,Text = "Question 3", Category = QuestionCategory.CSharp },
-            new Question { Id = 4,Text = "Question 4", Category = QuestionCategory.CSharp },
-            new Question { Id = 5,Text = "Question 5", Category = QuestionCategory.Sql },
-            new Question { Id = 6,Text = "Question 6", Category = QuestionCategory.Sql },
-            new Question { Id = 7,Text = "Question 7", Category = QuestionCategory.Oop },
-            new Question { Id = 8,Text = "Question 8", Category = QuestionCategory.Oop },
-            new Question { Id = 9,Text = "Question 9", Category = QuestionCategory.Git },
-            new Question { Id = 10, Text = "Question 10", Category = QuestionCategory.Git },
-            new Question { Id = 11, Text = "Question 11", Category = QuestionCategory.Http },
-            new Question { Id = 12, Text = "Question 12", Category = QuestionCategory.CSharp },
-            new Question { Id = 13, Text = "Question 13", Category = QuestionCategory.Sql },
-            new Question { Id = 14, Text = "Question 14", Category = QuestionCategory.Oop },
-            new Question { Id = 15, Text = "Question 15", Category = QuestionCategory.Git }
-        };
+    {
+        new Question { Id = 1,Text = "Question 1", Category = QuestionCategory.Http },
+        new Question { Id = 2,Text = "Question 2", Category = QuestionCategory.Http },
+        new Question { Id = 3,Text = "Question 3", Category = QuestionCategory.CSharp },
+        new Question { Id = 4,Text = "Question 4", Category = QuestionCategory.CSharp },
+        new Question { Id = 5,Text = "Question 5", Category = QuestionCategory.Sql },
+        new Question { Id = 6,Text = "Question 6", Category = QuestionCategory.Sql },
+        new Question { Id = 7,Text = "Question 7", Category = QuestionCategory.Oop },
+        new Question { Id = 8,Text = "Question 8", Category = QuestionCategory.Oop },
+        new Question { Id = 9,Text = "Question 9", Category = QuestionCategory.Git },
+        new Question { Id = 10, Text = "Question 10", Category = QuestionCategory.Git },
+        new Question { Id = 11, Text = "Question 11", Category = QuestionCategory.Http },
+        new Question { Id = 12, Text = "Question 12", Category = QuestionCategory.CSharp },
+        new Question { Id = 13, Text = "Question 13", Category = QuestionCategory.Sql },
+        new Question { Id = 14, Text = "Question 14", Category = QuestionCategory.Oop },
+        new Question { Id = 15, Text = "Question 15", Category = QuestionCategory.Git }
+    };
     }
 
 }

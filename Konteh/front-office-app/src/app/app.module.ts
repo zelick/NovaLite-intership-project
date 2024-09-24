@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
+import { MatInput } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CandidateInfoFormComponent } from './start-info/candidate-info-form.com
     MatFormField,
     MatLabel,
     MatError,
+    MatInput
 
   ],
   providers: [

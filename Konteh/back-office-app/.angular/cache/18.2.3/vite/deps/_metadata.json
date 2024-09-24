@@ -13,7 +13,7 @@
     "@angular/common/http": {
       "src": "../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "1456c99d",
+      "fileHash": "8036bc89",
       "needsInterop": false
     },
     "@angular/core": {
@@ -133,6 +133,13 @@
     "@azure/msal-browser": {
       "src": "../../../../../node_modules/@azure/msal-browser/dist/index.mjs",
       "file": "@azure_msal-browser.js",
+      "fileHash": "d411341d",
+      "needsInterop": false
+    },
+    "@microsoft/signalr": {
+      "src": "../../../../../node_modules/@microsoft/signalr/dist/esm/index.js",
+      "file": "@microsoft_signalr.js",
+      "fileHash": "a81d9d8c",
       "fileHash": "3b6bf57a",
       "needsInterop": false
     },
@@ -159,11 +166,11 @@
     "chunk-52OTLSXA": {
       "file": "chunk-52OTLSXA.js"
     },
-    "chunk-QUIZ7APC": {
-      "file": "chunk-QUIZ7APC.js"
+    "chunk-VFF63BR7": {
+      "file": "chunk-VFF63BR7.js"
     },
-    "chunk-2MBIW2IN": {
-      "file": "chunk-2MBIW2IN.js"
+    "chunk-J5FVG2S7": {
+      "file": "chunk-J5FVG2S7.js"
     },
     "chunk-NCAWWSSX": {
       "file": "chunk-NCAWWSSX.js"
@@ -171,17 +178,17 @@
     "chunk-T5VGUCOA": {
       "file": "chunk-T5VGUCOA.js"
     },
-    "chunk-32S2Z2KD": {
-      "file": "chunk-32S2Z2KD.js"
+    "chunk-44EFQK27": {
+      "file": "chunk-44EFQK27.js"
     },
-    "chunk-YLBQBAOP": {
-      "file": "chunk-YLBQBAOP.js"
+    "chunk-XTWPMFTC": {
+      "file": "chunk-XTWPMFTC.js"
     },
     "chunk-XWOREQP4": {
       "file": "chunk-XWOREQP4.js"
     },
-    "chunk-A4MDDVFR": {
-      "file": "chunk-A4MDDVFR.js"
+    "chunk-CY6QET2L": {
+      "file": "chunk-CY6QET2L.js"
     },
     "chunk-W4TBIOIW": {
       "file": "chunk-W4TBIOIW.js"
@@ -192,26 +199,26 @@
     "chunk-D3DV4MWT": {
       "file": "chunk-D3DV4MWT.js"
     },
-    "chunk-6K3XX25T": {
-      "file": "chunk-6K3XX25T.js"
+    "chunk-DUHMM7YU": {
+      "file": "chunk-DUHMM7YU.js"
     },
-    "chunk-UD2USARH": {
-      "file": "chunk-UD2USARH.js"
+    "chunk-ZGK474L7": {
+      "file": "chunk-ZGK474L7.js"
     },
-    "chunk-KV7AIQLJ": {
-      "file": "chunk-KV7AIQLJ.js"
+    "chunk-OUYT4D22": {
+      "file": "chunk-OUYT4D22.js"
     },
-    "chunk-QN5HDKTT": {
-      "file": "chunk-QN5HDKTT.js"
+    "chunk-JR56S3VL": {
+      "file": "chunk-JR56S3VL.js"
     },
-    "chunk-XPU7EA6D": {
-      "file": "chunk-XPU7EA6D.js"
+    "chunk-CJAONXVL": {
+      "file": "chunk-CJAONXVL.js"
     },
-    "chunk-MHK6ZZQX": {
-      "file": "chunk-MHK6ZZQX.js"
+    "chunk-GMGCSIWY": {
+      "file": "chunk-GMGCSIWY.js"
     },
-    "chunk-35ENWJA4": {
-      "file": "chunk-35ENWJA4.js"
+    "chunk-XANWHRD5": {
+      "file": "chunk-XANWHRD5.js"
     }
   }
 }

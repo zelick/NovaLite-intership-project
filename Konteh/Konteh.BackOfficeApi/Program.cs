@@ -1,9 +1,13 @@
 using FluentValidation;
+using Konteh.BackOfficeApi.Configuration;
+using Konteh.BackOfficeApi.Consumers;
+using Konteh.BackOfficeApi.HubConfig;
 using Konteh.Domain;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.ExeptionHandler;
 using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -34,36 +38,57 @@ public class Program
         builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        builder.Services.AddProblemDetails();
 
         builder.Services.AddOpenApiDocument(o => o.SchemaSettings.SchemaNameGenerator = new CustomSwaggerSchemaNameGenerator());
+
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowSpecificOrigins",
+            var corsConfig = builder.Configuration.GetSection("CorsConfiguration").Get<CorsConfiguration>();
+            if (corsConfig != null)
+            {
+                options.AddPolicy("AllowSpecificOrigins",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins(corsConfig.AllowedOriginBackOffice)
                            .AllowAnyMethod()
-                           .AllowAnyHeader();
+                           .AllowAnyHeader()
+                           .AllowCredentials();
                 });
+
+            }
+
         });
 
-        builder.Services.AddCors(options =>
+        builder.Services.AddMassTransit(x =>
         {
-            options.AddPolicy("AllowSpecificOrigins",
-                builder =>
+            x.AddConsumer<ExamRequestedConsumer>();
+            var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQConfiguration").Get<RabbitMQConfiguration>();
+            if (rabbitMQConfig != null)
+            {
+                x.UsingRabbitMq((context, cfg) =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
+                    cfg.Host(rabbitMQConfig.Host, "/", c =>
+                    {
+                        c.Username(rabbitMQConfig.Username);
+                        c.Password(rabbitMQConfig.Password);
+                    });
+                    cfg.ReceiveEndpoint("exam-requested-queue", e =>
+                    {
+                        e.ConfigureConsumer<ExamRequestedConsumer>(context);
+                    });
                 });
+            }
+
         });
 
-        var app = builder.Build();
-
+        builder.Services.AddSignalR();
 
         // Configure the HTTP request pipeline.
+
+        var app = builder.Build();
 
         app.UseHttpsRedirection();
         app.UseCors("AllowSpecificOrigins");
@@ -74,8 +99,11 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapControllers();
 
+
+        app.MapHub<ExamHub>("/examHub");
+
+        app.MapControllers();
 
         app.UseOpenApi();
         app.UseSwaggerUi();
