@@ -85,7 +85,7 @@ public static class GetExamsForOverview
                     continue;
                 }
 
-                if (selectedAnswers.Count() == rightAnswers.Count && !selectedAnswers.Except(rightAnswers).Any() && !rightAnswers.Except(selectedAnswers).Any())
+                if (AreSelectedAnswersCorrect(selectedAnswers, rightAnswers))
                 {
                     rightAnswerCount++;
                 }
@@ -94,6 +94,10 @@ public static class GetExamsForOverview
             return rightAnswerCount;
         }
 
+        private bool AreSelectedAnswersCorrect(IEnumerable<Answer> selectedAnswers, List<Answer> rightAnswers)
+        {
+            return selectedAnswers.Count() == rightAnswers.Count && !selectedAnswers.Except(rightAnswers).Any() && !rightAnswers.Except(selectedAnswers).Any();
+        }
 
     }
 }
