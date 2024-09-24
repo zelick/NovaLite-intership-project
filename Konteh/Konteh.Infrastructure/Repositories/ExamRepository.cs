@@ -14,6 +14,7 @@ public class ExamRepository : BaseRepository<Exam>
         return _dbSet
             .Include(e => e.ExamQuestions)
                 .ThenInclude(eq => eq.Question)
+                    .ThenInclude(q => q.Answers)
             .Include(e => e.Candidate)
             .Where(predicate);
     }

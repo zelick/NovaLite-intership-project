@@ -58,8 +58,7 @@ public static class GetExamsForOverview
             {
                 Id = exam.Id,
                 CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
-                Score = $"{exam.ExamQuestions.Count(eq => eq.SelectedAnswers.Any() &&
-                                                          eq.SelectedAnswers.All(sa => sa.IsCorrect))}/{exam.ExamQuestions.Count}",
+                Score = $"{CountRightAnswers(exam)}/{exam.ExamQuestions.Count}",
                 ExamStatus = exam.Status.ToString(),
                 StartTime = exam.StartTime
             });
@@ -72,6 +71,29 @@ public static class GetExamsForOverview
 
             return response;
         }
+        private int CountRightAnswers(Exam exam)
+        {
+            var rightAnswerCount = 0;
+
+            foreach (var eq in exam.ExamQuestions)
+            {
+                var rightAnswers = eq.Question.Answers.Where(answer => answer.IsCorrect).ToList();
+
+                var selectedAnswers = eq.SelectedAnswers;
+                if (selectedAnswers.Count() == 0)
+                {
+                    continue;
+                }
+
+                if (selectedAnswers.Count() == rightAnswers.Count && !selectedAnswers.Except(rightAnswers).Any() && !rightAnswers.Except(selectedAnswers).Any())
+                {
+                    rightAnswerCount++;
+                }
+            }
+
+            return rightAnswerCount;
+        }
+
 
     }
 }
