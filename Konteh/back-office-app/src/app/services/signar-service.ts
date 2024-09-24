@@ -16,6 +16,10 @@ export class SignalRService {
     this.hubConnection
     .start()
     .catch(err => console.log('Error while starting connection' + err))
+
+    this.hubConnection.on('ReceiveExamRequest', message => {
+      //something here
+    });
   }
 
   receiveExamRequest(callback: (message: GetExamsResponse) => void): void {

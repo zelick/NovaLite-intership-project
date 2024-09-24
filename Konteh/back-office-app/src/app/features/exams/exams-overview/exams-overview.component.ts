@@ -59,7 +59,6 @@ export class ExamsOverviewComponent implements OnInit {
   
 
   handleNewExamRequest(message: GetExamsResponse): void {
-    this.examList.unshift(message);
-    this.dataSource = new MatTableDataSource<IGetExamsResponse>(this.examList);
+    this.dataSource.data.unshift(message);
   }
 }
