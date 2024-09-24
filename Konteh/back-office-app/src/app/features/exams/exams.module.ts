@@ -6,6 +6,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ExamsOverviewComponent } from './exams-overview/exams-overview.component';
 import { MatTableModule } from '@angular/material/table';
 import {  MatInputModule } from '@angular/material/input';
+import { ExamsRoutingModule } from './exams-routing.module';
 
 
 
@@ -19,7 +20,8 @@ import {  MatInputModule } from '@angular/material/input';
     MatPaginatorModule,
     MatTableModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    ExamsRoutingModule
   ],
   exports:
   [

@@ -18,7 +18,6 @@ const routes: Routes = [
   },
   {
     path: 'exams',
-    component: ExamsOverviewComponent,
     canActivate: [authGuard],
     loadChildren: () => import('./features/exams/exams.module').then(m=> m.ExamsModule)
   }
@@ -34,7 +33,7 @@ const isIframe = window !== window.parent && !window.opener;
       initialNavigation:
         !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
           ? "enabledNonBlocking"
-          : "disabled", // Set to enabledBlocking to use Angular Universal
+          : "disabled", 
     }),
   ],
   exports: [RouterModule],
