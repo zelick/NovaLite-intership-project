@@ -26,4 +26,4 @@ import {  MatInputModule } from '@angular/material/input';
     ExamsOverviewComponent
   ]
 })
-export class ExamsOverviewModule { }
+export class ExamsModule { }

@@ -32,8 +32,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule, 
     BrowserModule,
     AppRoutingModule,
-    MatToolbarModule,
-    
+    MatToolbarModule,    
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {
