@@ -34,7 +34,7 @@ public static class GetExamsForOverview
             _examRepository = examRepository;
         }
 
-        public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+        public Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             string searchText = "";
             if (request.Text != null)
@@ -69,7 +69,7 @@ public static class GetExamsForOverview
                 Length = length
             };
 
-            return response;
+            return Task.FromResult(response);
         }
         private int CountRightAnswers(Exam exam)
         {
