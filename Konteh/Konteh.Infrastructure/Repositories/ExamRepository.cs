@@ -18,15 +18,4 @@ public class ExamRepository : BaseRepository<Exam>
             .Include(e => e.Candidate)
             .Where(predicate);
     }
-    public override IEnumerable<Exam> GetPaged(int page, int pageSize)
-    {
-        IQueryable<Exam> queryList = _dbSet
-            .Include(e => e.ExamQuestions)
-                .ThenInclude(eq => eq.Question)
-            .Include(e => e.Candidate)
-            .Skip(page * pageSize)
-            .Take(pageSize);
-
-        return queryList.ToList();
-    }
 }

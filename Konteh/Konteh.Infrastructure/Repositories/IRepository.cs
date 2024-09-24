@@ -10,5 +10,4 @@ public interface IRepository<T>
     Task SaveChanges();
     IQueryable<T> Search(Expression<Func<T, bool>> predicate);
     IEnumerable<T> GetPaged(int page, int pagesize);
-    Task<int> CountAsync();
 }
