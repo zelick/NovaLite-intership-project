@@ -1,0 +1,36 @@
+<div>
+    <h1>{{ question.text }}</h1>
+
+    <div *ngIf="question.type === 1">
+        <section class="section" *ngFor="let answer of question.answers">
+            <mat-radio-button 
+                [checked]="isChecked(answer)" 
+                (change)="onRadioButtonChange(answer)">
+                {{ answer.answerText }}
+            </mat-radio-button>
+            <br />
+        </section>
+    </div>
+
+    <div *ngIf="question.type === 2">
+        <section class="section" *ngFor="let answer of question.answers">
+            <mat-checkbox 
+                [checked]="isChecked(answer)" 
+                (change)="onCheckboxChange(answer)">
+                {{ answer.answerText }}
+            </mat-checkbox>
+            <br />
+        </section>
+    </div>   
+
+    <br />
+    <p>{{ page + 1 }}/{{ examQuestions.length }}</p>
+    <br />
+    <br />
+
+    <button *ngIf="page !== 0" (click)="previous()">Previous</button>
+    <button *ngIf="page !== examQuestions.length - 1" class="next" (click)="next()">Next</button>
+    <button *ngIf="page === examQuestions.length - 1" class="next" (click)="submit()">Submit</button>
+
+    <br />
+</div>

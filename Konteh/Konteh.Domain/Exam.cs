@@ -7,4 +7,5 @@ public class Exam
     public List<ExamQuestion> ExamQuestions { get; set; } = [];
     public ExamStatus Status { get; set; }
     public DateTime StartTime { get; set; }
+    public DateTime? EndTime { get; set; } = null;
 }

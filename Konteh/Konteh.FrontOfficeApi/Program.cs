@@ -1,8 +1,12 @@
+using FluentValidation;
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.FrontOfficeApi.Configuration;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.ExeptionHandler;
+using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
+using MediatR;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -26,6 +30,10 @@ public class Program
 
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
 
         builder.Services.AddMassTransit(x =>
         {
@@ -68,6 +76,8 @@ public class Program
 
         app.UseCors("AllowSpecificOrigins");
         app.UseHttpsRedirection();
+
+        app.UseExceptionHandler();
 
         app.UseAuthorization();
 

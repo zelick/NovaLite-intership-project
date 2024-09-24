@@ -9,11 +9,16 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
 import { MatInput } from '@angular/material/input';
+import { TakingTestComponent } from './taking-test/taking-test.component';
+import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CandidateInfoFormComponent
+    CandidateInfoFormComponent,
+    TakingTestComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,9 +27,11 @@ import { MatInput } from '@angular/material/input';
     HttpClientModule,
     MatFormField,
     MatLabel,
+    MatInput,
     MatError,
-    MatInput
-
+    FormsModule,
+    MatRadioModule,
+    MatCheckboxModule
   ],
   providers: [
     provideAnimationsAsync()

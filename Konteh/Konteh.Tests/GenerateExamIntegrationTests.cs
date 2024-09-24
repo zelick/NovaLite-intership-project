@@ -1,4 +1,4 @@
-﻿using Konteh.Domain;
+using Konteh.Domain;
 using Konteh.FrontOfficeApi;
 using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.Infrastructure;

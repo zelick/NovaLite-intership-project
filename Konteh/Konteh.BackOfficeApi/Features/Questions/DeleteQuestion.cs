@@ -1,7 +1,7 @@
 ﻿using Konteh.Domain;
+using Konteh.Infrastructure.Exceptions;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
-using System.Runtime.CompilerServices;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
@@ -25,7 +25,7 @@ public static class DeleteQuestion
 
             if (question == null)
             {
-                throw new KeyNotFoundException($"Question with ID {request.Id} not found.");
+                throw new NotFoundException();
             }
             _questionRepository.Delete(question);
             await _questionRepository.SaveChanges();
