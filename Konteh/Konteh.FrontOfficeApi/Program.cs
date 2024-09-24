@@ -1,6 +1,6 @@
 using Konteh.Domain;
+using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.FrontOfficeApi.Configuration;
-using Konteh.FrontOfficeApi.Features.Exam;
 using Konteh.Infrastructure;
 using Konteh.Infrastructure.Repositories;
 using MassTransit;

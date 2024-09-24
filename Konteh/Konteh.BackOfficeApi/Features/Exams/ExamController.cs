@@ -1,7 +1,7 @@
-﻿namespace Konteh.FrontOfficeApi.Features.Exams;
-
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Konteh.BackOfficeApi.Features.Exams;
 
 
 [ApiController]
@@ -15,11 +15,12 @@ public class ExamController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<GenerateExam.Response>> CreateExam([FromBody] GenerateExam.Command candidate)
+    [HttpGet]
+    public async Task<ActionResult<GetExams.Response>> GetAllExams(
+    [FromQuery] GetExams.Query request)
     {
-        var response = await _mediator.Send(candidate);
+        var response = await _mediator.Send(request);
         return Ok(response);
     }
-}
 
+}

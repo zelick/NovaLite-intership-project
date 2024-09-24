@@ -22,7 +22,7 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class
 
     public async Task SaveChanges() => await _context.SaveChangesAsync();
 
-    public IQueryable<T> Search(Expression<Func<T, bool>> predicate) => _dbSet.Where(predicate);
+    public virtual IQueryable<T> Search(Expression<Func<T, bool>> predicate) => _dbSet.Where(predicate);
 
     public virtual IEnumerable<T> GetPaged(int page, int pagesize)
     {

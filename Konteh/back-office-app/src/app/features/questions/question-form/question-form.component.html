@@ -33,7 +33,6 @@
         <mat-label>QUESTION</mat-label>
         <textarea matInput formControlName="text"></textarea>
       </mat-form-field>
-
       <app-form-errors [form]="questionForm"></app-form-errors>
       <button mat-raised-button type="submit" *ngIf="!isEditingQuestion">CREATE</button>
       <button mat-raised-button type="submit" *ngIf="isEditingQuestion">EDIT</button>
