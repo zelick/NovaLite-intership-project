@@ -19,11 +19,6 @@ public static class GetExams
         public string ExamStatus { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
     }
-    public class ExamResponse
-    {
-
-    }
-
     public class RequestHandler : IRequestHandler<Query, IEnumerable<Response>>
     {
         private readonly IRepository<Exam> _examRepository;
@@ -58,8 +53,6 @@ public static class GetExams
                 ExamStatus = exam.Status.ToString(),
                 StartTime = exam.StartTime
             });
-
-
 
             return Task.FromResult(examResult);
         }
