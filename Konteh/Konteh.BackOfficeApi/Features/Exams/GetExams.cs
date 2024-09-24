@@ -1,10 +1,11 @@
 ﻿using Konteh.Domain;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Konteh.BackOfficeApi.Features.Exams;
 
-public static class GetExamsForOverview
+public static class GetExams
 {
     public class Query : IRequest<Response>
     {
@@ -39,7 +40,7 @@ public static class GetExamsForOverview
             string searchText = "";
             if (request.Text != null)
             {
-                searchText = request.Text.Trim().ToLower();
+                searchText = request.Text.Trim();
             }
 
             var query = _examRepository.Search(exam =>
@@ -52,13 +53,13 @@ public static class GetExamsForOverview
                 .OrderByDescending(exam => exam.StartTime)
                 .Skip(request.Page * request.PageSize)
                 .Take(request.PageSize)
-                .ToList();
+                .ToListAsync();
 
-            var examResult = exams.Select(exam => new ExamResponse
+            var examResult = exams.Result.Select(exam => new ExamResponse
             {
                 Id = exam.Id,
                 CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
-                Score = $"{CountRightAnswers(exam)}/{exam.ExamQuestions.Count}",
+                Score = $"{exam.ExamQuestions.Count(eq => eq.IsCorrect())}/{exam.ExamQuestions.Count}",
                 ExamStatus = exam.Status.ToString(),
                 StartTime = exam.StartTime
             });
@@ -70,33 +71,6 @@ public static class GetExamsForOverview
             };
 
             return Task.FromResult(response);
-        }
-        private int CountRightAnswers(Exam exam)
-        {
-            var rightAnswerCount = 0;
-
-            foreach (var eq in exam.ExamQuestions)
-            {
-                var rightAnswers = eq.Question.Answers.Where(answer => answer.IsCorrect).ToList();
-
-                var selectedAnswers = eq.SelectedAnswers;
-                if (selectedAnswers.Count() == 0)
-                {
-                    continue;
-                }
-
-                if (AreSelectedAnswersCorrect(selectedAnswers, rightAnswers))
-                {
-                    rightAnswerCount++;
-                }
-            }
-
-            return rightAnswerCount;
-        }
-
-        private bool AreSelectedAnswersCorrect(IEnumerable<Answer> selectedAnswers, List<Answer> rightAnswers)
-        {
-            return selectedAnswers.Count() == rightAnswers.Count && !selectedAnswers.Except(rightAnswers).Any() && !rightAnswers.Except(selectedAnswers).Any();
         }
 
     }

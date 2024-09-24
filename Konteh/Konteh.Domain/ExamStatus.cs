@@ -2,6 +2,6 @@
 
 public enum ExamStatus
 {
-    InProgress,
-    Completed
+    InProgress = 1,
+    Completed = 2
 }

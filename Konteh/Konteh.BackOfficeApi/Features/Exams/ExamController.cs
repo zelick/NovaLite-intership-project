@@ -16,8 +16,8 @@ public class ExamController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetExamsForOverview.Response>> GetAllExams(
-    [FromQuery] GetExamsForOverview.Query request)
+    public async Task<ActionResult<GetExams.Response>> GetAllExams(
+    [FromQuery] GetExams.Query request)
     {
         var response = await _mediator.Send(request);
         return Ok(response);
