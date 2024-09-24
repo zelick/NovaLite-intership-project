@@ -11,8 +11,8 @@ import { CandidateInfoFormComponent } from './start-info/candidate-info-form.com
 import { MatInput } from '@angular/material/input';
 import { TakingTestComponent } from './taking-test/taking-test.component';
 import { FormsModule } from '@angular/forms';
-import {MatRadioModule} from '@angular/material/radio';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [

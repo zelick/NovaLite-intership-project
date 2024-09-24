@@ -2,6 +2,7 @@
 using Konteh.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 public class ExamRepository : BaseRepository<Exam>
 {
@@ -9,6 +10,7 @@ public class ExamRepository : BaseRepository<Exam>
     {
 
     }
+
     public override async Task<Exam?> GetById(int id)
     {
         var exam = await _dbSet
@@ -20,5 +22,14 @@ public class ExamRepository : BaseRepository<Exam>
         .SingleOrDefaultAsync(x => x.Id == id);
 
         return exam;
+    }
+    public override IQueryable<Exam> Search(Expression<Func<Exam, bool>> predicate)
+    {
+        return _dbSet
+            .Include(e => e.ExamQuestions)
+                .ThenInclude(eq => eq.Question)
+                    .ThenInclude(q => q.Answers)
+            .Include(e => e.Candidate)
+            .Where(predicate);
     }
 }

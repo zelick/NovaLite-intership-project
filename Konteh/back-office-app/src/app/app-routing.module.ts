@@ -1,28 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { QuestionsTableComponent } from './questions-table/questions-table.component';
-import { QuestionFormComponent } from './question-form/question-form.component';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
+import { QuestionsTableComponent } from './features/questions/questions-table/questions-table.component';
+import { ExamsOverviewComponent } from './features/exams/exams-overview/exams-overview.component';
 
 const routes: Routes = [
   {
     path:'',
     component: HomeComponent
   },
-
   { 
     path: 'questions', 
-    component: QuestionsTableComponent
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/questions/questions.module').then(m=>m.QuestionsModule)
   },
   {
-    path: 'questions/add',
-    component: QuestionFormComponent
-  },
-  {
-    path: 'questions/:id', 
-    component: QuestionFormComponent
+    path: 'exams',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/exams/exams.module').then(m=> m.ExamsModule)
   }
   
 ];
@@ -36,7 +33,7 @@ const isIframe = window !== window.parent && !window.opener;
       initialNavigation:
         !BrowserUtils.isInIframe() && !BrowserUtils.isInPopup()
           ? "enabledNonBlocking"
-          : "disabled", // Set to enabledBlocking to use Angular Universal
+          : "disabled", 
     }),
   ],
   exports: [RouterModule],

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { setServerSideValidationErrors } from '../validation';
-import { QuestionType, QuestionCategory, QuestionClient, CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionCommand } from '../api/api-reference';
+import { setServerSideValidationErrors } from '../../../validation';
+import { QuestionType, QuestionCategory, QuestionClient, CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionCommand } from '../../../api/api-reference';
 
 @Component({
   selector: 'app-question-form',

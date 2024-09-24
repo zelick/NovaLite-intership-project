@@ -2,7 +2,9 @@
 
 using Konteh.Domain;
 using Konteh.FrontOfficeApi.Dtos;
+using Konteh.Infrastructure.Events;
 using Konteh.Infrastructure.Repositories;
+using MassTransit;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,14 +29,17 @@ public static class GenerateExam
         private readonly IRepository<Exam> _examRepository;
         private readonly IRepository<Candidate> _candidateRepository;
         private readonly IRandomNumberGenerator _random;
+        private readonly IPublishEndpoint _publishEndpoint;
+        
         public RequestHandler(IRepository<Question> questionRepository,
                               IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository,
-                              IRandomNumberGenerator random)
+                              IRandomNumberGenerator random, IPublishEndpoint publishEndpoint)
         {
             _questionRepository = questionRepository;
             _examRepository = examRepository;
             _candidateRepository = candidateRepository;
             _random = random;
+            _publishEndpoint = publishEndpoint;
         }
         public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
         {
@@ -46,7 +51,9 @@ public static class GenerateExam
             var exam = new Exam
             {
                 Candidate = candidate,
-                ExamQuestions = new List<ExamQuestion>()
+                ExamQuestions = new List<ExamQuestion>(),
+                Status = ExamStatus.InProgress,
+                StartTime = DateTime.UtcNow
             };
 
             exam.ExamQuestions = questions
@@ -59,6 +66,13 @@ public static class GenerateExam
 
             _examRepository.Add(exam);
             await _examRepository.SaveChanges();
+
+            await _publishEndpoint.Publish(new ExamRequestedEvent
+            {
+                Email = candidate.Email,
+                Name = candidate.Name,
+                Surname = candidate.Surname
+            });
 
             var examQuestionDtos = exam.ExamQuestions.Select(eq => new ExamQuestionDto
             {

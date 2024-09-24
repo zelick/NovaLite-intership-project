@@ -8,212 +8,219 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Konteh.Infrastructure.Migrations;
-
-[DbContext(typeof(KontehDbContext))]
-partial class KontehDbContextModelSnapshot : ModelSnapshot
+namespace Konteh.Infrastructure.Migrations
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    [DbContext(typeof(KontehDbContext))]
+    partial class KontehDbContextModelSnapshot : ModelSnapshot
     {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
 #pragma warning disable 612, 618
-        modelBuilder
-            .HasAnnotation("ProductVersion", "8.0.8")
-            .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-        modelBuilder.Entity("AnswerExamQuestion", b =>
-            {
-                b.Property<int>("ExamQuestionId")
-                    .HasColumnType("int");
+            modelBuilder.Entity("AnswerExamQuestion", b =>
+                {
+                    b.Property<int>("ExamQuestionId")
+                        .HasColumnType("int");
 
-                b.Property<int>("SelectedAnswersId")
-                    .HasColumnType("int");
+                    b.Property<int>("SelectedAnswersId")
+                        .HasColumnType("int");
 
-                b.HasKey("ExamQuestionId", "SelectedAnswersId");
+                    b.HasKey("ExamQuestionId", "SelectedAnswersId");
 
-                b.HasIndex("SelectedAnswersId");
+                    b.HasIndex("SelectedAnswersId");
 
-                b.ToTable("AnswerExamQuestion");
-            });
+                    b.ToTable("AnswerExamQuestion");
+                });
 
-        modelBuilder.Entity("Konteh.Domain.Answer", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+            modelBuilder.Entity("Konteh.Domain.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<bool>("IsCorrect")
-                    .HasColumnType("bit");
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
 
-                b.Property<bool>("IsDeleted")
-                    .HasColumnType("bit");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                b.Property<int?>("QuestionId")
-                    .HasColumnType("int");
+                    b.Property<int?>("QuestionId")
+                        .HasColumnType("int");
 
-                b.Property<string>("Text")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                b.HasKey("Id");
+                    b.HasKey("Id");
 
-                b.HasIndex("QuestionId");
+                    b.HasIndex("QuestionId");
 
-                b.ToTable("Answers");
-            });
+                    b.ToTable("Answers");
+                });
 
-        modelBuilder.Entity("Konteh.Domain.Candidate", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+            modelBuilder.Entity("Konteh.Domain.Candidate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("Email")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("Name")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("Surname")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                b.HasKey("Id");
+                    b.HasKey("Id");
 
-                b.ToTable("Candidates");
-            });
+                    b.ToTable("Candidates");
+                });
 
-        modelBuilder.Entity("Konteh.Domain.Exam", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+            modelBuilder.Entity("Konteh.Domain.Exam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<int>("CandidateId")
-                    .HasColumnType("int");
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
 
-                b.HasKey("Id");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
-                b.HasIndex("CandidateId");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                b.ToTable("Exams");
-            });
+                    b.HasKey("Id");
 
-        modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+                    b.HasIndex("CandidateId");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.ToTable("Exams");
+                });
 
-                b.Property<int?>("ExamId")
-                    .HasColumnType("int");
+            modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                b.Property<int>("QuestionId")
-                    .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.HasKey("Id");
+                    b.Property<int?>("ExamId")
+                        .HasColumnType("int");
 
-                b.HasIndex("ExamId");
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
-                b.HasIndex("QuestionId");
+                    b.HasKey("Id");
 
-                b.ToTable("ExamQuestions");
-            });
+                    b.HasIndex("ExamId");
 
-        modelBuilder.Entity("Konteh.Domain.Question", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+                    b.HasIndex("QuestionId");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.ToTable("ExamQuestions");
+                });
 
-                b.Property<int>("Category")
-                    .HasColumnType("int");
+            modelBuilder.Entity("Konteh.Domain.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                b.Property<bool>("IsDeleted")
-                    .HasColumnType("bit");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("Text")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
 
-                b.Property<int>("Type")
-                    .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
-                b.HasKey("Id");
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                b.ToTable("Questions");
-            });
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
-        modelBuilder.Entity("AnswerExamQuestion", b =>
-            {
-                b.HasOne("Konteh.Domain.ExamQuestion", null)
-                    .WithMany()
-                    .HasForeignKey("ExamQuestionId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
+                    b.HasKey("Id");
 
-                b.HasOne("Konteh.Domain.Answer", null)
-                    .WithMany()
-                    .HasForeignKey("SelectedAnswersId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-            });
+                    b.ToTable("Questions");
+                });
 
-        modelBuilder.Entity("Konteh.Domain.Answer", b =>
-            {
-                b.HasOne("Konteh.Domain.Question", null)
-                    .WithMany("Answers")
-                    .HasForeignKey("QuestionId");
-            });
+            modelBuilder.Entity("AnswerExamQuestion", b =>
+                {
+                    b.HasOne("Konteh.Domain.ExamQuestion", null)
+                        .WithMany()
+                        .HasForeignKey("ExamQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-        modelBuilder.Entity("Konteh.Domain.Exam", b =>
-            {
-                b.HasOne("Konteh.Domain.Candidate", "Candidate")
-                    .WithMany()
-                    .HasForeignKey("CandidateId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
+                    b.HasOne("Konteh.Domain.Answer", null)
+                        .WithMany()
+                        .HasForeignKey("SelectedAnswersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                b.Navigation("Candidate");
-            });
+            modelBuilder.Entity("Konteh.Domain.Answer", b =>
+                {
+                    b.HasOne("Konteh.Domain.Question", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId");
+                });
 
-        modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
-            {
-                b.HasOne("Konteh.Domain.Exam", null)
-                    .WithMany("ExamQuestions")
-                    .HasForeignKey("ExamId");
+            modelBuilder.Entity("Konteh.Domain.Exam", b =>
+                {
+                    b.HasOne("Konteh.Domain.Candidate", "Candidate")
+                        .WithMany()
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                b.HasOne("Konteh.Domain.Question", "Question")
-                    .WithMany()
-                    .HasForeignKey("QuestionId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
+                    b.Navigation("Candidate");
+                });
 
-                b.Navigation("Question");
-            });
+            modelBuilder.Entity("Konteh.Domain.ExamQuestion", b =>
+                {
+                    b.HasOne("Konteh.Domain.Exam", null)
+                        .WithMany("ExamQuestions")
+                        .HasForeignKey("ExamId");
 
-        modelBuilder.Entity("Konteh.Domain.Exam", b =>
-            {
-                b.Navigation("ExamQuestions");
-            });
+                    b.HasOne("Konteh.Domain.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-        modelBuilder.Entity("Konteh.Domain.Question", b =>
-            {
-                b.Navigation("Answers");
-            });
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("Konteh.Domain.Exam", b =>
+                {
+                    b.Navigation("ExamQuestions");
+                });
+
+            modelBuilder.Entity("Konteh.Domain.Question", b =>
+                {
+                    b.Navigation("Answers");
+                });
 #pragma warning restore 612, 618
+        }
     }
 }
