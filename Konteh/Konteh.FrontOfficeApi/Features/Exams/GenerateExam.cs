@@ -30,7 +30,7 @@ public static class GenerateExam
         private readonly IRepository<Candidate> _candidateRepository;
         private readonly IRandomNumberGenerator _random;
         private readonly IPublishEndpoint _publishEndpoint;
-        
+
         public RequestHandler(IRepository<Question> questionRepository,
                               IRepository<Exam> examRepository, IRepository<Candidate> candidateRepository,
                               IRandomNumberGenerator random, IPublishEndpoint publishEndpoint)

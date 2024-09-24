@@ -46,8 +46,10 @@ export class CandidateInfoFormComponent {
         surname: formValue.surname!
       });
     
+      console.log(query);
     this.examClient.createExam(query).subscribe({
       next:(res) => {
+        console.log(res.id)
         this.router.navigate(['test'], { queryParams: { id: res.id } });
         this.error = '';
       },

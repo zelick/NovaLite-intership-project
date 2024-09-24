@@ -23,14 +23,20 @@ public static class SubmitExam
     public class RequestHandler : IRequestHandler<Command>
     {
         private readonly IRepository<ExamQuestion> _examQuestionRepository;
+        private readonly IRepository<Exam> _examRepository;
 
-        public RequestHandler(IRepository<ExamQuestion> examQuestionRepository)
+        public RequestHandler(IRepository<ExamQuestion> examQuestionRepository, IRepository<Exam> examRepository)
         {
             _examQuestionRepository = examQuestionRepository;
+            _examRepository = examRepository;
         }
 
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
+            var exam = await _examRepository.GetById(request.Id);
+            if (exam == null)
+                throw new NotFoundException();
+
             var selectedAnswersIds = request.ExamQuestions.ToDictionary(e => e.Id, e => e.SelectedAnswers.Select(a => a.AnswerId).ToHashSet());
 
             var examQuestions = _examQuestionRepository.GetByIds(request.ExamQuestions.Select(e => e.Id).ToList());
@@ -43,6 +49,10 @@ public static class SubmitExam
                 examQuestion.SelectedAnswers = examQuestion.Question.Answers.Where(a => answersIds.Contains(a.Id)).ToList();
             }
             await _examQuestionRepository.SaveChanges();
+
+            exam.Status = ExamStatus.Completed;
+            exam.EndTime = DateTime.UtcNow;
+            await _examRepository.SaveChanges();
         }
     }
 }
