@@ -22,11 +22,12 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class
 
     public async Task SaveChanges() => await _context.SaveChangesAsync();
 
-    public IQueryable<T> Search(Expression<Func<T, bool>> predicate) => _dbSet.Where(predicate);
+    public virtual IQueryable<T> Search(Expression<Func<T, bool>> predicate) => _dbSet.Where(predicate);
 
     public virtual IEnumerable<T> GetPaged(int page, int pagesize)
     {
         IQueryable<T> queryList = _dbSet.Skip((page) * pagesize).Take(pagesize);
         return queryList.ToList();
     }
+    public virtual IEnumerable<T> GetByIds(List<int> ids) => _dbSet.ToList();
 }
