@@ -31,6 +31,8 @@ public class Program
         builder.Services.AddDbContext<KontehDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
         builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
+        builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
+        builder.Services.AddScoped<IExamRepository, ExamRepository>();
 
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 

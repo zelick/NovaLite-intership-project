@@ -59,4 +59,13 @@ public class QuestionController : Controller
         return Ok(response);
     }
 
+    [HttpGet("statistic/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
+    public async Task<ActionResult<double>> GetQuestionStatistic(int id)
+    {
+        var response = await _mediator.Send(new GetQuestionStatistic.Query { QuestionId = id });
+        return Ok(response);
+    }
+
 }

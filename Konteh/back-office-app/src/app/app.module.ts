@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { FormErrorsComponent } from './shared/form-errors/form-errors.component';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 
 import {
   MsalModule,
@@ -43,7 +44,7 @@ import { environment } from '../environments/environment';
     QuestionFormComponent,
     FormErrorsComponent,
     NavbarComponent,
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     FormsModule,
@@ -64,6 +65,7 @@ import { environment } from '../environments/environment';
     MatSortModule,
     MatMenuModule,
     MatToolbarModule,
+    CanvasJSAngularChartsModule,
     
     MsalModule.forRoot(
       new PublicClientApplication({

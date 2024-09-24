@@ -1,5 +1,4 @@
-﻿using Konteh.Domain;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Konteh.Infrastructure.Repositories;
 public interface IRepository<T>
@@ -11,5 +10,4 @@ public interface IRepository<T>
     Task SaveChanges();
     IQueryable<T> Search(Expression<Func<T, bool>> predicate);
     IEnumerable<T> GetPaged(int page, int pagesize);
-    Task<List<T>> GetAllByCategory(QuestionCategory oop);
 }
