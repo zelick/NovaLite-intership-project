@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExamClient, GenerateExamCommand, GenerateExamResponse, ExamQuestionDto } from '../api/api-reference'; 
+import { ExamClient, GenerateExamCommand, ExamQuestionDto } from '../api/api-reference'; 
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class CandidateInfoFormComponent {
   examQuestions: ExamQuestionDto[] = []; 
-  error : boolean = false;
+  error = '';
   examForm = new FormGroup({
     email: new FormControl('', [
       Validators.required, 
@@ -20,6 +20,19 @@ export class CandidateInfoFormComponent {
     surname: new FormControl('', Validators.required),
   });
   constructor(private examClient: ExamClient, private router: Router) {
+  }
+
+ getErrorMessage(controlName: any): string {
+    const control = this.examForm.get(controlName);
+    if(control === null)
+      return '';
+    if (control.hasError('required') && control.touched) {
+      return `${controlName.charAt(0).toUpperCase() + controlName.slice(1)} is required`;
+    }
+    if (control.hasError('pattern') && control.touched) {
+      return `Please enter a valid ${controlName}`;
+    }
+    return '';
   }
 
   onSubmit() {
@@ -36,9 +49,10 @@ export class CandidateInfoFormComponent {
     this.examClient.createExam(query).subscribe({
       next:(res) => {
         this.router.navigate(['test'], { queryParams: { id: res.id } });
+        this.error = '';
       },
       error:() => {
-        this.error = true;
+        this.error = 'You have already taken a tesT!';
       }
     })
   }

@@ -29,4 +29,5 @@ public abstract class BaseRepository<T> : IRepository<T> where T : class
         IQueryable<T> queryList = _dbSet.Skip((page) * pagesize).Take(pagesize);
         return queryList.ToList();
     }
+    public virtual IEnumerable<T> GetByIds(List<int> ids) => _dbSet.ToList();
 }

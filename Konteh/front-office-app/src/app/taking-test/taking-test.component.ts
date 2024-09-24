@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AnswerDto, ExamClient, ExamQuestionClient, GetExamQuestionDto, GetExamResponse, IGetExamResponse, QuestionType, SaveExamQuestionsCommand } from '../api/api-reference';
+import { AnswerDto, ExamClient, GetExamQuestionDto, GetExamResponse, IGetExamResponse, QuestionType, SubmitExamCommand } from '../api/api-reference';
 
 @Component({
   selector: 'app-taking-test',
@@ -12,19 +12,25 @@ export class TakingTestComponent implements OnInit{
   page: number = 0;
   examQuestions: GetExamResponse[] = [];
   question: GetExamQuestionDto = new GetExamQuestionDto();
-  constructor (private route: ActivatedRoute, private examClient: ExamClient, private examQuestionClient: ExamQuestionClient, private router:Router){
+  constructor (private route: ActivatedRoute, private examClient: ExamClient, private router:Router){
   }
   
   loadExam(){
-    this.examClient.getExam(this.id).subscribe(res => {
-      this.examQuestions = res;
-      this.question = res[0].questionDto!;
+    this.examClient.getExam(this.id).subscribe({
+      next:(res) =>{
+        this.examQuestions = res;
+        this.question = res[0].questionDto!;
+      },
+      error:()=>{
+          this.router.navigate([""]);
+      }
     })
   }
 
   ngOnInit(): void{
     this.route.queryParamMap.subscribe(param => {
-      this.id = Number(param.get('id'));
+      this.id = Number(param.get('id'))
+      //this.id = param.get('id')!==null ? Number(param.get('id')) : 0;
     })
     this.loadExam();
   }
@@ -58,9 +64,8 @@ export class TakingTestComponent implements OnInit{
     }
   }
   submit() {
-    var save = new SaveExamQuestionsCommand;
-    save.examQuestions = this.examQuestions;
-    this.examQuestionClient.save(save).subscribe(res => {
+    var request = new SubmitExamCommand({id : this.id, examQuestions: this.examQuestions});
+    this.examClient.submit(request).subscribe(res => {
       this.router.navigate([""])
     })
   }

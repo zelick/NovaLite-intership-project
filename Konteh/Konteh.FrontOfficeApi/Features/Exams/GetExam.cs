@@ -32,13 +32,11 @@ public static class GetExam
     public class RequestHandler : IRequestHandler<Query, IEnumerable<Response>>
     {
         private readonly IRepository<Exam> _examRepository;
-        private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<ExamQuestion> _examQuestionRepository;
 
-        public RequestHandler(IRepository<Exam> examRepository, IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository)
+        public RequestHandler(IRepository<Exam> examRepository, IRepository<ExamQuestion> examQuestionRepository)
         {
             _examRepository = examRepository;
-            _questionRepository = questionRepository;
             _examQuestionRepository = examQuestionRepository;
         }
 
@@ -47,29 +45,29 @@ public static class GetExam
             var exam = await _examRepository.GetById(request.Id);
             if (exam == null)
                 throw new NotFoundException();
-            var examQuestions = exam.ExamQuestions;
 
-            var responseList = new List<Response>();
-
-            foreach (var examQuestion in examQuestions)
+            var responseList = exam.ExamQuestions.Select(examQuestion => new Response
             {
-                var response = new Response
+                Id = examQuestion.Id,
+                QuestionDto = new QuestionDto
                 {
-                    Id = examQuestion.Id,
-                    QuestionDto = new QuestionDto
+                    Id = examQuestion.Question.Id,
+                    Text = examQuestion.Question.Text,
+                    Category = examQuestion.Question.Category,
+                    Type = examQuestion.Question.Type,
+                    Answers = examQuestion.Question.Answers.Select(a => new AnswerDto
                     {
-                        Id = examQuestion.Question.Id,
-                        Text = examQuestion.Question.Text,
-                        Category = examQuestion.Question.Category,
-                        Type = examQuestion.Question.Type,
-                        Answers = examQuestion.Question.Answers.Select(a => new AnswerDto { AnswerId = a.Id, AnswerText = a.Text }).ToList()
-                    }
+                        AnswerId = a.Id,
+                        AnswerText = a.Text
+                    }).ToList()
+                },
+                SelectedAnswers = examQuestion.SelectedAnswers.Select(a => new AnswerDto
+                {
+                    AnswerId = a.Id,
+                    AnswerText = a.Text
+                }).ToList()
+            }).ToList();
 
-                };
-                response.SelectedAnswers = examQuestion.SelectedAnswers.Select(a => new AnswerDto { AnswerId = a.Id, AnswerText = a.Text }).ToList();
-                responseList.Add(response);
-
-            }
             return responseList;
         }
     }

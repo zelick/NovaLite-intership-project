@@ -18,7 +18,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
   declarations: [
     AppComponent,
     CandidateInfoFormComponent,
-    TakingTestComponent
+    TakingTestComponent,
   ],
   imports: [
     BrowserModule,

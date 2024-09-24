@@ -17,6 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IExamClient {
     createExam(candidate: GenerateExamCommand): Observable<GenerateExamResponse>;
+    submit(request: SubmitExamCommand): Observable<FileResponse>;
     getExam(id: number): Observable<GetExamResponse[]>;
 }
 
@@ -85,6 +86,62 @@ export class ExamClient implements IExamClient {
         return _observableOf(null as any);
     }
 
+    submit(request: SubmitExamCommand): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/exams";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSubmit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSubmit(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processSubmit(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     getExam(id: number): Observable<GetExamResponse[]> {
         let url_ = this.baseUrl + "/api/exams/{id}";
         if (id === undefined || id === null)
@@ -135,80 +192,6 @@ export class ExamClient implements IExamClient {
             }
             return _observableOf(result200);
             }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-}
-
-export interface IExamQuestionClient {
-    save(request: SaveExamQuestionsCommand): Observable<FileResponse>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class ExamQuestionClient implements IExamQuestionClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7096";
-    }
-
-    save(request: SaveExamQuestionsCommand): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/examQuestion";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(request);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSave(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSave(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
-        }));
-    }
-
-    protected processSave(response: HttpResponseBase): Observable<FileResponse> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -527,10 +510,11 @@ export enum QuestionType {
     Checkbox = 2,
 }
 
-export class SaveExamQuestionsCommand implements ISaveExamQuestionsCommand {
-    examQuestions?: SaveExamQuestionsExamQuestionDto[];
+export class SubmitExamCommand implements ISubmitExamCommand {
+    id?: number;
+    examQuestions?: SubmitExamExamQuestionDto[];
 
-    constructor(data?: ISaveExamQuestionsCommand) {
+    constructor(data?: ISubmitExamCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -541,23 +525,25 @@ export class SaveExamQuestionsCommand implements ISaveExamQuestionsCommand {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             if (Array.isArray(_data["examQuestions"])) {
                 this.examQuestions = [] as any;
                 for (let item of _data["examQuestions"])
-                    this.examQuestions!.push(SaveExamQuestionsExamQuestionDto.fromJS(item));
+                    this.examQuestions!.push(SubmitExamExamQuestionDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): SaveExamQuestionsCommand {
+    static fromJS(data: any): SubmitExamCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new SaveExamQuestionsCommand();
+        let result = new SubmitExamCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         if (Array.isArray(this.examQuestions)) {
             data["examQuestions"] = [];
             for (let item of this.examQuestions)
@@ -567,16 +553,16 @@ export class SaveExamQuestionsCommand implements ISaveExamQuestionsCommand {
     }
 }
 
-export interface ISaveExamQuestionsCommand {
-    examQuestions?: SaveExamQuestionsExamQuestionDto[];
+export interface ISubmitExamCommand {
+    id?: number;
+    examQuestions?: SubmitExamExamQuestionDto[];
 }
 
-export class SaveExamQuestionsExamQuestionDto implements ISaveExamQuestionsExamQuestionDto {
+export class SubmitExamExamQuestionDto implements ISubmitExamExamQuestionDto {
     id?: number;
-    questionDto?: SaveExamQuestionsQuestionDto;
     selectedAnswers?: AnswerDto[];
 
-    constructor(data?: ISaveExamQuestionsExamQuestionDto) {
+    constructor(data?: ISubmitExamExamQuestionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -588,7 +574,6 @@ export class SaveExamQuestionsExamQuestionDto implements ISaveExamQuestionsExamQ
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.questionDto = _data["questionDto"] ? SaveExamQuestionsQuestionDto.fromJS(_data["questionDto"]) : <any>undefined;
             if (Array.isArray(_data["selectedAnswers"])) {
                 this.selectedAnswers = [] as any;
                 for (let item of _data["selectedAnswers"])
@@ -597,9 +582,9 @@ export class SaveExamQuestionsExamQuestionDto implements ISaveExamQuestionsExamQ
         }
     }
 
-    static fromJS(data: any): SaveExamQuestionsExamQuestionDto {
+    static fromJS(data: any): SubmitExamExamQuestionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SaveExamQuestionsExamQuestionDto();
+        let result = new SubmitExamExamQuestionDto();
         result.init(data);
         return result;
     }
@@ -607,7 +592,6 @@ export class SaveExamQuestionsExamQuestionDto implements ISaveExamQuestionsExamQ
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["questionDto"] = this.questionDto ? this.questionDto.toJSON() : <any>undefined;
         if (Array.isArray(this.selectedAnswers)) {
             data["selectedAnswers"] = [];
             for (let item of this.selectedAnswers)
@@ -617,70 +601,9 @@ export class SaveExamQuestionsExamQuestionDto implements ISaveExamQuestionsExamQ
     }
 }
 
-export interface ISaveExamQuestionsExamQuestionDto {
+export interface ISubmitExamExamQuestionDto {
     id?: number;
-    questionDto?: SaveExamQuestionsQuestionDto;
     selectedAnswers?: AnswerDto[];
-}
-
-export class SaveExamQuestionsQuestionDto implements ISaveExamQuestionsQuestionDto {
-    id?: number;
-    text?: string;
-    category?: QuestionCategory;
-    type?: QuestionType;
-    answers?: AnswerDto[];
-
-    constructor(data?: ISaveExamQuestionsQuestionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-            this.category = _data["category"];
-            this.type = _data["type"];
-            if (Array.isArray(_data["answers"])) {
-                this.answers = [] as any;
-                for (let item of _data["answers"])
-                    this.answers!.push(AnswerDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): SaveExamQuestionsQuestionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SaveExamQuestionsQuestionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        data["category"] = this.category;
-        data["type"] = this.type;
-        if (Array.isArray(this.answers)) {
-            data["answers"] = [];
-            for (let item of this.answers)
-                data["answers"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ISaveExamQuestionsQuestionDto {
-    id?: number;
-    text?: string;
-    category?: QuestionCategory;
-    type?: QuestionType;
-    answers?: AnswerDto[];
 }
 
 export interface FileResponse {
