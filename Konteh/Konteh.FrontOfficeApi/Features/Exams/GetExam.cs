@@ -1,5 +1,4 @@
 ﻿using Konteh.Domain;
-using Konteh.FrontOfficeApi.Dtos;
 using Konteh.Infrastructure.Exceptions;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
@@ -28,6 +27,20 @@ public static class GetExam
         public QuestionType Type { get; set; }
         public IList<AnswerDto> Answers { get; set; } = new List<AnswerDto>();
     }
+
+    public class ExamQuestionDto
+    {
+        public int QuestionId { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
+        public List<AnswerDto> SelectedAnswers { get; set; } = new();
+    }
+
+    public class AnswerDto
+    {
+        public int AnswerId { get; set; }
+        public string AnswerText { get; set; } = string.Empty;
+    }
+
 
     public class RequestHandler : IRequestHandler<Query, IEnumerable<Response>>
     {

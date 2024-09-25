@@ -51,7 +51,7 @@ public static class GetExams
                 CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
                 Score = $"{exam.ExamQuestions.Count(eq => eq.IsCorrect())}/{exam.ExamQuestions.Count}",
                 ExamStatus = exam.Status.ToString(),
-                StartTime = exam.StartTime
+                StartTime = exam.StartTime.ToLocalTime()
             });
 
             return Task.FromResult(examResult);

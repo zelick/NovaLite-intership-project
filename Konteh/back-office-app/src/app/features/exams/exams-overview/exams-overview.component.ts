@@ -29,8 +29,7 @@ export class ExamsOverviewComponent implements OnInit {
     });
 
     this.signalRService.message$.subscribe((message: GetExamsResponse) => {
-      this.examList.unshift(message);
-      this.dataSource.data = this.examList;
+      this.handleMessage(message);
     });
   }
 
@@ -55,5 +54,18 @@ export class ExamsOverviewComponent implements OnInit {
       },
       queryParamsHandling: 'merge'  
     });
+  }
+
+  handleMessage(message: GetExamsResponse): void{
+    const foundExam = this.examList.find(exam => exam.id === message.id);
+    console.log("found exam: ", foundExam)
+    if (foundExam) {
+      foundExam.examStatus = message.examStatus;
+      foundExam.score = message.score;
+      this.dataSource.data = [...this.examList];
+    } else {
+      this.examList.unshift(message);
+      this.dataSource.data = [...this.examList];
+    }
   }
 }

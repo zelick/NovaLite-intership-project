@@ -23,5 +23,9 @@ export class SignalRService {
     this.hubConnection.on('ReceiveExamRequest', (message: GetExamsResponse) => {
       this.messageSubject.next(message);
     });
+
+    this.hubConnection.on('RecieveExamSubmit', (message: GetExamsResponse) => {
+      this.messageSubject.next(message);
+    });
   }
 }

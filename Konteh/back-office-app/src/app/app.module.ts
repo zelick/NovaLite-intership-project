@@ -20,6 +20,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { environment } from '../environments/environment';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -28,11 +29,11 @@ import { environment } from '../environments/environment';
     HomeComponent,
   ],
   imports: [
-    HttpClientModule, 
-    AppRoutingModule, 
+    HttpClientModule,
+    AppRoutingModule,
     BrowserModule,
     AppRoutingModule,
-    MatToolbarModule,    
+    MatToolbarModule,
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {
@@ -49,7 +50,7 @@ import { environment } from '../environments/environment';
       {
         interactionType: InteractionType.Popup,
         protectedResourceMap: new Map([
-          
+
           ["https://localhost:7221/", ['api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.read',
             'api://dbf7f51e-d046-435b-88ee-c4f9ee872967/to-do-lists.write']],
         ]),
@@ -61,6 +62,20 @@ import { environment } from '../environments/environment';
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true,
+    },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'LL',
+        },
+        display: {
+          dateInput: 'dd-MM-yyyy HH:mm:ss',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        }
+      }
     },
     provideAnimationsAsync()
   ],
