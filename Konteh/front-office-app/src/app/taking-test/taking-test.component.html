@@ -1,4 +1,7 @@
 <div>
+    <p *ngIf="!isHidden">{{display}}</p>
+    <p *ngIf="isHidden">Timer</p>
+    <button (click)="hideTimer()">Hide/Show</button>
     <h1>{{ question.text }}</h1>
 
     <div *ngIf="question.type === 1">

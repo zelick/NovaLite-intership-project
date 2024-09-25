@@ -13,12 +13,15 @@ import { TakingTestComponent } from './taking-test/taking-test.component';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SubmitDialogComponent } from './submit-dialog/submit-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
     CandidateInfoFormComponent,
     TakingTestComponent,
+    SubmitDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatError,
     FormsModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync()
