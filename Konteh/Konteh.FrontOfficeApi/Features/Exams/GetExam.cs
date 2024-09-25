@@ -8,12 +8,17 @@ namespace Konteh.FrontOfficeApi.Features.Exams;
 
 public static class GetExam
 {
-    public class Query : IRequest<IEnumerable<Response>>
+    public class Query : IRequest<Response>
     {
         public int Id { get; set; }
     }
-
     public class Response
+    {
+        public DateTime StartTime { get; set; }
+        public List<ExamQuestionDto> ExamQuestionDtos { get; set; } = new List<ExamQuestionDto>();
+    }
+
+    public class ExamQuestionDto
     {
         public int Id { get; set; }
         public QuestionDto QuestionDto { get; set; } = new QuestionDto();
@@ -29,7 +34,7 @@ public static class GetExam
         public IList<AnswerDto> Answers { get; set; } = new List<AnswerDto>();
     }
 
-    public class RequestHandler : IRequestHandler<Query, IEnumerable<Response>>
+    public class RequestHandler : IRequestHandler<Query, Response>
     {
         private readonly IRepository<Exam> _examRepository;
         private readonly IRepository<ExamQuestion> _examQuestionRepository;
@@ -40,13 +45,16 @@ public static class GetExam
             _examQuestionRepository = examQuestionRepository;
         }
 
-        public async Task<IEnumerable<Response>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             var exam = await _examRepository.GetById(request.Id);
             if (exam == null)
                 throw new NotFoundException();
 
-            var responseList = exam.ExamQuestions.Select(examQuestion => new Response
+            if (exam.Status == ExamStatus.Completed)
+                throw new NotFoundException();
+
+            var responseList = exam.ExamQuestions.Select(examQuestion => new ExamQuestionDto
             {
                 Id = examQuestion.Id,
                 QuestionDto = new QuestionDto
@@ -68,7 +76,11 @@ public static class GetExam
                 }).ToList()
             }).ToList();
 
-            return responseList;
+            return new Response
+            {
+                StartTime = exam.StartTime,
+                ExamQuestionDtos = responseList
+            };
         }
     }
 

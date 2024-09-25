@@ -18,7 +18,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export interface IExamClient {
     createExam(candidate: GenerateExamCommand): Observable<GenerateExamResponse>;
     submit(request: SubmitExamCommand): Observable<FileResponse>;
-    getExam(id: number): Observable<GetExamResponse[]>;
+    getExam(id: number): Observable<GetExamResponse>;
 }
 
 @Injectable({
@@ -142,7 +142,7 @@ export class ExamClient implements IExamClient {
         return _observableOf(null as any);
     }
 
-    getExam(id: number): Observable<GetExamResponse[]> {
+    getExam(id: number): Observable<GetExamResponse> {
         let url_ = this.baseUrl + "/api/exams/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -164,14 +164,14 @@ export class ExamClient implements IExamClient {
                 try {
                     return this.processGetExam(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<GetExamResponse[]>;
+                    return _observableThrow(e) as any as Observable<GetExamResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<GetExamResponse[]>;
+                return _observableThrow(response_) as any as Observable<GetExamResponse>;
         }));
     }
 
-    protected processGetExam(response: HttpResponseBase): Observable<GetExamResponse[]> {
+    protected processGetExam(response: HttpResponseBase): Observable<GetExamResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -182,14 +182,7 @@ export class ExamClient implements IExamClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GetExamResponse.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = GetExamResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -386,11 +379,59 @@ export interface IGenerateExamCommand {
 }
 
 export class GetExamResponse implements IGetExamResponse {
+    startTime?: Date;
+    examQuestionDtos?: GetExamExamQuestionDto[];
+
+    constructor(data?: IGetExamResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["examQuestionDtos"])) {
+                this.examQuestionDtos = [] as any;
+                for (let item of _data["examQuestionDtos"])
+                    this.examQuestionDtos!.push(GetExamExamQuestionDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetExamResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        if (Array.isArray(this.examQuestionDtos)) {
+            data["examQuestionDtos"] = [];
+            for (let item of this.examQuestionDtos)
+                data["examQuestionDtos"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IGetExamResponse {
+    startTime?: Date;
+    examQuestionDtos?: GetExamExamQuestionDto[];
+}
+
+export class GetExamExamQuestionDto implements IGetExamExamQuestionDto {
     id?: number;
     questionDto?: GetExamQuestionDto;
     selectedAnswers?: AnswerDto[];
 
-    constructor(data?: IGetExamResponse) {
+    constructor(data?: IGetExamExamQuestionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -411,9 +452,9 @@ export class GetExamResponse implements IGetExamResponse {
         }
     }
 
-    static fromJS(data: any): GetExamResponse {
+    static fromJS(data: any): GetExamExamQuestionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetExamResponse();
+        let result = new GetExamExamQuestionDto();
         result.init(data);
         return result;
     }
@@ -431,7 +472,7 @@ export class GetExamResponse implements IGetExamResponse {
     }
 }
 
-export interface IGetExamResponse {
+export interface IGetExamExamQuestionDto {
     id?: number;
     questionDto?: GetExamQuestionDto;
     selectedAnswers?: AnswerDto[];

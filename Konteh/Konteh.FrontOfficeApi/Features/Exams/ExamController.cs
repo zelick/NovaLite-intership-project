@@ -24,7 +24,7 @@ public class ExamController : Controller
 
     [HttpGet]
     [Route("{id:int}")]
-    public async Task<ActionResult<IEnumerable<GetExam.Response>>> GetExam(int id)
+    public async Task<ActionResult<GetExam.Response>> GetExam(int id)
     {
         var response = await _mediator.Send(new GetExam.Query { Id = id });
         return Ok(response);

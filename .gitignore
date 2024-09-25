@@ -382,3 +382,5 @@ _metadata.json
 
 /.angular/cache/
 *.db
+
+*/.angular/cache/

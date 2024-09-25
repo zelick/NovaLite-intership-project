@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AnswerDto, ExamClient, GetExamQuestionDto, GetExamResponse, IGetExamResponse, QuestionType, SubmitExamCommand } from '../api/api-reference';
+import { AnswerDto, ExamClient, GetExamExamQuestionDto, GetExamQuestionDto, SubmitExamCommand } from '../api/api-reference';
+import { MatDialog } from '@angular/material/dialog';
+import { SubmitDialogComponent } from '../submit-dialog/submit-dialog.component';
 
 @Component({
   selector: 'app-taking-test',
@@ -10,29 +12,37 @@ import { AnswerDto, ExamClient, GetExamQuestionDto, GetExamResponse, IGetExamRes
 export class TakingTestComponent implements OnInit{
   id : number = 0;
   page: number = 0;
-  examQuestions: GetExamResponse[] = [];
+  display: string = '';
+  isHidden = false;
+  readonly dialog = inject(MatDialog)
+  endTime : Date = new Date();
+  examQuestions: GetExamExamQuestionDto[] = [];
   question: GetExamQuestionDto = new GetExamQuestionDto();
+
   constructor (private route: ActivatedRoute, private examClient: ExamClient, private router:Router){
   }
-  
+
   loadExam(){
     this.examClient.getExam(this.id).subscribe({
       next:(res) =>{
-        this.examQuestions = res;
-        this.question = res[0].questionDto!;
+        this.examQuestions = res.examQuestionDtos!;
+        this.question = res.examQuestionDtos![0].questionDto!;
+        this.endTime = new Date(res.startTime?.getTime()!)
+        this.endTime.setSeconds(this.endTime.getSeconds()+180) // set a test time limit
       },
-      error:()=>{
+      error:(err)=>{
+        console.log(err);
           this.router.navigate([""]);
-      }
+      }   
     })
   }
 
   ngOnInit(): void{
     this.route.queryParamMap.subscribe(param => {
-      this.id = Number(param.get('id'))
-      //this.id = param.get('id')!==null ? Number(param.get('id')) : 0;
+      this.id = param.get('id')!==null ? Number(param.get('id')) : 0;
     })
     this.loadExam();
+    this.timer();
   }
 
   isChecked(answer: AnswerDto){
@@ -65,8 +75,55 @@ export class TakingTestComponent implements OnInit{
   }
   submit() {
     var request = new SubmitExamCommand({id : this.id, examQuestions: this.examQuestions});
-    this.examClient.submit(request).subscribe(res => {
-      this.router.navigate([""])
+    this.examClient.submit(request).subscribe({
+      next:(res) =>{
+        this.router.navigate([""])
+      },
+      error:()=>{
+        alert("Time is up!")
+      }
     })
+  }
+  timer() {
+    let textSecond: any = '0';
+
+    const timer = setInterval(() => {   
+      let currentTime = new Date();
+      currentTime.setHours(currentTime.getHours()-2);
+      
+      let seconds = Math.floor((this.endTime.getTime() - currentTime.getTime())/1000);
+      let second: number = seconds % 60;
+      let minute: number = seconds / 60;
+      const prefix = minute < 10 ? '0' : '';
+      
+      if (second < 10) {
+        textSecond = '0' + second;
+      } else textSecond = second;
+
+      this.display = `${prefix}${Math.floor(minute)}:${textSecond}`;
+
+      if (minute === 0 && second === 0) {
+        this.display = 'Time is up!';
+        this.openDialog();
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
+  openDialog(){
+    var dialogRef = this.dialog.open(SubmitDialogComponent, {
+      width: '450px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.submit()
+      }
+      else{
+        this.router.navigate([""])
+      }
+    });
+  }
+  hideTimer() {
+    this.isHidden = !this.isHidden;
   }
 }

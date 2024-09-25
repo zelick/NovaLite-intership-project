@@ -1,8 +1,8 @@
 ﻿namespace Konteh.Infrastructure.Repositories;
 using Konteh.Domain;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 public class ExamRepository : BaseRepository<Exam>
 {
@@ -30,6 +30,8 @@ public class ExamRepository : BaseRepository<Exam>
                 .ThenInclude(eq => eq.Question)
                     .ThenInclude(q => q.Answers)
             .Include(e => e.Candidate)
+            .Include(e => e.ExamQuestions)
+                .ThenInclude(eq => eq.SelectedAnswers)
             .Where(predicate);
     }
 }
