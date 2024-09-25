@@ -18,12 +18,14 @@ import { QuestionsRoutingModule } from "./questions-routing.module";
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { QuestionStatisticComponent } from './question-statistic/question-statistic.component';
+import { QuestionCategoryStatisticsComponent } from './question-category-statistics/question-category-statistics.component';
 
 @NgModule({
     declarations: [
         QuestionsTableComponent,
         QuestionFormComponent,
-        QuestionStatisticComponent
+        QuestionStatisticComponent,
+        QuestionCategoryStatisticsComponent
     ],
     imports: [
         CommonModule,

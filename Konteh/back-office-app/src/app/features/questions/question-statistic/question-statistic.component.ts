@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { QuestionClient } from '../../../api/api-reference';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CanvasJS } from '@canvasjs/angular-charts';
-import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
 
 @Component({
   selector: 'app-question-statistic',
@@ -16,8 +15,7 @@ export class QuestionStatisticComponent implements OnInit{
   
   constructor(
     private questionClient: QuestionClient,
-    private route: ActivatedRoute,
-    private router : Router
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +24,7 @@ export class QuestionStatisticComponent implements OnInit{
       theme: "light",
       exportEnabled: true,
       title: {
-        text: "Question Statistic"
+        text: ""
       },
       subtitles: [{
         text: "Candidates answered correctly"

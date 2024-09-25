@@ -32,6 +32,7 @@ public class Program
         builder.Services.AddScoped<IRepository<Question>, QuestionRepository>();
         builder.Services.AddScoped<IRepository<Answer>, AnswerRepository>();
         builder.Services.AddScoped<IRepository<Exam>, ExamRepository>();
+        builder.Services.AddScoped<IRepository<ExamQuestion>, ExamQuestionRepository>();
         builder.Services.AddScoped<IExamRepository, ExamRepository>();
 
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

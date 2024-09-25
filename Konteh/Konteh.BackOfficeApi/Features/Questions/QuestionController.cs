@@ -1,11 +1,10 @@
 using Konteh.Domain;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
-[Authorize]
+
 [ApiController]
 [Route("api/questions")]
 public class QuestionController : Controller
@@ -65,6 +64,15 @@ public class QuestionController : Controller
     public async Task<ActionResult<GetQuestionStatistic.Response>> GetQuestionStatistic(int id)
     {
         var response = await _mediator.Send(new GetQuestionStatistic.Query { QuestionId = id });
+        return Ok(response);
+    }
+
+    [HttpGet("category/statistics")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(GetQuestionCategoryStatistic.QuestionCategoryStatisticDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetQuestionCategoryStatistic.QuestionCategoryStatisticDto>> GetCategoryQuestionStatistic()
+    {
+        var response = await _mediator.Send(new GetQuestionCategoryStatistic.Query { });
         return Ok(response);
     }
 

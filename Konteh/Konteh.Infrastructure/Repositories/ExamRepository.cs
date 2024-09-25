@@ -1,8 +1,8 @@
 ﻿namespace Konteh.Infrastructure.Repositories;
 using Konteh.Domain;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 public class ExamRepository : BaseRepository<Exam>, IExamRepository
 {
@@ -19,6 +19,8 @@ public class ExamRepository : BaseRepository<Exam>, IExamRepository
                 .ThenInclude(sa => sa.Answers)
             .Include(x => x.ExamQuestions)
                 .ThenInclude(eq => eq.SelectedAnswers)
+            .Include(x => x.ExamQuestions)
+
             .ToListAsync();
     }
 

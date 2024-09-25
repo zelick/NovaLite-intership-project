@@ -18,51 +18,42 @@ public static class GetQuestionCategoryStatistic
     public class RequestHandler : IRequestHandler<Query, QuestionCategoryStatisticDto[]>
     {
         private readonly IRepository<Question> _questionRepository;
+        private readonly IRepository<ExamQuestion> _examQuestionRepository;
         private readonly IExamRepository _examRepository;
 
-        public RequestHandler(IRepository<Question> repository, IExamRepository examRepository)
+        public RequestHandler(IRepository<Question> repository, IExamRepository examRepository, IRepository<ExamQuestion> examQuestionRepository)
         {
             _questionRepository = repository;
             _examRepository = examRepository;
+            _examQuestionRepository = examQuestionRepository;
         }
 
         public async Task<QuestionCategoryStatisticDto[]> Handle(Query request, CancellationToken cancellationToken)
         {
-
-            var questions = await _questionRepository.GetAll();
-
-            var groupedQuestions = questions.GroupBy(q => q.Category);
-
             var categoryStatistics = new List<QuestionCategoryStatisticDto>();
 
-            foreach (var group in groupedQuestions)
+            var examQuestions = await _examQuestionRepository.GetAll();
+            var gropedExamQuestions = examQuestions.GroupBy(eq => eq.Question.Category);
+            foreach (var group in gropedExamQuestions)
             {
-                var totalAttempts = 0;
+                var totalAttempts = group.Count();
                 var correctAttempts = 0;
-                var questionIds = group.Select(q => q.Id).ToList();
-                var exams = await _examRepository.GetByQuestions(questionIds);
 
-                foreach (var exam in exams)
+                foreach (var examQuestion in group)
                 {
-                    var examQuestions = exam.ExamQuestions.Where(eq => group.Any(q => q.Id == eq.Question.Id));
-
-                    foreach (var examQuestion in examQuestions)
+                    if (examQuestion.IsCorrect())
                     {
-                        totalAttempts++;
-
-                        if (IsCorrect(examQuestion))
-                        {
-                            correctAttempts++;
-                        }
+                        correctAttempts++;
                     }
                 }
+
                 double correctPercentage = 0;
                 double incorrectPercentage = 0;
 
                 if (totalAttempts > 0)
                 {
-                    correctAttempts = correctAttempts / totalAttempts * 100;
-                    incorrectPercentage = 100 - correctAttempts;
+                    correctPercentage = Math.Round((double)correctAttempts / totalAttempts * 100, 2);
+                    incorrectPercentage = Math.Round(100 - correctPercentage, 2);
                 }
 
                 categoryStatistics.Add(new QuestionCategoryStatisticDto
@@ -77,11 +68,5 @@ public static class GetQuestionCategoryStatistic
             return categoryStatistics.ToArray();
         }
 
-        private bool IsCorrect(ExamQuestion examQuestion)
-        {
-            var correctAnswers = examQuestion.Question.Answers.Where(a => a.IsCorrect).ToList();
-            return !examQuestion.SelectedAnswers.Except(correctAnswers).Any() &&
-                   !correctAnswers.Except(examQuestion.SelectedAnswers).Any();
-        }
     }
 }
