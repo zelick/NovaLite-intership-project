@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AnswerDto, ExamClient, GetExamExamQuestionDto, GetExamQuestionDto, SubmitExamCommand } from '../api/api-reference';
 import { MatDialog } from '@angular/material/dialog';
 import { SubmitDialogComponent } from '../submit-dialog/submit-dialog.component';
+import { environment } from '../../environments/environments';
 
 @Component({
   selector: 'app-taking-test',
@@ -28,11 +29,10 @@ export class TakingTestComponent implements OnInit{
         this.examQuestions = res.examQuestionDtos!;
         this.question = res.examQuestionDtos![0].questionDto!;
         this.endTime = new Date(res.startTime?.getTime()!)
-        this.endTime.setSeconds(this.endTime.getSeconds()+180) // set a test time limit
+        this.endTime.setSeconds(this.endTime.getSeconds() + environment.examDuration.seconds)
       },
-      error:(err)=>{
-        console.log(err);
-          this.router.navigate([""]);
+      error:()=>{
+        this.router.navigate([""]);
       }   
     })
   }
