@@ -21,7 +21,6 @@ const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/exams/exams.module').then(m=> m.ExamsModule)
   }
-  
 ];
 
 const isIframe = window !== window.parent && !window.opener;

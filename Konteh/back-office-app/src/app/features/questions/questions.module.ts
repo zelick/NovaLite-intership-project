@@ -16,11 +16,14 @@ import { FormErrorsComponent } from "../../shared/form-errors/form-errors.compon
 import {MatCardModule} from '@angular/material/card';
 import { QuestionsRoutingModule } from "./questions-routing.module";
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { QuestionStatisticComponent } from './question-statistic/question-statistic.component';
 
 @NgModule({
     declarations: [
         QuestionsTableComponent,
-        QuestionFormComponent
+        QuestionFormComponent,
+        QuestionStatisticComponent
     ],
     imports: [
         CommonModule,
@@ -39,7 +42,8 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
         FormErrorsComponent,
         MatCardModule,
         QuestionsRoutingModule,
-        CanvasJSAngularChartsModule
+        CanvasJSAngularChartsModule,
+        MatCheckboxModule
     ]
 })
 export class QuestionsModule { }

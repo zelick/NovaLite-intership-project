@@ -47,6 +47,10 @@ export class QuestionsTableComponent{
     this.router.navigate(['questions', id]);
   }
 
+  questionStatistic(id: number){
+    this.router.navigate(['questions/statistic/', id]);
+  }
+
   getQuestionCategoryName(value: number): string {
     const entry = Object.entries(QuestionCategory).find(([key, val]) => val === value);
     return entry ? entry[0] : 'Unknown';

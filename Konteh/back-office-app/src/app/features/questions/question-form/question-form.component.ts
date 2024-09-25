@@ -4,11 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { setServerSideValidationErrors } from '../../../validation';
 import { QuestionType, QuestionCategory, QuestionClient, CreateOrUpdateQuestionAnswerRequest, CreateOrUpdateQuestionCommand } from '../../../api/api-reference';
 
-interface DataPoint {
-  name: string;
-  y: number; 
-}
-
 @Component({
   selector: 'app-question-form',
   templateUrl: './question-form.component.html',
@@ -31,23 +26,6 @@ export class QuestionFormComponent implements OnInit {
   isEditingAnswer: boolean = false;
   editIndex?: number;
 
-  chartOptions = {
-	  animationEnabled: true,
-    theme: "light",
-    exportEnabled: true,
-    title: {
-      text: "Question Statistic"
-    },
-    subtitles: [{
-      text: "Candidates answered correctly"
-    }],
-    data: [{
-      type: "pie",
-      indexLabel: "{name}: {y}%",
-      data: [] as any
-    }]
-	}
-
   constructor(
     private questionClient: QuestionClient,
     private route: ActivatedRoute,
@@ -62,26 +40,10 @@ export class QuestionFormComponent implements OnInit {
         this.isEditingAnswer = false;
         this.questionId = Number(paramId)
         this.getQuestion(this.questionId);
-        this.getQuestionStatistics(this.questionId);
       }
     });
   }
 
-  getQuestionStatistics(id: number) {
-    this.questionClient.getQuestionStatistic(id).subscribe({
-      next: (response) => {
-        const correctPercentage = response; 
-        const wrongPercentage = 100 - correctPercentage; 
-        this.chartOptions.data[0].data = [
-          { name: "Correct", y: correctPercentage },
-          { name: "Wrong", y: wrongPercentage }
-        ];
-        //update chart!!!
-      },
-      error: errors => setServerSideValidationErrors(errors, this.questionForm)
-    });
-  }
-  
 
   getQuestion(id: number) {
     this.questionClient.getQuestionById(id).subscribe(question => {

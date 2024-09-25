@@ -7,11 +7,17 @@ namespace Konteh.BackOfficeApi.Features.Questions;
 
 public class GetQuestionStatistic
 {
-    public class Query : IRequest<double>
+    public class Query : IRequest<Response>
     {
         public int QuestionId { get; set; }
     }
-    public class RequestHandler : IRequestHandler<Query, double>
+
+    public class Response
+    {
+        public double Percentage { get; set; }
+        public string Text { get; set; } = String.Empty;
+    }
+    public class RequestHandler : IRequestHandler<Query, Response>
     {
         private readonly IRepository<Question> _questionRepository;
         private readonly IExamRepository _examRepository;
@@ -21,10 +27,10 @@ public class GetQuestionStatistic
             _examRepository = examRepository;
         }
 
-        public async Task<double> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var question = _questionRepository.GetById(request.QuestionId);
-            if (question != null)
+            var question = _questionRepository.GetById(request.QuestionId).Result;
+            if (question == null)
             {
                 throw new NotFoundException();
             }
@@ -51,11 +57,12 @@ public class GetQuestionStatistic
 
             if (totalAttempts <= 0)
             {
-                return 0;
+                return new Response { Percentage = 0, Text = question!.Text };
             }
             else
             {
-                return correctAttempts / totalAttempts * 100;
+                var res = new Response { Percentage = Math.Round((double)correctAttempts / totalAttempts * 100, 2), Text = question!.Text };
+                return res;
             }
         }
 

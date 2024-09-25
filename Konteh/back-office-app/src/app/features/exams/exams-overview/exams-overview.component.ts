@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ExamClient, GetExamsForOverviewExamResponse, GetExamsForOverviewResponse } from '../../../api/api-reference';
+import { ExamClient, GetExamsResponse } from '../../../api/api-reference';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ExamsOverviewComponent implements OnInit {
   displayedColumns: string[] = [ 'candidate', 'status', 'score', 'startTime'];
-  dataSource = new MatTableDataSource<GetExamsForOverviewExamResponse>([]);
+  dataSource = new MatTableDataSource<GetExamsResponse>([]);
   pageSize = 5;
   totalExams = 0;
   currentPage = 0;
@@ -34,7 +34,7 @@ export class ExamsOverviewComponent implements OnInit {
   }
 
   loadExams(): void {
-    this.examClient.getAllExams(this.searchText, this.currentPage, this.pageSize).subscribe((response: GetExamsForOverviewResponse) => {
+    this.examClient.getAllExams(this.searchText, this.currentPage, this.pageSize).subscribe((response: GetExamsResponse) => {
       this.dataSource.data = response.exams || [];
       this.totalExams = response.length || 0;
     });
