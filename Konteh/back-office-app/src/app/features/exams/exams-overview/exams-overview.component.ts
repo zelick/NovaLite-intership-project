@@ -28,8 +28,9 @@ export class ExamsOverviewComponent implements OnInit {
       this.loadExams();
     });
 
-    this.signalRService.receiveExamRequest((message) => {
-      this.handleNewExamRequest(message);
+    this.signalRService.message$.subscribe((message: GetExamsResponse) => {
+      this.examList.unshift(message);
+      this.dataSource.data = this.examList;
     });
   }
 
@@ -54,11 +55,5 @@ export class ExamsOverviewComponent implements OnInit {
       },
       queryParamsHandling: 'merge'  
     });
-  }
-
-  
-
-  handleNewExamRequest(message: GetExamsResponse): void {
-    this.dataSource.data.unshift(message);
   }
 }
