@@ -21,6 +21,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { environment } from '../environments/environment';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { HttpErrorInterceptor } from './services/http-error-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,11 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
     },
     {
       provide: MAT_DATE_FORMATS,

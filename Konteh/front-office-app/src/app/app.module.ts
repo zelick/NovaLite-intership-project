@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
 import { MatInput } from '@angular/material/input';
@@ -15,6 +15,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SubmitDialogComponent } from './submit-dialog/submit-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { HttpErrorInterceptor } from './services/http-error-interceptor.service';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     CandidateInfoFormComponent,
     TakingTestComponent,
     SubmitDialogComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,11 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatDialogModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
