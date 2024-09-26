@@ -59,4 +59,22 @@ public class QuestionController : Controller
         return Ok(response);
     }
 
+    [HttpGet("statistic/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(GetQuestionStatistic.Response), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetQuestionStatistic.Response>> GetQuestionStatistic(int id)
+    {
+        var response = await _mediator.Send(new GetQuestionStatistic.Query { QuestionId = id });
+        return Ok(response);
+    }
+
+    [HttpGet("category/statistics")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IEnumerable<GetQuestionCategoryStatistic.Response>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<GetQuestionCategoryStatistic.Response>>> GetCategoryQuestionStatistic()
+    {
+        var response = await _mediator.Send(new GetQuestionCategoryStatistic.Query { });
+        return Ok(response);
+    }
+
 }

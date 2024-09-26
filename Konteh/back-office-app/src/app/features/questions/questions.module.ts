@@ -15,12 +15,17 @@ import { MatSelectModule } from "@angular/material/select";
 import { FormErrorsComponent } from "../../shared/form-errors/form-errors.component";
 import {MatCardModule} from '@angular/material/card';
 import { QuestionsRoutingModule } from "./questions-routing.module";
-
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { QuestionStatisticComponent } from './question-statistic/question-statistic.component';
+import { QuestionCategoryStatisticsComponent } from './question-category-statistics/question-category-statistics.component';
 
 @NgModule({
     declarations: [
         QuestionsTableComponent,
-        QuestionFormComponent
+        QuestionFormComponent,
+        QuestionStatisticComponent,
+        QuestionCategoryStatisticsComponent
     ],
     imports: [
         CommonModule,
@@ -38,7 +43,9 @@ import { QuestionsRoutingModule } from "./questions-routing.module";
         MatSelectModule,
         FormErrorsComponent,
         MatCardModule,
-        QuestionsRoutingModule
+        QuestionsRoutingModule,
+        CanvasJSAngularChartsModule,
+        MatCheckboxModule
     ]
 })
 export class QuestionsModule { }

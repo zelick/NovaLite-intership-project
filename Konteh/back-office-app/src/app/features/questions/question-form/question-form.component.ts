@@ -44,6 +44,7 @@ export class QuestionFormComponent implements OnInit {
     });
   }
 
+
   getQuestion(id: number) {
     this.questionClient.getQuestionById(id).subscribe(question => {
       this.questionForm.patchValue({
@@ -192,5 +193,4 @@ export class QuestionFormComponent implements OnInit {
     }
     return true;
   }
-
 }
