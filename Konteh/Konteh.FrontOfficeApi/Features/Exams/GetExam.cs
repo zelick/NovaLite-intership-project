@@ -51,7 +51,7 @@ public static class GetExam
             if (exam == null)
                 throw new NotFoundException();
 
-            if (exam.Status == ExamStatus.Completed)
+            if (exam.Status != ExamStatus.InProgress)
                 throw new NotFoundException();
 
             var responseList = exam.ExamQuestions.Select(examQuestion => new ExamQuestionDto
