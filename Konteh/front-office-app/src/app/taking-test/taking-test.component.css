@@ -4,6 +4,7 @@
     padding: 20px; 
     min-height: 900px;
     background-color: #f6e04e; 
+    height: 100%;
 }
 
 h1 {
@@ -41,19 +42,6 @@ button:hover {
     background-color: #36454F;
 }
 
-/* button .next{
-    margin-left: 1000px;
-} */
-/* @media (max-width: 600px) {
-    div {
-        padding: 10px; 
-    }
-
-    button {
-        width: 100%;
-        width: 100px;
-    }
-} */
 p {
     background-color: #f8f9fa; 
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 

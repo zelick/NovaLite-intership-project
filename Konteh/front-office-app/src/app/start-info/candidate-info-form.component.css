@@ -5,6 +5,7 @@
   background-color: #f6e04e;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 mat-form-field {
@@ -54,3 +55,6 @@ img {
   width: 30%;
 }
 
+.companyLabel{
+  margin-bottom: 16%;
+}
