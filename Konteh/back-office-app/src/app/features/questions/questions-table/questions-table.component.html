@@ -1,4 +1,4 @@
-<div class="mat-elevation-z2 questions-table">
+<div class="questions-table">
   <div class="search">
     <mat-form-field class="search-form-field">
         <mat-label>Search</mat-label>
@@ -7,7 +7,7 @@
     <button type="button" class="button-statistics" (click)="getQuestionCategoryStatistics()">
       Statistics
     </button>
-</div>
+  </div>
   <table mat-table [dataSource]="dataSource"   class="full-width-table" matSort aria-label="Elements">
     
     <ng-container matColumnDef="type">

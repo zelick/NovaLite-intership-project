@@ -17,6 +17,7 @@ import { SubmitDialogComponent } from './submit-dialog/submit-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { HttpErrorInterceptor } from './services/http-error-interceptor.service';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     FormsModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule
   ],
   providers: [
     {

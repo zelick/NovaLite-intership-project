@@ -2,7 +2,9 @@
   max-width: 400px;
   margin: auto;
   padding: 16px;
-  background-color: #C9C09F;
+  background-color: #f6e04e;
+  display: flex;
+  flex-direction: column;
 }
 
 mat-form-field {
@@ -26,16 +28,29 @@ input::placeholder {
 }
 
 button {
-  width: 80%;
+  width: 50%;
   padding: 12px;
   font-size: 16px;
-  margin-left: 3%;
+  margin: auto;
+  background-color:  #18181a;
+  color: #f6e04e;
+  font-weight: 600;
+}
+button:hover{
+  background-color:  #36454F;
+  cursor: pointer;
 }
 
 p {
-  margin-top: 20%;
+  margin-top: 2%;
   text-align: center;
 }
 .error{
   color: #f44336;
 }
+
+img {
+  margin: auto;
+  width: 30%;
+}
+
