@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ExamClient, GetExamsResponse, IGetExamsResponse } from '../../../api/api-reference';
-import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalRService } from '../../../services/signar-service';
 
@@ -11,10 +10,8 @@ import { SignalRService } from '../../../services/signar-service';
   styleUrls: ['./exams-overview.component.css']
 })
 export class ExamsOverviewComponent implements OnInit {
-
-  displayedColumns: string[] = [ 'candidate', 'status', 'score', 'startTime'];
-  dataSource = new MatTableDataSource<GetExamsResponse>([]);
-  totalExams = 0;
+  displayedColumns: string[] = ['candidate', 'status', 'score', 'startTime'];
+  dataSource = new MatTableDataSource<IGetExamsResponse>([]);
   searchText: string = ''; 
   examList: IGetExamsResponse[] = [];
   

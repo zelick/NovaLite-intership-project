@@ -472,14 +472,6 @@ export class ExamClient implements IExamClient {
                 try {
                     return this.processGetAllExams(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<GetExamsResponse>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<GetExamsResponse>;
-        }));
-    }
-
-    protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsResponse> {
                     return _observableThrow(e) as any as Observable<GetExamsResponse[]>;
                 }
             } else
@@ -498,7 +490,7 @@ export class ExamClient implements IExamClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetExamsResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
                     result200!.push(GetExamsResponse.fromJS(item));
@@ -1193,62 +1185,12 @@ export interface IGetQuestionCategoryStatisticResponse {
 }
 
 export class GetExamsResponse implements IGetExamsResponse {
-    exams?: GetExamsExamResponse[];
-    length?: number;
-
-    constructor(data?: IGetExamsResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["exams"])) {
-                this.exams = [] as any;
-                for (let item of _data["exams"])
-                    this.exams!.push(GetExamsExamResponse.fromJS(item));
-            }
-            this.length = _data["length"];
-        }
-    }
-
-    static fromJS(data: any): GetExamsResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetExamsResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.exams)) {
-            data["exams"] = [];
-            for (let item of this.exams)
-                data["exams"].push(item.toJSON());
-        }
-        data["length"] = this.length;
-        return data;
-    }
-}
-
-export interface IGetExamsResponse {
-    exams?: GetExamsExamResponse[];
-    length?: number;
-}
-
-export class GetExamsExamResponse implements IGetExamsExamResponse {
-export class GetExamsResponse implements IGetExamsResponse {
     id?: number;
     candidateName?: string;
     score?: string;
     examStatus?: string;
     startTime?: Date;
 
-    constructor(data?: IGetExamsExamResponse) {
     constructor(data?: IGetExamsResponse) {
         if (data) {
             for (var property in data) {
@@ -1268,9 +1210,6 @@ export class GetExamsResponse implements IGetExamsResponse {
         }
     }
 
-    static fromJS(data: any): GetExamsExamResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetExamsExamResponse();
     static fromJS(data: any): GetExamsResponse {
         data = typeof data === 'object' ? data : {};
         let result = new GetExamsResponse();
@@ -1289,7 +1228,6 @@ export class GetExamsResponse implements IGetExamsResponse {
     }
 }
 
-export interface IGetExamsExamResponse {
 export interface IGetExamsResponse {
     id?: number;
     candidateName?: string;
