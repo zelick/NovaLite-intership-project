@@ -3,8 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserUtils } from "@azure/msal-browser";
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth.guard';
-import { QuestionsTableComponent } from './features/questions/questions-table/questions-table.component';
-import { ExamsOverviewComponent } from './features/exams/exams-overview/exams-overview.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
   {
@@ -20,7 +19,15 @@ const routes: Routes = [
     path: 'exams',
     canActivate: [authGuard],
     loadChildren: () => import('./features/exams/exams.module').then(m=> m.ExamsModule)
-  }
+  },
+  {
+    path: 'not-found',
+    component: NotFoundComponent
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found',
+  },
 ];
 
 const isIframe = window !== window.parent && !window.opener;

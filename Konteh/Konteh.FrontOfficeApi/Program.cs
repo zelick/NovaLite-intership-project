@@ -1,14 +1,16 @@
 using FluentValidation;
 using Konteh.Domain;
-using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.FrontOfficeApi.Configuration;
+using Konteh.FrontOfficeApi.Features.Exams;
 using Konteh.Infrastructure;
+using Konteh.Infrastructure.BackgroundJobs;
 using Konteh.Infrastructure.ExeptionHandler;
 using Konteh.Infrastructure.PiplineBehaviour;
 using Konteh.Infrastructure.Repositories;
-using MediatR;
 using MassTransit;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using System.Reflection;
 
 namespace Konteh.FrontOfficeApi;
@@ -71,6 +73,21 @@ public class Program
             }
 
         });
+
+        builder.Services.AddQuartz(q =>
+        {
+            var jobKey = new JobKey(nameof(ExpiredExamsCleanerJob));
+            q.AddJob<ExpiredExamsCleanerJob>(opts => opts.WithIdentity(jobKey));
+
+            q.AddTrigger(opts => opts
+                .ForJob(jobKey)
+                .WithIdentity("ExpiredExamsCleanerJob-trigger")
+                .WithSimpleSchedule(o =>
+                    o.WithIntervalInHours(1)
+                    .RepeatForever())
+            );
+        });
+        builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
 
         var app = builder.Build();
 

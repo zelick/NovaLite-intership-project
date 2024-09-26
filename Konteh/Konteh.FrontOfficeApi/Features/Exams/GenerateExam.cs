@@ -1,7 +1,6 @@
 ﻿namespace Konteh.FrontOfficeApi.Features.Exams;
 
 using Konteh.Domain;
-using Konteh.FrontOfficeApi.Dtos;
 using Konteh.Infrastructure.Events;
 using Konteh.Infrastructure.Repositories;
 using MassTransit;
@@ -22,6 +21,20 @@ public static class GenerateExam
         public int Id { get; set; }
         public List<ExamQuestionDto> ExamQuestions { get; set; } = [];
     }
+
+    public class ExamQuestionDto
+    {
+        public int QuestionId { get; set; }
+        public string QuestionText { get; set; } = string.Empty;
+        public List<AnswerDto> SelectedAnswers { get; set; } = new();
+    }
+
+    public class AnswerDto
+    {
+        public int AnswerId { get; set; }
+        public string AnswerText { get; set; } = string.Empty;
+    }
+
 
     public class RequestHandler : IRequestHandler<Command, Response>
     {
@@ -69,9 +82,11 @@ public static class GenerateExam
 
             await _publishEndpoint.Publish(new ExamRequestedEvent
             {
-                Email = candidate.Email,
                 Name = candidate.Name,
-                Surname = candidate.Surname
+                Surname = candidate.Surname,
+                NumberOfQuestions = exam.ExamQuestions.Count,
+                StartTime = exam.StartTime,
+                Id = exam.Id
             });
 
             var examQuestionDtos = exam.ExamQuestions.Select(eq => new ExamQuestionDto

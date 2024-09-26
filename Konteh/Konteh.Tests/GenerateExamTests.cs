@@ -46,9 +46,9 @@ public class GenerateExamTests
         };
 
         var existingExams = new List<Exam>
-    {
-        new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
-    };
+        {
+            new Exam { Candidate = new Candidate { Email = "loncardjole@gmail.com" } }
+        };
 
         MockExamRepositorySearch(existingExams);
 

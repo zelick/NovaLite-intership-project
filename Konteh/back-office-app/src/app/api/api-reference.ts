@@ -435,7 +435,7 @@ export class QuestionClient implements IQuestionClient {
 }
 
 export interface IExamClient {
-    getAllExams(text: string | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<GetExamsResponse>;
+    getAllExams(text: string | null | undefined): Observable<GetExamsResponse[]>;
 }
 
 @Injectable({
@@ -451,18 +451,10 @@ export class ExamClient implements IExamClient {
         this.baseUrl = baseUrl ?? "https://localhost:7221";
     }
 
-    getAllExams(text: string | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<GetExamsResponse> {
+    getAllExams(text: string | null | undefined): Observable<GetExamsResponse[]> {
         let url_ = this.baseUrl + "/api/exams?";
         if (text !== undefined && text !== null)
             url_ += "Text=" + encodeURIComponent("" + text) + "&";
-        if (page === null)
-            throw new Error("The parameter 'page' cannot be null.");
-        else if (page !== undefined)
-            url_ += "Page=" + encodeURIComponent("" + page) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -488,6 +480,14 @@ export class ExamClient implements IExamClient {
     }
 
     protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsResponse> {
+                    return _observableThrow(e) as any as Observable<GetExamsResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetExamsResponse[]>;
+        }));
+    }
+
+    protected processGetAllExams(response: HttpResponseBase): Observable<GetExamsResponse[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -499,6 +499,13 @@ export class ExamClient implements IExamClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = GetExamsResponse.fromJS(resultData200);
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetExamsResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1234,6 +1241,7 @@ export interface IGetExamsResponse {
 }
 
 export class GetExamsExamResponse implements IGetExamsExamResponse {
+export class GetExamsResponse implements IGetExamsResponse {
     id?: number;
     candidateName?: string;
     score?: string;
@@ -1241,6 +1249,7 @@ export class GetExamsExamResponse implements IGetExamsExamResponse {
     startTime?: Date;
 
     constructor(data?: IGetExamsExamResponse) {
+    constructor(data?: IGetExamsResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1262,6 +1271,9 @@ export class GetExamsExamResponse implements IGetExamsExamResponse {
     static fromJS(data: any): GetExamsExamResponse {
         data = typeof data === 'object' ? data : {};
         let result = new GetExamsExamResponse();
+    static fromJS(data: any): GetExamsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetExamsResponse();
         result.init(data);
         return result;
     }
@@ -1278,6 +1290,7 @@ export class GetExamsExamResponse implements IGetExamsExamResponse {
 }
 
 export interface IGetExamsExamResponse {
+export interface IGetExamsResponse {
     id?: number;
     candidateName?: string;
     score?: string;

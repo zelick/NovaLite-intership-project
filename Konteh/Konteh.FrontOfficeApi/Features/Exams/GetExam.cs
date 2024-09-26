@@ -1,5 +1,4 @@
 ﻿using Konteh.Domain;
-using Konteh.FrontOfficeApi.Dtos;
 using Konteh.Infrastructure.Exceptions;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
@@ -34,6 +33,12 @@ public static class GetExam
         public IList<AnswerDto> Answers { get; set; } = new List<AnswerDto>();
     }
 
+    public class AnswerDto
+    {
+        public int AnswerId { get; set; }
+        public string AnswerText { get; set; } = string.Empty;
+    }
+
     public class RequestHandler : IRequestHandler<Query, Response>
     {
         private readonly IRepository<Exam> _examRepository;
@@ -51,7 +56,7 @@ public static class GetExam
             if (exam == null)
                 throw new NotFoundException();
 
-            if (exam.Status == ExamStatus.Completed)
+            if (exam.Status != ExamStatus.InProgress)
                 throw new NotFoundException();
 
             var responseList = exam.ExamQuestions.Select(examQuestion => new ExamQuestionDto
