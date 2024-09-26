@@ -47,6 +47,9 @@ public static class SubmitExam
             if (exam == null)
                 throw new NotFoundException();
 
+            if (exam.StartTime.AddMinutes(4) < DateTime.UtcNow) // set a test time limit (think about the time it takes to confirm submit + 30-60sec)
+                throw new NotFoundException();
+
             var selectedAnswersIds = request.ExamQuestions.ToDictionary(e => e.Id, e => e.SelectedAnswers.Select(a => a.AnswerId).ToHashSet());
 
             var examQuestions = _examQuestionRepository.GetByIds(request.ExamQuestions.Select(e => e.Id).ToList());
