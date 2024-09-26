@@ -30,10 +30,7 @@ export class TakingTestComponent implements OnInit{
         this.question = res.examQuestionDtos![0].questionDto!;
         this.endTime = new Date(res.startTime?.getTime()!)
         this.endTime.setSeconds(this.endTime.getSeconds() + environment.examDuration.seconds)
-      },
-      error:()=>{
-        this.router.navigate([""]);
-      }   
+      } 
     })
   }
 

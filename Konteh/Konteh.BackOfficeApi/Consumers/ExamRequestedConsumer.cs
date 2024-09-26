@@ -1,4 +1,6 @@
-﻿using Konteh.BackOfficeApi.HubConfig;
+﻿using Konteh.BackOfficeApi.Features.Exams;
+using Konteh.BackOfficeApi.HubConfig;
+using Konteh.Domain;
 using Konteh.Infrastructure.Events;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
@@ -14,6 +16,14 @@ public class ExamRequestedConsumer : IConsumer<ExamRequestedEvent>
     }
     public async Task Consume(ConsumeContext<ExamRequestedEvent> context)
     {
-        await _hubContext.Clients.All.SendAsync("ReceiveExamRequest", context.Message);
+        var message = context.Message;
+        await _hubContext.Clients.All.SendAsync("ReceiveExamRequest", new GetExams.Response
+        {
+            CandidateName = $"{message.Name} {message.Surname}",
+            ExamStatus = ExamStatus.InProgress.ToString(),
+            Id = message.Id,
+            Score = $"0/{message.NumberOfQuestions}",
+            StartTime = message.StartTime
+        });
     }
 }

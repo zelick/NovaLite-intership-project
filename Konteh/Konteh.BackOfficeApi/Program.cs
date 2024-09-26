@@ -65,6 +65,7 @@ public class Program
         builder.Services.AddMassTransit(x =>
         {
             x.AddConsumer<ExamRequestedConsumer>();
+            x.AddConsumer<ExamSubmittedConsumer>();
             var rabbitMQConfig = builder.Configuration.GetSection("RabbitMQConfiguration").Get<RabbitMQConfiguration>();
             if (rabbitMQConfig != null)
             {
@@ -78,6 +79,10 @@ public class Program
                     cfg.ReceiveEndpoint("exam-requested-queue", e =>
                     {
                         e.ConfigureConsumer<ExamRequestedConsumer>(context);
+                    });
+                    cfg.ReceiveEndpoint("exam-submitted-queue", e =>
+                    {
+                        e.ConfigureConsumer<ExamSubmittedConsumer>(context);
                     });
                 });
             }
