@@ -48,7 +48,7 @@ public class GetQuestionStatistic
                 {
                     totalAttempts++;
 
-                    if (IsCorrect(examQuestion))
+                    if (examQuestion.IsCorrect())
                     {
                         correctAttempts++;
                     }
@@ -64,14 +64,6 @@ public class GetQuestionStatistic
                 var res = new Response { Percentage = Math.Round((double)correctAttempts / totalAttempts * 100, 2), Text = question!.Text };
                 return res;
             }
-        }
-
-
-        private bool IsCorrect(ExamQuestion examQuestion)
-        {
-            var correctAnswers = examQuestion.Question.Answers.Where(a => a.IsCorrect).ToList();
-            return !examQuestion.SelectedAnswers.Except(correctAnswers).Any() &&
-                   !correctAnswers.Except(examQuestion.SelectedAnswers).Any();
         }
     }
 }

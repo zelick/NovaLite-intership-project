@@ -48,9 +48,7 @@ export class QuestionCategoryStatisticsComponent implements OnInit{
         this.chartCategoryOptions = { ...this.chartCategoryOptions };
         this.chartCategoryOptions.render(); 
       },
-      error: (error) => {
-        console.error("Error getting question category statistics", error);
-      }
+      error: (error) => {}
     });   
   }
 
