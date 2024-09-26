@@ -54,7 +54,7 @@ export class CandidateInfoFormComponent {
         this.error = '';
       },
       error:() => {
-        this.error = 'You have already taken a tesT!';
+        this.error = 'You have already taken a test!';
       }
     })
   }

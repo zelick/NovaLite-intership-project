@@ -75,9 +75,6 @@ export class TakingTestComponent implements OnInit{
     this.examClient.submit(request).subscribe({
       next:(res) =>{
         this.router.navigate([""])
-      },
-      error:()=>{
-        alert("Time is up!")
       }
     })
   }
