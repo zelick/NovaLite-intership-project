@@ -27,7 +27,7 @@ public static class GetExams
             _examRepository = examRepository;
         }
 
-        public Task<IEnumerable<Response>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Response>> Handle(Query request, CancellationToken cancellationToken)
         {
             string searchText = "";
             if (request.Text != null)
@@ -41,11 +41,11 @@ public static class GetExams
 
             var length = query.Count();
 
-            var exams = query
+            var exams = await query
                 .OrderByDescending(exam => exam.StartTime)
                 .ToListAsync();
 
-            var examResult = exams.Result.Select(exam => new Response
+            var examResult = exams.Select(exam => new Response
             {
                 Id = exam.Id,
                 CandidateName = $"{exam.Candidate.Name} {exam.Candidate.Surname}",
@@ -54,7 +54,7 @@ public static class GetExams
                 StartTime = exam.StartTime.ToLocalTime()
             });
 
-            return Task.FromResult(examResult);
+            return examResult;
         }
 
     }

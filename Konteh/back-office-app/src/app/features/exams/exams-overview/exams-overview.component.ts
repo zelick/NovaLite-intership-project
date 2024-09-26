@@ -62,7 +62,6 @@ export class ExamsOverviewComponent implements OnInit {
     if (foundExam) {
       foundExam.examStatus = message.examStatus;
       foundExam.score = message.score;
-      this.dataSource.data = [...this.examList];
     } else {
       this.examList.unshift(message);
       this.dataSource.data = [...this.examList];
