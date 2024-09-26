@@ -20,11 +20,12 @@ public class GetQuestionStatistic
     public class RequestHandler : IRequestHandler<Query, Response>
     {
         private readonly IRepository<Question> _questionRepository;
-        private readonly IExamRepository _examRepository;
-        public RequestHandler(IRepository<Question> repository, IExamRepository examRepository)
+        private readonly IRepository<ExamQuestion> _examQuestionRepository;
+
+        public RequestHandler(IRepository<Question> questionRepository, IRepository<ExamQuestion> examQuestionRepository)
         {
-            _questionRepository = repository;
-            _examRepository = examRepository;
+            _questionRepository = questionRepository;
+            _examQuestionRepository = examQuestionRepository;
         }
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -35,25 +36,15 @@ public class GetQuestionStatistic
                 throw new NotFoundException();
             }
 
-            var examsForQuestion = await _examRepository.GetByQuestion(request.QuestionId);
+            var examQuestions = await _examQuestionRepository.GetAll();
 
             int totalAttempts = 0;
             int correctAttempts = 0;
 
+            var examQuestionForQuestion = examQuestions.Where(eq => eq.Question.Id == question.Id);
 
-            foreach (var exam in examsForQuestion)
-            {
-                var examQuestion = exam.ExamQuestions.FirstOrDefault(eq => eq.Question.Id == request.QuestionId);
-                if (examQuestion != null)
-                {
-                    totalAttempts++;
-
-                    if (examQuestion.IsCorrect())
-                    {
-                        correctAttempts++;
-                    }
-                }
-            }
+            totalAttempts = examQuestionForQuestion.Count();
+            correctAttempts = examQuestionForQuestion.Count(x => x.IsCorrect());
 
             if (totalAttempts <= 0)
             {
@@ -61,9 +52,10 @@ public class GetQuestionStatistic
             }
             else
             {
-                var res = new Response { Percentage = Math.Round((double)correctAttempts / totalAttempts * 100, 2), Text = question!.Text };
+                var res = new Response { Percentage = Math.Round((double)correctAttempts / totalAttempts * 100, 2), Text = question.Text };
                 return res;
             }
         }
+
     }
 }

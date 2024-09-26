@@ -59,8 +59,7 @@ export class QuestionStatisticComponent implements OnInit{
         this.chartOptions = { ...this.chartOptions };
         this.chartOptions.render(); 
 
-      },
-      error: (error) => {}
+      }
     });
   }
   

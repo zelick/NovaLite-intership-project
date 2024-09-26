@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GetQuestionCategoryStatisticResponse, QuestionClient } from '../../../api/api-reference';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-question-category-statistics',
@@ -13,7 +12,6 @@ export class QuestionCategoryStatisticsComponent implements OnInit{
     
   constructor(
     private questionClient: QuestionClient,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -40,19 +38,13 @@ export class QuestionCategoryStatisticsComponent implements OnInit{
 
     this.questionClient.getCategoryQuestionStatistic().subscribe({
       next: (response: GetQuestionCategoryStatisticResponse[]) => {
-         
-        response.forEach((element) => {
-          var dataPointElement = { label: element.categoryName, y: element.correctPercentage}
-          this.chartCategoryOptions.data[0].dataPoints.push(dataPointElement);
+        
+        this.chartCategoryOptions.data[0].dataPoints = response.map(element => {
+          return { label: element.categoryName, y: element.correctPercentage };
         });
         this.chartCategoryOptions = { ...this.chartCategoryOptions };
         this.chartCategoryOptions.render(); 
-      },
-      error: (error) => {}
+      }
     });   
   }
-
-  
-
-
 }

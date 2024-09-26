@@ -193,8 +193,4 @@ export class QuestionFormComponent implements OnInit {
     }
     return true;
   }
-
 }
-
-
-
