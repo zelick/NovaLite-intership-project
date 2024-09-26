@@ -3,6 +3,7 @@ import { QuestionsTableComponent } from "./questions-table/questions-table.compo
 import { QuestionFormComponent } from "./question-form/question-form.component";
 import { NgModule } from "@angular/core";
 import { QuestionStatisticComponent } from "./question-statistic/question-statistic.component";
+import { QuestionCategoryStatisticsComponent } from "./question-category-statistics/question-category-statistics.component";
 
 const routes: Route[] = [
     {
@@ -20,6 +21,10 @@ const routes: Route[] = [
     {
         path: 'statistic/:id',
         component: QuestionStatisticComponent
+    },
+    {
+        path: 'category/statistics',
+        component: QuestionCategoryStatisticsComponent
     }
 ];
 

@@ -69,8 +69,8 @@ public class QuestionController : Controller
 
     [HttpGet("category/statistics")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(GetQuestionCategoryStatistic.QuestionCategoryStatisticDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetQuestionCategoryStatistic.QuestionCategoryStatisticDto>> GetCategoryQuestionStatistic()
+    [ProducesResponseType(typeof(IEnumerable<GetQuestionCategoryStatistic.Response>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<GetQuestionCategoryStatistic.Response>>> GetCategoryQuestionStatistic()
     {
         var response = await _mediator.Send(new GetQuestionCategoryStatistic.Query { });
         return Ok(response);

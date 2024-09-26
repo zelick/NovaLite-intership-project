@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionClient } from '../../../api/api-reference';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CanvasJS } from '@canvasjs/angular-charts';
+//import { CanvasJS } from '@canvasjs/angular-charts';
 
 @Component({
   selector: 'app-question-statistic',
@@ -59,8 +59,8 @@ export class QuestionStatisticComponent implements OnInit{
   
         this.chartOptions = { ...this.chartOptions };
 
-        const chart = new CanvasJS.Chart("chartContainer", this.chartOptions);
-        chart.render(); 
+        //const chart = new CanvasJS.Chart("chartContainer", this.chartOptions);
+        this.chartOptions.render(); 
 
       },
       error: (error) => {

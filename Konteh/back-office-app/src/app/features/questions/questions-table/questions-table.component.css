@@ -39,8 +39,12 @@
   width: 130px;
 }
 
-.search-form-field {
-  margin-bottom: 20px;
+.button-statistics{
+  background-color: #f6e04e; 
+  margin-left: 10px;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 16px;
 }
 
 mat-form-field {
