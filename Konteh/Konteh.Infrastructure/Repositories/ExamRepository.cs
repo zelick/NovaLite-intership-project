@@ -73,6 +73,8 @@ public class ExamRepository : BaseRepository<Exam>, IExamRepository
                 .ThenInclude(eq => eq.Question)
                     .ThenInclude(q => q.Answers)
             .Include(e => e.Candidate)
+            .Include(e => e.ExamQuestions)
+                .ThenInclude(eq => eq.SelectedAnswers)
             .Where(predicate);
     }
 }
