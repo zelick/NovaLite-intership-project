@@ -1,5 +1,6 @@
 ﻿using Konteh.Domain;
 using Konteh.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace Konteh.Infrastructure.BackgroundJobs;
@@ -13,17 +14,15 @@ public class ExpiredExamsCleanerJob : IJob
         _repository = repository;
     }
 
-    public Task Execute(IJobExecutionContext context)
+    public async Task Execute(IJobExecutionContext context)
     {
-        var exams = _repository.Search(a => a.Status == ExamStatus.InProgress && a.StartTime.AddHours(1) < DateTime.UtcNow).ToList();
+        var exams = await _repository.Search(a => a.Status == ExamStatus.InProgress && a.StartTime.AddHours(1) < DateTime.UtcNow).ToListAsync();
         if (!exams.Any())
-            return Task.CompletedTask;
+            return;
         foreach (var exam in exams)
         {
             exam.Status = ExamStatus.Invalid;
         }
-        _repository.SaveChanges();
-
-        return Task.CompletedTask;
+        await _repository.SaveChanges();
     }
 }

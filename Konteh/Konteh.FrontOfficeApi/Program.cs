@@ -81,7 +81,7 @@ public class Program
 
             q.AddTrigger(opts => opts
                 .ForJob(jobKey)
-                .WithIdentity("GarbageCollectorJob-trigger")
+                .WithIdentity("ExpiredExamsCleanerJob-trigger")
                 .WithSimpleSchedule(o =>
                     o.WithIntervalInHours(1)
                     .RepeatForever())
