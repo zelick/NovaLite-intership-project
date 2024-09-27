@@ -1,6 +1,7 @@
 ﻿using Konteh.Domain;
 using Konteh.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Konteh.BackOfficeApi.Features.Questions;
 
@@ -41,11 +42,11 @@ public static class SearchQuestions
 
             if (!string.IsNullOrEmpty(request.Text))
             {
-                query = _questionsRepository.Search(q => q.Text.Contains(request.Text));
+                query = query.Where(q => q.Text.Contains(request.Text));
             }
 
             var length = query.Count();
-            var questions = query.Skip(request.Page * request.PageSize).Take(request.PageSize).ToList();
+            var questions = await query.Skip(request.Page * request.PageSize).Take(request.PageSize).ToListAsync();
 
             var resposnes = questions.Select(q => new Response
             {
