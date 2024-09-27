@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CandidateInfoFormComponent } from './start-info/candidate-info-form.component';
 import { TakingTestComponent } from './taking-test/taking-test.component'
 import { NotFoundComponent } from './not-found/not-found.component';
+import { CompletedTestComponent } from './completed-test/completed-test.component';
 
 const routes: Routes = [
   {
@@ -18,9 +19,14 @@ const routes: Routes = [
     component: NotFoundComponent
   },
   {
+    path:'complete',
+    component: CompletedTestComponent
+  },
+  {
     path: '**',
     redirectTo: 'not-found',
   },
+  
 ];
 
 @NgModule({
