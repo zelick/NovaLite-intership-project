@@ -18,6 +18,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { HttpErrorInterceptor } from './services/http-error-interceptor.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CompletedTestComponent } from './completed-test/completed-test.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
     TakingTestComponent,
     SubmitDialogComponent,
     NotFoundComponent,
+    CompletedTestComponent,
   ],
   imports: [
     BrowserModule,

@@ -15,6 +15,7 @@ export class TakingTestComponent implements OnInit{
   page: number = 0;
   display: string = '';
   isHidden = false;
+  isCompleted = false;
   readonly dialog = inject(MatDialog)
   endTime : Date = new Date();
   examQuestions: GetExamExamQuestionDto[] = [];
@@ -74,7 +75,9 @@ export class TakingTestComponent implements OnInit{
     var request = new SubmitExamCommand({id : this.id, examQuestions: this.examQuestions});
     this.examClient.submit(request).subscribe({
       next:(res) =>{
-        this.router.navigate([""])
+        this.isCompleted = true;
+        this.timer()
+        this.router.navigate(["complete"])
       }
     })
   }
@@ -99,6 +102,9 @@ export class TakingTestComponent implements OnInit{
       if (minute === 0 && second === 0) {
         this.display = 'Time is up!';
         this.openDialog();
+        clearInterval(timer);
+      }
+      if(this.isCompleted){
         clearInterval(timer);
       }
     }, 1000);
